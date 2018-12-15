@@ -117,9 +117,11 @@
                     </form>
                 </div>
                 <!-- form:::活動主題:::end -->
+                <!-- form:::活動場次original:::start -->
                 <div class="tab-pane" id="eventTab_01">
                     <p>活動場次1</p>
                 </div>
+                <!-- form:::活動場次original:::end -->
                 <div class="tab-pane" id="eventTab_02">
                     <p>活動場次2</p>
                 </div>
@@ -143,19 +145,15 @@
                                 </div>
                             </div>
                         </div>
-                        <</time>
-                        datetimepicker
-                        private String evetit_status;
-                        private Integer promotionranking;
-                        <div class="form-group">
+                        <</time> datetimepicker private String evetit_status; private Integer promotionranking; <div class="form-group">
                             <label for="evetit_name">名稱</label>
                             <input type="text" name="evetit_name" id="evetit_name" class="form-control">
-                        </div>
-                    </form>
                 </div>
-                <!-- form:::上架設定:::end -->
+                </form>
             </div>
+            <!-- form:::上架設定:::end -->
         </div>
+    </div>
     </div>
     <!-- Basic -->
     <script src="https://code.jquery.com/jquery.js"></script>
@@ -170,7 +168,7 @@
     <!-- JavaScript in HTML -->
     <script type="text/javascript">
     $(function() {
-initInfoEditor();
+        initInfoEditor();
         initNoticesEditor();
         initEticpurchaserulesEditor();
         initEticrulesEditor();
@@ -180,8 +178,8 @@ initInfoEditor();
             imagesPreview(this);
         });
 
-         $("#offdate").datetimepicker();
-         $("#launchdate").datetimepicker();
+        $("#offdate").datetimepicker();
+        $("#launchdate").datetimepicker();
     });
     </script>
 </body>
