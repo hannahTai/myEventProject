@@ -9,5 +9,6 @@ public interface EventTitleDAO_interface {
      public void delete(String evetit_no);
      public EventTitleVO findByPrimaryKey(String evetit_no);
      public List<EventTitleVO> getAll();
+     public String insert2_Basic(EventTitleVO evetitVO);
 
 }

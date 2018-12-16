@@ -46,6 +46,11 @@ public class EventTitleDAO implements EventTitleDAO_interface{
 			"SELECT evetit_no, eveclass_no, ticrefpolicy_no, evetit_name, evetit_startdate, evetit_enddate, "
 			+ "evetit_poster, info, notices, eticpurchaserules, eticrules, refundrules, evetit_sessions, evetit_status, launchdate, offdate, promotionranking "
 			+ "FROM EVENT_TITLE ORDER BY evetit_no";
+	
+	private static final String INSERT2_STMT_Basic = 
+			"INSERT INTO EVENT_TITLE (evetit_no, eveclass_no, ticrefpolicy_no, evetit_name, evetit_startdate, evetit_enddate, "
+			+ "evetit_poster, info, notices, eticpurchaserules, eticrules, refundrules) "
+			+ "VALUES ('E'||LPAD(to_char(EVETIT_SEQ.NEXTVAL), 4, '0'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	
 		
@@ -416,6 +421,72 @@ public class EventTitleDAO implements EventTitleDAO_interface{
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public String insert2_Basic(EventTitleVO evetitVO) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;
+		String evetit_no = null;
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			
+			String[] cols = { "evetit_no" };
+			pstmt = con.prepareStatement(INSERT2_STMT_Basic, cols);
+
+			pstmt.setString(1, evetitVO.getEveclass_no()); 
+			pstmt.setString(2, evetitVO.getTicrefpolicy_no()); 
+			pstmt.setString(3, evetitVO.getEvetit_name());
+			pstmt.setDate(4, evetitVO.getEvetit_startdate());
+			pstmt.setDate(5, evetitVO.getEvetit_enddate());
+			pstmt.setBytes(6, evetitVO.getEvetit_poster());		  //B		
+			pstmt.setCharacterStream(7, new StringReader(evetitVO.getInfo()));							
+			pstmt.setCharacterStream(8, new StringReader(evetitVO.getNotices()));		
+			pstmt.setCharacterStream(9, new StringReader(evetitVO.getEticpurchaserules())); 				
+			pstmt.setCharacterStream(10, new StringReader(evetitVO.getEticrules()));			
+			pstmt.setCharacterStream(11, new StringReader(evetitVO.getRefundrules()));			
+		
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				evetit_no = rs.getString(1);
+			}
+			
+			System.out.println("----------Inserted/Basic----------");
+
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return evetit_no;
 	}
 	
 }

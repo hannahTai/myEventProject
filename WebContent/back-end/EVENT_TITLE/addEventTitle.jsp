@@ -1,5 +1,12 @@
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page import="com.EVENT_TITLE.model.*"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<% EventTitleVO eventTitleVO = (EventTitleVO) request.getAttribute("eventTitleVO");%>
+
+
+${eventTitleVO.promotionranking}
 
 <!DOCTYPE html>
 <html>
@@ -9,6 +16,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>新增活動主題</title>
+    
     <!-- Basic -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- datetimepicker -->    
@@ -29,25 +37,41 @@
             </ul>
             <!-- 外標籤面板：內容區 -->
             <div class="tab-content">
+            
+            
+            
                 <!-- form:::活動主題:::start -->
                 <div class="tab-pane active" id="eventTitleTab">
+                
+                	<%-- 錯誤表列 --%>
+					<%--<c:if test="${not empty eventTitleErrorMsgs}">
+						<font style="color:red">請修正以下錯誤:</font>
+						<ul>
+							<c:forEach var="message" items="${eventTitleErrorMsgs}">
+								<li style="color:red">${message}</li>
+							</c:forEach>
+						</ul>
+					</c:if> --%>
 
-                    <form method="get" action="/myEventProject/EventTitleServlet">
+                    <form method="post" enctype="multipart/form-data" action="<%= request.getContextPath()%>/EVENT_TITLE/EventTitleServlet">
                         <div class="form-group">
                             <label for="evetit_name">名稱</label>
-                            <input type="text" name="evetit_name" id="evetit_name" class="form-control">
+                            <input type="text" name="evetit_name" id="evetit_name" class="form-control"
+                            value="<%= (eventTitleVO == null) ? "" : eventTitleVO.getEvetit_name()%>">
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group">
                                     <label for="evetit_startdate">開始日期</label>
-                                    <input type="text" id="evetit_startdate" name="evetit_startdate" class="form-control">
+                                    <input type="text" id="evetit_startdate" name="evetit_startdate" class="form-control"
+                                    value="<fmt:formatDate value="${eventTitleVO.evetit_startdate}" pattern="yyyy-MM-dd"/>">
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group">
                                     <label for="evetit_enddate">結束日期</label>
-                                    <input type="text" id="evetit_enddate" name="evetit_enddate" class="form-control">
+                                    <input type="text" id="evetit_enddate" name="evetit_enddate" class="form-control" 
+                                    value="<fmt:formatDate value="${eventTitleVO.evetit_enddate}" pattern="yyyy-MM-dd"/>">
                                 </div>
                             </div>
                         </div>
@@ -56,11 +80,9 @@
                                 <div class="form-group">
                                     <label>分類</label>
                                     <select class="form-control" name="eveclass_no">
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
                                     </select>
                                 </div>
                             </div>
@@ -68,14 +90,15 @@
                                 <div class="form-group">
                                     <label>退款政策</label>
                                     <select class="form-control" name="ticrefpolicy_no">
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
+                                       	<option value="TRP1">TRP1</option>
+                                        <option value="TRP2">TRP2</option>
+                                        <option value="TRP3">TRP3</option>
+                                        <option value="TRP4">TRP4</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
+                        ----${eventTitleVO.promotionranking}----
                         <div class="form-group">
                             <label for="evetit_poster">主海報</label>
                             <input type="file" id="evetit_poster" name="evetit_poster" class="form-control" accept="image/*">
@@ -95,37 +118,45 @@
                                 <div class="tab-pane active" id="infoTab">
                                     <p>INFO</p>
                                     <textarea name="info" id="infoEditor">
-                                </textarea>
+                                    <%= (eventTitleVO == null) ? "" : eventTitleVO.getInfo()%>
+                                	</textarea>
                                 </div>
                                 <div class="tab-pane" id="noticeTab">
                                     <p>NOTICES</p>
                                     <textarea name="notices" id="noticesEditor">
-                                </textarea>
+                                    <%= (eventTitleVO == null) ? "" : eventTitleVO.getNotices()%>
+                                	</textarea>
                                 </div>
                                 <div class="tab-pane" id="eticpurchaserulesTab">
                                     <p>ETICPURCHASERULES</p>
                                     <textarea name="eticpurchaserules" id="eticpurchaserulesEditor">
-                                </textarea>
+                                    <%= (eventTitleVO == null) ? "" : eventTitleVO.getEticpurchaserules()%>
+                                	</textarea>
                                 </div>
                                 <div class="tab-pane" id="eticrulesTab">
                                     <p>ETICRULES</p>
                                     <textarea name="eticrules" id="eticrulesEditor">
-                                </textarea>
+                                    <%= (eventTitleVO == null) ? "" : eventTitleVO.getEticrules()%>
+                                	</textarea>
                                 </div>
                                 <div class="tab-pane" id="refundrulesTab">
                                     <p>REFUNDRULES</p>
                                     <textarea name="refundrules" id="refundrulesEditor">
-                                </textarea>
+                                    <%= (eventTitleVO == null) ? "" : eventTitleVO.getRefundrules()%>
+                                	</textarea>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <input type="hidden" name="action" value="saveEventTitle">
+                            <input type="hidden" name="action" value="insertEventTitle">
                             <button type="submit" class="btn btn-primary btn-lg text-right">儲存</button>
                         </div>
                     </form>
                 </div>
                 <!-- form:::活動主題:::end -->
+                
+                
+                
                 <!-- form:::活動場次original:::start -->
                 <div class="tab-pane" id="eventTab_01">
                     <p>活動場次1</p>
@@ -173,7 +204,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- ckEditor JS -->
     <script src="<%= request.getContextPath()%>/vendor/ckeditor_full/ckeditor.js"></script>
-    <script src="<%= request.getContextPath()%>/back-end/EVENT_TITLE/js/EMcustomCKEditor.js"></script>
+    <script src="<%= request.getContextPath()%>/back-end/EVENT_TITLE/js/eventTitleCKEditor.js"></script>
     <!-- datetimepicker -->   
     <script src="<%= request.getContextPath()%>/vendor/datetimepicker/jquery.js"></script>
 	<script src="<%= request.getContextPath()%>/vendor/datetimepicker/jquery.datetimepicker.full.js"></script>

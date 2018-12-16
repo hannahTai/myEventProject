@@ -46,6 +46,11 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 			"SELECT evetit_no, eveclass_no, ticrefpolicy_no, evetit_name, evetit_startdate, evetit_enddate, "
 			+ "evetit_poster, info, notices, eticpurchaserules, eticrules, refundrules, evetit_sessions, evetit_status, launchdate, offdate, promotionranking "
 			+ "FROM EVENT_TITLE ORDER BY evetit_no";
+		
+	private static final String INSERT2_STMT_Basic = 
+			"INSERT INTO EVENT_TITLE (evetit_no, eveclass_no, ticrefpolicy_no, evetit_name, evetit_startdate, evetit_enddate, "
+			+ "evetit_poster, info, notices, eticpurchaserules, eticrules, refundrules) "
+			+ "VALUES ('E'||LPAD(to_char(EVETIT_SEQ.NEXTVAL), 4, '0'), ?,  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	
 		
@@ -430,7 +435,71 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 	
 	
 	
-	
+	@Override
+	public String insert2_Basic(EventTitleVO evetitVO) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;
+		String evetit_no = null;
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			
+			String[] cols = { "evetit_no" };
+			pstmt = con.prepareStatement(INSERT2_STMT_Basic, cols);
+
+			pstmt.setString(1, evetitVO.getEveclass_no()); 
+			pstmt.setString(2, evetitVO.getTicrefpolicy_no()); 
+			pstmt.setString(3, evetitVO.getEvetit_name());
+			pstmt.setDate(4, evetitVO.getEvetit_startdate());
+			pstmt.setDate(5, evetitVO.getEvetit_enddate());
+			pstmt.setBytes(6, evetitVO.getEvetit_poster());		  //B		
+			pstmt.setCharacterStream(7, new StringReader(evetitVO.getInfo()));							
+			pstmt.setCharacterStream(8, new StringReader(evetitVO.getNotices()));		
+			pstmt.setCharacterStream(9, new StringReader(evetitVO.getEticpurchaserules())); 				
+			pstmt.setCharacterStream(10, new StringReader(evetitVO.getEticrules()));			
+			pstmt.setCharacterStream(11, new StringReader(evetitVO.getRefundrules()));			
+		
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				evetit_no = rs.getString(1);
+			}
+			
+			System.out.println("----------Inserted/Basic----------");
+
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return evetit_no;
+	}
 	
 
 	
@@ -446,179 +515,229 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 		
 		
 		// 新增		
-		FileInputStream fis1 = null;
-		ByteArrayOutputStream baos1 = null;	
-		try {
-			EventTitleVO EventTitleVO1 = new EventTitleVO();
-			
-			EventTitleVO1.setEveclass_no("A"); 
-			EventTitleVO1.setTicrefpolicy_no("TRP2");
-			EventTitleVO1.setEvetit_name("SingAround");
-			EventTitleVO1.setEvetit_startdate(java.sql.Date.valueOf("2019-01-31"));
-			EventTitleVO1.setEvetit_enddate(java.sql.Date.valueOf("2019-01-31"));
-			
-			fis1 = new FileInputStream("writeImgJDBC/tomcat.jpg");		  //B	
-			baos1 = new ByteArrayOutputStream();			
-			int i;
-			while ((i = fis1.read()) != -1)
-				baos1.write(i);			
-			EventTitleVO1.setEvetit_poster(baos1.toByteArray());
-						
-			EventTitleVO1.setInfo("This is INFO.");		
-			EventTitleVO1.setNotices("This is NOTICES.");
-			EventTitleVO1.setEticpurchaserules("This is ETICPURCHASERULES.");
-			EventTitleVO1.setEticrules("This is ETICRULES.");
-			EventTitleVO1.setRefundrules("This is REFUNDRULES.");
-			EventTitleVO1.setEvetit_sessions(new Integer(1));
-			EventTitleVO1.setEvetit_status("temporary");
-			EventTitleVO1.setLaunchdate(java.sql.Date.valueOf("2019-01-31"));
-			EventTitleVO1.setOffdate(java.sql.Date.valueOf("2019-01-31"));
-			EventTitleVO1.setPromotionranking(new Integer(1));
-			
-			dao.insert(EventTitleVO1);
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (baos1 != null) {
-				try {
-					baos1.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (fis1 != null) {
-				try {
-					fis1.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+//		FileInputStream fis1 = null;
+//		ByteArrayOutputStream baos1 = null;	
+//		try {
+//			EventTitleVO EventTitleVO1 = new EventTitleVO();
+//			
+//			EventTitleVO1.setEveclass_no("A"); 
+//			EventTitleVO1.setTicrefpolicy_no("TRP2");
+//			EventTitleVO1.setEvetit_name("SingAround");
+//			EventTitleVO1.setEvetit_startdate(java.sql.Date.valueOf("2019-01-31"));
+//			EventTitleVO1.setEvetit_enddate(java.sql.Date.valueOf("2019-01-31"));
+//			
+//			fis1 = new FileInputStream("writeImgJDBC/tomcat.jpg");		  //B	
+//			baos1 = new ByteArrayOutputStream();			
+//			int i;
+//			while ((i = fis1.read()) != -1)
+//				baos1.write(i);			
+//			EventTitleVO1.setEvetit_poster(baos1.toByteArray());
+//						
+//			EventTitleVO1.setInfo("This is INFO.");		
+//			EventTitleVO1.setNotices("This is NOTICES.");
+//			EventTitleVO1.setEticpurchaserules("This is ETICPURCHASERULES.");
+//			EventTitleVO1.setEticrules("This is ETICRULES.");
+//			EventTitleVO1.setRefundrules("This is REFUNDRULES.");
+//			EventTitleVO1.setEvetit_sessions(new Integer(1));
+//			EventTitleVO1.setEvetit_status("temporary");
+//			EventTitleVO1.setLaunchdate(java.sql.Date.valueOf("2019-01-31"));
+//			EventTitleVO1.setOffdate(java.sql.Date.valueOf("2019-01-31"));
+//			EventTitleVO1.setPromotionranking(new Integer(1));
+//			
+//			dao.insert(EventTitleVO1);
+//			
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (baos1 != null) {
+//				try {
+//					baos1.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			if (fis1 != null) {
+//				try {
+//					fis1.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
 		
 		
 		
 		// 修改
-		FileInputStream fis2 = null;
-		ByteArrayOutputStream baos2 = null;	
+//		FileInputStream fis2 = null;
+//		ByteArrayOutputStream baos2 = null;	
+//		try {
+//			EventTitleVO EventTitleVO2 = new EventTitleVO();
+//			EventTitleVO2.setEvetit_no("E0001");
+//			EventTitleVO2.setEveclass_no("B"); 
+//			EventTitleVO2.setTicrefpolicy_no("TRP3");
+//			EventTitleVO2.setEvetit_name("SingAround2");
+//			EventTitleVO2.setEvetit_startdate(java.sql.Date.valueOf("2018-12-31"));
+//			EventTitleVO2.setEvetit_enddate(java.sql.Date.valueOf("2018-12-31"));
+//			
+//			fis2 = new FileInputStream("writeImgJDBC/java.jpg");			
+//			baos2 = new ByteArrayOutputStream();			
+//			int i;
+//			while ((i = fis2.read()) != -1)
+//				baos2.write(i);		
+//			EventTitleVO2.setEvetit_poster(baos2.toByteArray());
+//						 
+//			EventTitleVO2.setInfo("This is INFO.2");		
+//			EventTitleVO2.setNotices("This is NOTICES.2");
+//			EventTitleVO2.setEticpurchaserules("This is ETICPURCHASERULES.2");
+//			EventTitleVO2.setEticrules("This is ETICRULES.2");
+//			EventTitleVO2.setRefundrules("This is REFUNDRULES.2");
+//			EventTitleVO2.setEvetit_sessions(new Integer(2));
+//			EventTitleVO2.setEvetit_status("temporary");
+//			EventTitleVO2.setLaunchdate(java.sql.Date.valueOf("2018-12-31"));
+//			EventTitleVO2.setOffdate(java.sql.Date.valueOf("2018-12-31"));
+//			EventTitleVO2.setPromotionranking(new Integer(2));
+//			
+//			dao.update(EventTitleVO2);
+//			
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (baos2 != null) {
+//				try {
+//					baos2.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			if (fis2 != null) {
+//				try {
+//					fis2.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+		
+		
+		
+		// 刪除
+//		dao.delete("E0005");
+//		System.out.println("------------------------------");
+		
+		
+		
+		// 查詢一個
+//		EventTitleVO EventTitleVO3 = dao.findByPrimaryKey("E0001");
+//		System.out.println(EventTitleVO3.getEvetit_no());
+//		System.out.println(EventTitleVO3.getEveclass_no());
+//		System.out.println(EventTitleVO3.getTicrefpolicy_no());
+//		System.out.println(EventTitleVO3.getEvetit_name());
+//		System.out.println(EventTitleVO3.getEvetit_startdate());
+//		System.out.println(EventTitleVO3.getEvetit_enddate());
+//																							//B
+//		try (PrintStream ps = new PrintStream(new FileOutputStream("readImgJDBC/eventTitleTest.jpg"), true)){
+//			ps.write(EventTitleVO3.getEvetit_poster());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		System.out.println(EventTitleVO3.getInfo());
+//		System.out.println(EventTitleVO3.getNotices());
+//		System.out.println(EventTitleVO3.getEticpurchaserules());
+//		System.out.println(EventTitleVO3.getEticrules());
+//		System.out.println(EventTitleVO3.getRefundrules());
+//		
+//		System.out.println(EventTitleVO3.getEvetit_sessions());
+//		System.out.println(EventTitleVO3.getEvetit_status());
+//		System.out.println(EventTitleVO3.getLaunchdate());
+//		System.out.println(EventTitleVO3.getOffdate());
+//		System.out.println(EventTitleVO3.getPromotionranking());		
+//		System.out.println("------------------------------");
+		
+		
+		
+		// 查詢全部
+//		List<EventTitleVO> list = dao.getAll();
+//		for (EventTitleVO aEventTitleVO : list) {
+//			System.out.println(aEventTitleVO.getEvetit_no());
+//			System.out.println(aEventTitleVO.getEveclass_no());
+//			System.out.println(aEventTitleVO.getTicrefpolicy_no());
+//			System.out.println(aEventTitleVO.getEvetit_name());
+//			System.out.println(aEventTitleVO.getEvetit_startdate());
+//			System.out.println(aEventTitleVO.getEvetit_enddate());
+//					
+//			try (PrintStream ps = new PrintStream(new FileOutputStream("readImgJDBC/" + aEventTitleVO.getEvetit_no() + ".jpg"), true)){
+//				ps.write(aEventTitleVO.getEvetit_poster());
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			
+//			System.out.println(aEventTitleVO.getInfo());
+//			System.out.println(aEventTitleVO.getNotices());
+//			System.out.println(aEventTitleVO.getEticpurchaserules());
+//			System.out.println(aEventTitleVO.getEticrules());
+//			System.out.println(aEventTitleVO.getRefundrules());
+//			
+//			System.out.println(aEventTitleVO.getEvetit_sessions());
+//			System.out.println(aEventTitleVO.getEvetit_status());
+//			System.out.println(aEventTitleVO.getLaunchdate());
+//			System.out.println(aEventTitleVO.getOffdate());
+//			System.out.println(aEventTitleVO.getPromotionranking());		
+//			System.out.println("------------------------------");		
+//		}
+		
+		
+		
+		// 新增2_Basic		
+		FileInputStream fis3 = null;
+		ByteArrayOutputStream baos3 = null;	
 		try {
-			EventTitleVO EventTitleVO2 = new EventTitleVO();
-			EventTitleVO2.setEvetit_no("E0001");
-			EventTitleVO2.setEveclass_no("B"); 
-			EventTitleVO2.setTicrefpolicy_no("TRP3");
-			EventTitleVO2.setEvetit_name("SingAround2");
-			EventTitleVO2.setEvetit_startdate(java.sql.Date.valueOf("2018-12-31"));
-			EventTitleVO2.setEvetit_enddate(java.sql.Date.valueOf("2018-12-31"));
+			EventTitleVO EventTitleVO4 = new EventTitleVO();
 			
-			fis2 = new FileInputStream("writeImgJDBC/java.jpg");			
-			baos2 = new ByteArrayOutputStream();			
+			EventTitleVO4.setEveclass_no("A"); 
+			EventTitleVO4.setTicrefpolicy_no("TRP2");
+			EventTitleVO4.setEvetit_name("SingAround");
+			EventTitleVO4.setEvetit_startdate(java.sql.Date.valueOf("2019-01-31"));
+			EventTitleVO4.setEvetit_enddate(java.sql.Date.valueOf("2019-01-31"));
+			
+			fis3 = new FileInputStream("writeImgJDBC/tomcat.jpg");		  //B	
+			baos3 = new ByteArrayOutputStream();			
 			int i;
-			while ((i = fis2.read()) != -1)
-				baos2.write(i);		
-			EventTitleVO2.setEvetit_poster(baos2.toByteArray());
-						 
-			EventTitleVO2.setInfo("This is INFO.2");		
-			EventTitleVO2.setNotices("This is NOTICES.2");
-			EventTitleVO2.setEticpurchaserules("This is ETICPURCHASERULES.2");
-			EventTitleVO2.setEticrules("This is ETICRULES.2");
-			EventTitleVO2.setRefundrules("This is REFUNDRULES.2");
-			EventTitleVO2.setEvetit_sessions(new Integer(2));
-			EventTitleVO2.setEvetit_status("temporary");
-			EventTitleVO2.setLaunchdate(java.sql.Date.valueOf("2018-12-31"));
-			EventTitleVO2.setOffdate(java.sql.Date.valueOf("2018-12-31"));
-			EventTitleVO2.setPromotionranking(new Integer(2));
-			
-			dao.update(EventTitleVO2);
+			while ((i = fis3.read()) != -1)
+				baos3.write(i);			
+			EventTitleVO4.setEvetit_poster(baos3.toByteArray());
+						
+			EventTitleVO4.setInfo("This is INFO.");		
+			EventTitleVO4.setNotices("This is NOTICES.");
+			EventTitleVO4.setEticpurchaserules("This is ETICPURCHASERULES.");
+			EventTitleVO4.setEticrules("This is ETICRULES.");
+			EventTitleVO4.setRefundrules("This is REFUNDRULES.");
+
+			dao.insert2_Basic(EventTitleVO4);
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (baos2 != null) {
+			if (baos3 != null) {
 				try {
-					baos2.close();
+					baos3.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-			if (fis2 != null) {
+			if (fis3 != null) {
 				try {
-					fis2.close();
+					fis3.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-		}
-		
-		
-		
-		// 刪除
-		dao.delete("E0005");
-		System.out.println("------------------------------");
-		
-		
-		
-		// 查詢一個
-		EventTitleVO EventTitleVO3 = dao.findByPrimaryKey("E0001");
-		System.out.println(EventTitleVO3.getEvetit_no());
-		System.out.println(EventTitleVO3.getEveclass_no());
-		System.out.println(EventTitleVO3.getTicrefpolicy_no());
-		System.out.println(EventTitleVO3.getEvetit_name());
-		System.out.println(EventTitleVO3.getEvetit_startdate());
-		System.out.println(EventTitleVO3.getEvetit_enddate());
-																							//B
-		try (PrintStream ps = new PrintStream(new FileOutputStream("readImgJDBC/eventTitleTest.jpg"), true)){
-			ps.write(EventTitleVO3.getEvetit_poster());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println(EventTitleVO3.getInfo());
-		System.out.println(EventTitleVO3.getNotices());
-		System.out.println(EventTitleVO3.getEticpurchaserules());
-		System.out.println(EventTitleVO3.getEticrules());
-		System.out.println(EventTitleVO3.getRefundrules());
-		
-		System.out.println(EventTitleVO3.getEvetit_sessions());
-		System.out.println(EventTitleVO3.getEvetit_status());
-		System.out.println(EventTitleVO3.getLaunchdate());
-		System.out.println(EventTitleVO3.getOffdate());
-		System.out.println(EventTitleVO3.getPromotionranking());		
-		System.out.println("------------------------------");
-		
-		
-		
-		// 查詢全部
-		List<EventTitleVO> list = dao.getAll();
-		for (EventTitleVO aEventTitleVO : list) {
-			System.out.println(aEventTitleVO.getEvetit_no());
-			System.out.println(aEventTitleVO.getEveclass_no());
-			System.out.println(aEventTitleVO.getTicrefpolicy_no());
-			System.out.println(aEventTitleVO.getEvetit_name());
-			System.out.println(aEventTitleVO.getEvetit_startdate());
-			System.out.println(aEventTitleVO.getEvetit_enddate());
-					
-			try (PrintStream ps = new PrintStream(new FileOutputStream("readImgJDBC/" + aEventTitleVO.getEvetit_no() + ".jpg"), true)){
-				ps.write(aEventTitleVO.getEvetit_poster());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			System.out.println(aEventTitleVO.getInfo());
-			System.out.println(aEventTitleVO.getNotices());
-			System.out.println(aEventTitleVO.getEticpurchaserules());
-			System.out.println(aEventTitleVO.getEticrules());
-			System.out.println(aEventTitleVO.getRefundrules());
-			
-			System.out.println(aEventTitleVO.getEvetit_sessions());
-			System.out.println(aEventTitleVO.getEvetit_status());
-			System.out.println(aEventTitleVO.getLaunchdate());
-			System.out.println(aEventTitleVO.getOffdate());
-			System.out.println(aEventTitleVO.getPromotionranking());		
-			System.out.println("------------------------------");		
 		}
 		
 		

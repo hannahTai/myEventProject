@@ -1,11 +1,5 @@
 package com.EVENT_TITLE.model;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.util.List;
 
 public class EventTitleService {
@@ -41,6 +35,30 @@ public class EventTitleService {
 		eventTitleVO.setPromotionranking(promotionranking);
 
 		eventTitleDao.insert(eventTitleVO);
+
+		return eventTitleVO;
+	}
+	
+	public EventTitleVO addEventTitle(String eveclass_no, String ticrefpolicy_no, String evetit_name,
+			java.sql.Date evetit_startdate, java.sql.Date evetit_enddate, byte[] evetit_poster, String info,
+			String notices, String eticpurchaserules, String eticrules, String refundrules) {
+
+		EventTitleVO eventTitleVO = new EventTitleVO();
+
+		eventTitleVO.setEveclass_no(eveclass_no);
+		eventTitleVO.setTicrefpolicy_no(ticrefpolicy_no);
+		eventTitleVO.setEvetit_name(evetit_name);
+		eventTitleVO.setEvetit_startdate(evetit_startdate);
+		eventTitleVO.setEvetit_enddate(evetit_enddate);
+		eventTitleVO.setEvetit_poster(evetit_poster);
+		eventTitleVO.setInfo(info);
+		eventTitleVO.setNotices(notices);
+		eventTitleVO.setEticpurchaserules(eticpurchaserules);
+		eventTitleVO.setEticrules(eticrules);
+		eventTitleVO.setRefundrules(refundrules);
+
+		String evetit_no = eventTitleDao.insert2_Basic(eventTitleVO);		
+		eventTitleVO = getOneEventTitle(evetit_no);
 
 		return eventTitleVO;
 	}
