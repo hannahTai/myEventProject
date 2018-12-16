@@ -455,9 +455,8 @@ public class EventTitleDAO implements EventTitleDAO_interface{
 			rs = pstmt.getGeneratedKeys();
 			if(rs.next()) {
 				evetit_no = rs.getString(1);
+				//System.out.println(evetit_no);
 			}
-			
-			System.out.println("----------Inserted/Basic----------");
 
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());

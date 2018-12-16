@@ -97,7 +97,7 @@ public class EventTitleServlet extends HttpServlet {
 						evetit_startdate, evetit_enddate, evetit_poster, info,
 						notices, eticpurchaserules, eticrules, refundrules);
 				
-				
+				request.setAttribute("eventTitleVO", eventTitleVO);
 				
 
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/

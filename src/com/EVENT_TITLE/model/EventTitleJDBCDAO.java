@@ -469,7 +469,7 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 				evetit_no = rs.getString(1);
 			}
 			
-			System.out.println("----------Inserted/Basic----------");
+			System.out.println("----------Inserted2_Basic----------");
 
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());

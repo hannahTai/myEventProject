@@ -5,8 +5,10 @@
 
 <% EventTitleVO eventTitleVO = (EventTitleVO) request.getAttribute("eventTitleVO");%>
 
-
-${eventTitleVO.promotionranking}
+---eventTitleVO.promotionranking: ${eventTitleVO.promotionranking}---<br>
+---eventTitleVO.evetit_status: ${eventTitleVO.evetit_status}---<br>
+---eventTitleVO.evetit_sessions: ${eventTitleVO.evetit_sessions}---<br>
+---eventTitleVO.promotionranking: ${eventTitleVO.promotionranking}---<br>
 
 <!DOCTYPE html>
 <html>
@@ -98,7 +100,6 @@ ${eventTitleVO.promotionranking}
                                 </div>
                             </div>
                         </div>
-                        ----${eventTitleVO.promotionranking}----
                         <div class="form-group">
                             <label for="evetit_poster">主海報</label>
                             <input type="file" id="evetit_poster" name="evetit_poster" class="form-control" accept="image/*">
