@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <% EventTitleVO eventTitleVO = (EventTitleVO) request.getAttribute("eventTitleVO");%>
-
+ 
 ---eventTitleVO.promotionranking: ${eventTitleVO.promotionranking}---<br>
 ---eventTitleVO.evetit_status: ${eventTitleVO.evetit_status}---<br>
 ---eventTitleVO.evetit_sessions: ${eventTitleVO.evetit_sessions}---<br>
