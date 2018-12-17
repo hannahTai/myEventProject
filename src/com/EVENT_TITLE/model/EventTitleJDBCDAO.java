@@ -51,6 +51,11 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 			"INSERT INTO EVENT_TITLE (evetit_no, eveclass_no, ticrefpolicy_no, evetit_name, evetit_startdate, evetit_enddate, "
 			+ "evetit_poster, info, notices, eticpurchaserules, eticrules, refundrules) "
 			+ "VALUES ('E'||LPAD(to_char(EVETIT_SEQ.NEXTVAL), 4, '0'), ?,  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	
+	private static final String UPDATE2_STMT_Basic = 
+			"UPDATE EVENT_TITLE SET eveclass_no=?, ticrefpolicy_no=?, evetit_name=?, evetit_startdate=?, evetit_enddate=?, "
+			+ "evetit_poster=?, info=?, notices=?, eticpurchaserules=?, eticrules=?, refundrules=? "
+			+ "WHERE evetit_no=?";
 
 	
 		
@@ -232,42 +237,62 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 				eventTitleVO.setEvetit_enddate(rs.getDate("evetit_enddate"));
 				
 				eventTitleVO.setEvetit_poster(rs.getBytes("evetit_poster"));	  //B
-							
-				br = new BufferedReader(rs.getCharacterStream("info"));
-				StringBuilder infoSb = new StringBuilder();
-				String infoStr = null;			
-				while((infoStr = br.readLine()) != null)
-					infoSb.append(infoStr).append("\n");				
-				eventTitleVO.setInfo(infoSb.toString());
 				
-				br = new BufferedReader(rs.getCharacterStream("notices"));
-				StringBuilder noticesSb = new StringBuilder();
-				String noticesStr = null;			
-				while((noticesStr = br.readLine()) != null)
-					noticesSb.append(noticesStr).append("\n");				
-				eventTitleVO.setNotices(noticesSb.toString());
+				if(rs.getCharacterStream("info") == null) {
+					eventTitleVO.setInfo("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("info"));
+					StringBuilder infoSb = new StringBuilder();
+					String infoStr = null;			
+					while((infoStr = br.readLine()) != null)
+						infoSb.append(infoStr).append("\n");				
+					eventTitleVO.setInfo(infoSb.toString());
+				}
 				
+				if(rs.getCharacterStream("notices") == null) {
+					eventTitleVO.setNotices("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("notices"));
+					StringBuilder noticesSb = new StringBuilder();
+					String noticesStr = null;			
+					while((noticesStr = br.readLine()) != null)
+						noticesSb.append(noticesStr).append("\n");				
+					eventTitleVO.setNotices(noticesSb.toString());
+				}
+				
+				if(rs.getCharacterStream("eticpurchaserules") == null) {
+					eventTitleVO.setEticpurchaserules("");
+				} else {
 				br = new BufferedReader(rs.getCharacterStream("eticpurchaserules"));
 				StringBuilder eticpurchaserulesSb = new StringBuilder();
 				String eticpurchaserulesStr = null;			
 				while((eticpurchaserulesStr = br.readLine()) != null)
 					eticpurchaserulesSb.append(eticpurchaserulesStr).append("\n");				
 				eventTitleVO.setEticpurchaserules(eticpurchaserulesSb.toString());
+				}
 				
-				br = new BufferedReader(rs.getCharacterStream("eticrules"));
-				StringBuilder eticrulesSb = new StringBuilder();
-				String eticrulesStr = null;			
-				while((eticrulesStr = br.readLine()) != null)
-					eticrulesSb.append(eticrulesStr).append("\n");				
-				eventTitleVO.setEticrules(eticrulesSb.toString());
+				if(rs.getCharacterStream("eticrules") == null) {
+					eventTitleVO.setEticrules("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("eticrules"));
+					StringBuilder eticrulesSb = new StringBuilder();
+					String eticrulesStr = null;			
+					while((eticrulesStr = br.readLine()) != null)
+						eticrulesSb.append(eticrulesStr).append("\n");				
+					eventTitleVO.setEticrules(eticrulesSb.toString());
+				}
 
-				br = new BufferedReader(rs.getCharacterStream("refundrules"));
-				StringBuilder refundrulesSb = new StringBuilder();
-				String refundrulesStr = null;			
-				while((refundrulesStr = br.readLine()) != null)
-					refundrulesSb.append(refundrulesStr).append("\n");				
-				eventTitleVO.setRefundrules(refundrulesSb.toString());
-						
+				if(rs.getCharacterStream("refundrules") == null) {
+					eventTitleVO.setRefundrules("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("refundrules"));
+					StringBuilder refundrulesSb = new StringBuilder();
+					String refundrulesStr = null;			
+					while((refundrulesStr = br.readLine()) != null)
+						refundrulesSb.append(refundrulesStr).append("\n");				
+					eventTitleVO.setRefundrules(refundrulesSb.toString());
+				}		
+				
 				eventTitleVO.setEvetit_sessions(rs.getInt("evetit_sessions"));
 				eventTitleVO.setEvetit_status(rs.getString("evetit_status"));				
 				eventTitleVO.setLaunchdate(rs.getDate("launchdate"));
@@ -501,6 +526,61 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 		return evetit_no;
 	}
 	
+	
+	
+	@Override
+	public String update2_Basic(EventTitleVO evetitVO) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(UPDATE2_STMT_Basic);
+
+			pstmt.setString(1, evetitVO.getEveclass_no()); 
+			pstmt.setString(2, evetitVO.getTicrefpolicy_no()); 
+			pstmt.setString(3, evetitVO.getEvetit_name());
+			pstmt.setDate(4, evetitVO.getEvetit_startdate());
+			pstmt.setDate(5, evetitVO.getEvetit_enddate());
+			pstmt.setBytes(6, evetitVO.getEvetit_poster());				
+			pstmt.setCharacterStream(7, new StringReader(evetitVO.getInfo()));							
+			pstmt.setCharacterStream(8, new StringReader(evetitVO.getNotices()));		
+			pstmt.setCharacterStream(9, new StringReader(evetitVO.getEticpurchaserules())); 				
+			pstmt.setCharacterStream(10, new StringReader(evetitVO.getEticrules()));			
+			pstmt.setCharacterStream(11, new StringReader(evetitVO.getRefundrules()));			
+			pstmt.setString(12, evetitVO.getEvetit_no());
+		
+			pstmt.executeUpdate();
+			
+			System.out.println("----------Updated2_Basic_" + evetitVO.getEvetit_no() + "----------");
+
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return evetitVO.getEvetit_no();
+	}
+	
+	
+	
 
 	
 	
@@ -631,7 +711,7 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 		
 		
 		// 查詢一個
-//		EventTitleVO EventTitleVO3 = dao.findByPrimaryKey("E0001");
+//		EventTitleVO EventTitleVO3 = dao.findByPrimaryKey("E0051");
 //		System.out.println(EventTitleVO3.getEvetit_no());
 //		System.out.println(EventTitleVO3.getEveclass_no());
 //		System.out.println(EventTitleVO3.getTicrefpolicy_no());
@@ -640,7 +720,11 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 //		System.out.println(EventTitleVO3.getEvetit_enddate());
 //																							//B
 //		try (PrintStream ps = new PrintStream(new FileOutputStream("readImgJDBC/eventTitleTest.jpg"), true)){
-//			ps.write(EventTitleVO3.getEvetit_poster());
+//			if(EventTitleVO3.getEvetit_poster() == null) {
+//				
+//			} else {
+//				ps.write(EventTitleVO3.getEvetit_poster());
+//			}
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
@@ -693,47 +777,97 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 		
 		
 		// 新增2_Basic		
-		FileInputStream fis3 = null;
-		ByteArrayOutputStream baos3 = null;	
+//		FileInputStream fis3 = null;
+//		ByteArrayOutputStream baos3 = null;	
+//		try {
+//			EventTitleVO EventTitleVO4 = new EventTitleVO();
+//			
+//			EventTitleVO4.setEveclass_no("A"); 
+//			EventTitleVO4.setTicrefpolicy_no("TRP2");
+//			EventTitleVO4.setEvetit_name("SingAround");
+//			EventTitleVO4.setEvetit_startdate(java.sql.Date.valueOf("2019-01-31"));
+//			EventTitleVO4.setEvetit_enddate(java.sql.Date.valueOf("2019-01-31"));
+//			
+//			fis3 = new FileInputStream("writeImgJDBC/tomcat.jpg");		  //B	
+//			baos3 = new ByteArrayOutputStream();			
+//			int i;
+//			while ((i = fis3.read()) != -1)
+//				baos3.write(i);			
+//			EventTitleVO4.setEvetit_poster(baos3.toByteArray());
+//						
+//			EventTitleVO4.setInfo("This is INFO.");		
+//			EventTitleVO4.setNotices("This is NOTICES.");
+//			EventTitleVO4.setEticpurchaserules("This is ETICPURCHASERULES.");
+//			EventTitleVO4.setEticrules("This is ETICRULES.");
+//			EventTitleVO4.setRefundrules("This is REFUNDRULES.");
+//
+//			dao.insert2_Basic(EventTitleVO4);
+//			
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (baos3 != null) {
+//				try {
+//					baos3.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			if (fis3 != null) {
+//				try {
+//					fis3.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+		
+		
+		
+		// 修改2_Basic
+		FileInputStream fis4 = null;
+		ByteArrayOutputStream baos4 = null;	
 		try {
-			EventTitleVO EventTitleVO4 = new EventTitleVO();
+			EventTitleVO EventTitleVO5 = new EventTitleVO();
+			EventTitleVO5.setEvetit_no("E0001");
+			EventTitleVO5.setEveclass_no("B"); 
+			EventTitleVO5.setTicrefpolicy_no("TRP3");
+			EventTitleVO5.setEvetit_name("SingAround3");
+			EventTitleVO5.setEvetit_startdate(java.sql.Date.valueOf("2019-12-31"));
+			EventTitleVO5.setEvetit_enddate(java.sql.Date.valueOf("2019-12-31"));
 			
-			EventTitleVO4.setEveclass_no("A"); 
-			EventTitleVO4.setTicrefpolicy_no("TRP2");
-			EventTitleVO4.setEvetit_name("SingAround");
-			EventTitleVO4.setEvetit_startdate(java.sql.Date.valueOf("2019-01-31"));
-			EventTitleVO4.setEvetit_enddate(java.sql.Date.valueOf("2019-01-31"));
-			
-			fis3 = new FileInputStream("writeImgJDBC/tomcat.jpg");		  //B	
-			baos3 = new ByteArrayOutputStream();			
+			fis4 = new FileInputStream("writeImgJDBC/java.jpg");			
+			baos4 = new ByteArrayOutputStream();			
 			int i;
-			while ((i = fis3.read()) != -1)
-				baos3.write(i);			
-			EventTitleVO4.setEvetit_poster(baos3.toByteArray());
-						
-			EventTitleVO4.setInfo("This is INFO.");		
-			EventTitleVO4.setNotices("This is NOTICES.");
-			EventTitleVO4.setEticpurchaserules("This is ETICPURCHASERULES.");
-			EventTitleVO4.setEticrules("This is ETICRULES.");
-			EventTitleVO4.setRefundrules("This is REFUNDRULES.");
-
-			dao.insert2_Basic(EventTitleVO4);
+			while ((i = fis4.read()) != -1)
+				baos4.write(i);		
+			EventTitleVO5.setEvetit_poster(baos4.toByteArray());
+						 
+			EventTitleVO5.setInfo("This is INFO.3");		
+			EventTitleVO5.setNotices("This is NOTICES.3");
+			EventTitleVO5.setEticpurchaserules("This is ETICPURCHASERULES.3");
+			EventTitleVO5.setEticrules("This is ETICRULES.3");
+			EventTitleVO5.setRefundrules("This is REFUNDRULES.3");
+			
+			dao.update2_Basic(EventTitleVO5);
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (baos3 != null) {
+			if (baos4 != null) {
 				try {
-					baos3.close();
+					baos4.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-			if (fis3 != null) {
+			if (fis4 != null) {
 				try {
-					fis3.close();
+					fis4.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

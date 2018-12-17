@@ -51,6 +51,11 @@ public class EventTitleDAO implements EventTitleDAO_interface{
 			"INSERT INTO EVENT_TITLE (evetit_no, eveclass_no, ticrefpolicy_no, evetit_name, evetit_startdate, evetit_enddate, "
 			+ "evetit_poster, info, notices, eticpurchaserules, eticrules, refundrules) "
 			+ "VALUES ('E'||LPAD(to_char(EVETIT_SEQ.NEXTVAL), 4, '0'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		
+	private static final String UPDATE2_STMT_Basic = 
+			"UPDATE EVENT_TITLE SET eveclass_no=?, ticrefpolicy_no=?, evetit_name=?, evetit_startdate=?, evetit_enddate=?, "
+			+ "evetit_poster=?, info=?, notices=?, eticpurchaserules=?, eticrules=?, refundrules=? "
+			+ "WHERE evetit_no=?";
 
 	
 		
@@ -226,42 +231,62 @@ public class EventTitleDAO implements EventTitleDAO_interface{
 				eventTitleVO.setEvetit_enddate(rs.getDate("evetit_enddate"));
 				
 				eventTitleVO.setEvetit_poster(rs.getBytes("evetit_poster"));	  //B
-							
-				br = new BufferedReader(rs.getCharacterStream("info"));
-				StringBuilder infoSb = new StringBuilder();
-				String infoStr = null;			
-				while((infoStr = br.readLine()) != null)
-					infoSb.append(infoStr).append("\n");				
-				eventTitleVO.setInfo(infoSb.toString());
 				
-				br = new BufferedReader(rs.getCharacterStream("notices"));
-				StringBuilder noticesSb = new StringBuilder();
-				String noticesStr = null;			
-				while((noticesStr = br.readLine()) != null)
-					noticesSb.append(noticesStr).append("\n");				
-				eventTitleVO.setNotices(noticesSb.toString());
+				if(rs.getCharacterStream("info") == null) {
+					eventTitleVO.setInfo("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("info"));
+					StringBuilder infoSb = new StringBuilder();
+					String infoStr = null;			
+					while((infoStr = br.readLine()) != null)
+						infoSb.append(infoStr).append("\n");				
+					eventTitleVO.setInfo(infoSb.toString());
+				}
 				
+				if(rs.getCharacterStream("notices") == null) {
+					eventTitleVO.setNotices("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("notices"));
+					StringBuilder noticesSb = new StringBuilder();
+					String noticesStr = null;			
+					while((noticesStr = br.readLine()) != null)
+						noticesSb.append(noticesStr).append("\n");				
+					eventTitleVO.setNotices(noticesSb.toString());
+				}
+				
+				if(rs.getCharacterStream("eticpurchaserules") == null) {
+					eventTitleVO.setEticpurchaserules("");
+				} else {
 				br = new BufferedReader(rs.getCharacterStream("eticpurchaserules"));
 				StringBuilder eticpurchaserulesSb = new StringBuilder();
 				String eticpurchaserulesStr = null;			
 				while((eticpurchaserulesStr = br.readLine()) != null)
 					eticpurchaserulesSb.append(eticpurchaserulesStr).append("\n");				
 				eventTitleVO.setEticpurchaserules(eticpurchaserulesSb.toString());
+				}
 				
-				br = new BufferedReader(rs.getCharacterStream("eticrules"));
-				StringBuilder eticrulesSb = new StringBuilder();
-				String eticrulesStr = null;			
-				while((eticrulesStr = br.readLine()) != null)
-					eticrulesSb.append(eticrulesStr).append("\n");				
-				eventTitleVO.setEticrules(eticrulesSb.toString());
+				if(rs.getCharacterStream("eticrules") == null) {
+					eventTitleVO.setEticrules("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("eticrules"));
+					StringBuilder eticrulesSb = new StringBuilder();
+					String eticrulesStr = null;			
+					while((eticrulesStr = br.readLine()) != null)
+						eticrulesSb.append(eticrulesStr).append("\n");				
+					eventTitleVO.setEticrules(eticrulesSb.toString());
+				}
 
-				br = new BufferedReader(rs.getCharacterStream("refundrules"));
-				StringBuilder refundrulesSb = new StringBuilder();
-				String refundrulesStr = null;			
-				while((refundrulesStr = br.readLine()) != null)
-					refundrulesSb.append(refundrulesStr).append("\n");				
-				eventTitleVO.setRefundrules(refundrulesSb.toString());
-						
+				if(rs.getCharacterStream("refundrules") == null) {
+					eventTitleVO.setRefundrules("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("refundrules"));
+					StringBuilder refundrulesSb = new StringBuilder();
+					String refundrulesStr = null;			
+					while((refundrulesStr = br.readLine()) != null)
+						refundrulesSb.append(refundrulesStr).append("\n");				
+					eventTitleVO.setRefundrules(refundrulesSb.toString());
+				}		
+				
 				eventTitleVO.setEvetit_sessions(rs.getInt("evetit_sessions"));
 				eventTitleVO.setEvetit_status(rs.getString("evetit_status"));				
 				eventTitleVO.setLaunchdate(rs.getDate("launchdate"));
@@ -269,6 +294,8 @@ public class EventTitleDAO implements EventTitleDAO_interface{
 				eventTitleVO.setPromotionranking(rs.getInt("promotionranking"));
 				
 			}
+			
+			System.out.println("----------findByPrimaryKey finished----------");
 
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
@@ -486,6 +513,56 @@ public class EventTitleDAO implements EventTitleDAO_interface{
 			}
 		}
 		return evetit_no;
+	}
+
+	@Override
+	public String update2_Basic(EventTitleVO evetitVO) {
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(UPDATE2_STMT_Basic);
+
+			pstmt.setString(1, evetitVO.getEveclass_no()); 
+			pstmt.setString(2, evetitVO.getTicrefpolicy_no()); 
+			pstmt.setString(3, evetitVO.getEvetit_name());
+			pstmt.setDate(4, evetitVO.getEvetit_startdate());
+			pstmt.setDate(5, evetitVO.getEvetit_enddate());
+			pstmt.setBytes(6, evetitVO.getEvetit_poster());				
+			pstmt.setCharacterStream(7, new StringReader(evetitVO.getInfo()));							
+			pstmt.setCharacterStream(8, new StringReader(evetitVO.getNotices()));		
+			pstmt.setCharacterStream(9, new StringReader(evetitVO.getEticpurchaserules())); 				
+			pstmt.setCharacterStream(10, new StringReader(evetitVO.getEticrules()));			
+			pstmt.setCharacterStream(11, new StringReader(evetitVO.getRefundrules()));			
+			pstmt.setString(12, evetitVO.getEvetit_no());
+		
+			pstmt.executeUpdate();
+			
+			System.out.println("----------Updated2_Basic----------");
+
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return evetitVO.getEvetit_no();
 	}
 	
 }
