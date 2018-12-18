@@ -3,10 +3,8 @@ package com.FAVORITE_EVENT.model;
 import java.io.Serializable;
 
 public class FavoriteEventVO implements Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3422393396874605780L;
+	
 	private String member_no;
 	private String evetit_no;
 	

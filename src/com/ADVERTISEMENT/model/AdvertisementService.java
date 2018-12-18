@@ -34,7 +34,7 @@ public class AdvertisementService {
 		advertisementDAO.delete(ad_no);
 	}	
 	
-	public AdvertisementVO getOneeAdvertisement(String ad_no) {			
+	public AdvertisementVO getOneAdvertisement(String ad_no) {			
 		return advertisementDAO.findByPrimaryKey(ad_no);
 	}
 	

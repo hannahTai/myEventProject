@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.EVENT_CLASSIFICATION.model.EventClassificationJDBCDAO;
+
 
 
 public class TicketRefundPolicyJDBCDAO implements TicketRefundPolicyDAO_interface {
@@ -47,7 +49,7 @@ public class TicketRefundPolicyJDBCDAO implements TicketRefundPolicyDAO_interfac
 			pstmt.setString(3, ticketRefundPolicyVO.getTicRefPolicy_content());
 			
 			pstmt.executeUpdate();
-			System.out.println("Inserted");
+			System.out.println("----------Inserted----------");
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
 		} catch (SQLException se) {
@@ -85,7 +87,8 @@ public class TicketRefundPolicyJDBCDAO implements TicketRefundPolicyDAO_interfac
 			pstmt.setString(3, ticketRefundPolicyVO.getTicRefPolicy_no());
 			
 			pstmt.executeUpdate();
-			System.out.println("Updated");
+			System.out.println("----------Updated----------");
+
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
 		} catch (SQLException se) {
@@ -122,7 +125,7 @@ public class TicketRefundPolicyJDBCDAO implements TicketRefundPolicyDAO_interfac
 
 			pstmt.executeUpdate();
 			
-			System.out.println("Deleted");
+			System.out.println("----------Deleted----------");
 
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
@@ -171,7 +174,7 @@ public class TicketRefundPolicyJDBCDAO implements TicketRefundPolicyDAO_interfac
 				ticketRefundPolicyVO.setTicRefPolicy_content(rs.getString("TICREFPOLICY_CONTENT"));
 			}
 			
-			System.out.println("Inserted");
+			System.out.println("----------findByPrimaryKey finished----------");
 
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
@@ -219,7 +222,7 @@ public class TicketRefundPolicyJDBCDAO implements TicketRefundPolicyDAO_interfac
 				list.add(ticketRefundPolicyVO);
 			}
 			
-			System.out.println("Inserted");
+			System.out.println("----------getAll finished----------");
 
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
@@ -243,5 +246,48 @@ public class TicketRefundPolicyJDBCDAO implements TicketRefundPolicyDAO_interfac
 		}
 		return list;
 	}
+	
+	
+	public static void main(String[] args) {
+		
+		TicketRefundPolicyJDBCDAO dao = new TicketRefundPolicyJDBCDAO();
 
+		
+//		TicketRefundPolicyDAO_interface
+		
+		
+		// 新增
+//		TicketRefundPolicyVO TicketRefundPolicyVO1 = new TicketRefundPolicyVO();
+//		TicketRefundPolicyVO1.setTicRefPolicy_no("TRP5");
+//		TicketRefundPolicyVO1.setTicRefPolicy_name("方案五");
+//		TicketRefundPolicyVO1.setTicRefPolicy_content("拉拉拉拉拉");
+//		dao.insert(TicketRefundPolicyVO1);
+		
+		// 修改
+//		TicketRefundPolicyVO TicketRefundPolicyVO2 = new TicketRefundPolicyVO();
+//		TicketRefundPolicyVO2.setTicRefPolicy_no("TRP2");
+//		TicketRefundPolicyVO2.setTicRefPolicy_name("方案五");
+//		TicketRefundPolicyVO2.setTicRefPolicy_content("拉拉拉拉拉");
+//		dao.update(TicketRefundPolicyVO2);
+		
+		// 刪除
+//		dao.delete("TRP5");
+//		System.out.println("------------------------------");
+		
+		// 查詢一個
+//		TicketRefundPolicyVO TicketRefundPolicyVO3 = dao.findByPrimaryKey("TRP1");
+//		System.out.println(TicketRefundPolicyVO3.getTicRefPolicy_no());
+//		System.out.println(TicketRefundPolicyVO3.getTicRefPolicy_name());
+//		System.out.println(TicketRefundPolicyVO3.getTicRefPolicy_content());
+//		System.out.println("------------------------------");
+		
+		// 查詢全部
+//		List<TicketRefundPolicyVO> list = dao.getAll();
+//		for (TicketRefundPolicyVO aTicketRefundPolicyVO : list) {
+//			System.out.println(aTicketRefundPolicyVO.getTicRefPolicy_no());
+//			System.out.println(aTicketRefundPolicyVO.getTicRefPolicy_name());
+//			System.out.println(aTicketRefundPolicyVO.getTicRefPolicy_content());
+//			System.out.println("------------------------------");
+//		}
+	}
 }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
      
 
-public class FavoriteEventJDBCDAO implements FavoriteEventDAO_interface{
+public class FavoriteEventDAO implements FavoriteEventDAO_interface{
 
 	private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
@@ -197,28 +197,5 @@ public class FavoriteEventJDBCDAO implements FavoriteEventDAO_interface{
 			}
 		}
 	}
-	
-	public static void main(String[] args) {
-		
-		FavoriteEventJDBCDAO dao = new FavoriteEventJDBCDAO();
-		
-		// 新增
-		FavoriteEventVO FavoriteEventVO1 = new FavoriteEventVO();
-		FavoriteEventVO1.setMember_no("M000002"); 
-		FavoriteEventVO1.setEvetit_no("E0001");
-		
-		// 刪除
-		dao.delete("M000001", "E0002");
-	
-		// 查詢某會員全部
-		List<FavoriteEventVO> list = dao.findByMember("M000001");
-		for (FavoriteEventVO aFavoriteEventVO : list) {
-			System.out.println(aFavoriteEventVO.getMember_no());
-			System.out.println(aFavoriteEventVO.getEvetit_no());
-			System.out.println("------------------------------");		
-		}
-		
-		// 新增:由會員編號與活動主題編號
-		dao.insertbyNo("M000002", "E0003");
-	}
+
 }

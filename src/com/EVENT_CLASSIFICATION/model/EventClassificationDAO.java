@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventClassificationJDBCDAO implements EventClassificationDAO_interface{
+public class EventClassificationDAO implements EventClassificationDAO_interface{
 
 	private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
@@ -242,42 +242,6 @@ public class EventClassificationJDBCDAO implements EventClassificationDAO_interf
 			}
 		}
 		return list;
-	}
-	
-	
-	public static void main(String[] args) {
-		
-		EventClassificationJDBCDAO dao = new EventClassificationJDBCDAO();
-		
-		// 新增
-//		EventClassificationVO EventClassificationVO1 = new EventClassificationVO();
-//		EventClassificationVO1.setEveclass_no("M");
-//		EventClassificationVO1.setEveclass_name("比賽");
-//		dao.insert(EventClassificationVO1);
-		
-		// 修改
-//		EventClassificationVO EventClassificationVO2 = new EventClassificationVO();
-//		EventClassificationVO2.setEveclass_no("B");
-//		EventClassificationVO2.setEveclass_name("比賽");
-//		dao.update(EventClassificationVO2);
-		
-		// 刪除
-//		dao.delete("M");
-//		System.out.println("------------------------------");
-		
-		// 查詢一個
-//		EventClassificationVO EventClassificationVO3 = dao.findByPrimaryKey("C");
-//		System.out.println(EventClassificationVO3.getEveclass_no());
-//		System.out.println(EventClassificationVO3.getEveclass_name());
-//		System.out.println("------------------------------");		
-		
-		// 查詢全部
-//		List<EventClassificationVO> list = dao.getAll();
-//		for (EventClassificationVO aEventClassificationVO : list) {
-//			System.out.println(aEventClassificationVO.getEveclass_no());
-//			System.out.println(aEventClassificationVO.getEveclass_name());
-//			System.out.println("------------------------------");	
-//		}
 	}
 
 }
