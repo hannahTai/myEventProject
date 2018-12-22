@@ -1,15 +1,13 @@
 package com.VENUE.model;
 
 public class VenueVO implements java.io.Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -818002754699471683L;
+	
 	private String venue_no;
 	private String venue_name;
 	private String address;
-	private Float latitude;
-	private Float longitude;
+	private Double latitude;
+	private Double longitude;
 	private String venue_info;
 	private byte[] venue_locationPic;
 	
@@ -18,7 +16,7 @@ public class VenueVO implements java.io.Serializable{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public VenueVO(String venue_no, String venue_name, String address, Float latitude, Float longitude,
+	public VenueVO(String venue_no, String venue_name, String address, Double latitude, Double longitude,
 			String venue_info, byte[] venue_locationPic) {
 		super();
 		this.venue_no = venue_no;
@@ -48,16 +46,16 @@ public class VenueVO implements java.io.Serializable{
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public Float getLatitude() {
+	public Double getLatitude() {
 		return latitude;
 	}
-	public void setLatitude(Float latitude) {
+	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
-	public Float getLongitude() {
+	public Double getLongitude() {
 		return longitude;
 	}
-	public void setLongitude(Float longitude) {
+	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
 	public String getVenue_info() {

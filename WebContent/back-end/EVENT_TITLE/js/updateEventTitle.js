@@ -47,8 +47,8 @@ function imagesPreview(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function(e) {
-            $("#evetit_poster_preview").attr("src", e.target.result);           
-        }        
+            $("#evetit_poster_preview").attr("src", e.target.result);
+        }
         reader.readAsDataURL(input.files[0]);
     }
 }

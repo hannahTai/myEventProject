@@ -29,7 +29,7 @@
     	
 	    	<%-- 錯誤表列 --%>
 			<c:if test="${not empty eventTitleErrorMsgs}">
-				<font style="color: red">請修正以下錯誤 : </font>
+				<font style="color: red">請修正以下錯誤:</font>
 				<ul>
 					<c:forEach var="message" items="${eventTitleErrorMsgs}">
 						<li style="color: red">${message}</li>
@@ -37,7 +37,12 @@
 				</ul>
 			</c:if>
     	
-	        <form method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/EVENT_TITLE/EventTitleServlet.do">        
+	        <form method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/EVENT_TITLE/EventTitleServlet.do"> 
+	            
+	            <div class="form-group">
+	                <label for="evetit_no">活動主題編號</label>
+	                <input type="text" name="evetit_no" id="evetit_no" class="form-control" value="${eventTitleVO.evetit_no}" readonly>
+	            </div>	        
 	           
 	            <div class="form-group">
 	                <label for="evetit_name">活動主題名稱</label>
@@ -118,16 +123,18 @@
 	                </div>             
 	                <div class="col-xs-12 col-sm-3">
 	                    <div class="form-group">
-	                         <label>狀態</label>	                                                 
-	                         <select class="form-control" name="evetit_status" readonly>
-	                         	<option value="temporary">暫存</option>
+	                         <label>儲存狀態</label>	                                                 
+	                         <select class="form-control" name="evetit_status">
+	                         	<option value="temporary" ${(eventTitleVO.evetit_status == 'temporary') ? 'selected' : '' }>暫存</option>
+	                         	<option value="confirmed" ${(eventTitleVO.evetit_status == 'confirmed') ? 'selected' : '' }>確定</option>
+	                         	<option value="cancel" ${(eventTitleVO.evetit_status == 'cancel') ? 'selected' : '' }>取消</option>
 	                         </select>                					
 	                    </div>
 	                </div>
 	                <div class="col-xs-12 col-sm-3">
 	                	<div class="form-group">
 	                         <label>場次數量</label>                         
-	                         <input type="text" name="evetit_sessions" id="evetit_sessions" class="form-control" value="0" readonly>                      
+	                         <input type="text" name="evetit_sessions" id="evetit_sessions" class="form-control" value="${eventTitleVO.evetit_sessions}" readonly>                      
 	                     </div>
 	                </div>
 	            </div>
@@ -135,8 +142,7 @@
 				<div class="form-group">
 					<label for="evetit_poster">主海報</label>
 					<input type="file" id="evetit_poster" name="evetit_poster" class="form-control" accept="image/*">
-					<input type="hidden" id="evetit_poster_status" name="evetit_poster_status" value="${(evetit_poster_status == 'alreadyUpload') ? 'alreadyUpload' : 'noUpload'}">
-					<img src="${evetit_poster_path}" id="evetit_poster_preview">
+					<img src="<%= request.getContextPath()%>/EVENT_TITLE/EventTitleGifReader?action=add&scaleSize=850&evetit_no=${eventTitleVO.evetit_no}" id="evetit_poster_preview">
 				</div>
 	            
 	            <div class="tabbable">
@@ -178,11 +184,8 @@
 	                </div>
 	            </div>
 				<span class="form-group">
-					<button type="submit" class="btn btn-primary" name="action" value="insertEventTitle">儲存</button>
+					<button type="submit" class="btn btn-success" name="action" value="updateEventTitle" id="updateEventTitle">儲存</button>
 				</span>
-				<span class="form-group">
-					<a href="<%=request.getContextPath() %>/back-end/EVENT_TITLE/listAllEventTitle.jsp" class="btn btn-danger" id="cancelInsertEventTitle">取消</a>
-				</span>				
 			</form>
         </div>
 
@@ -196,11 +199,10 @@
     <script src="<%=request.getContextPath()%>/vendor/datetimepicker/jquery.js"></script>
     <script src="<%=request.getContextPath()%>/vendor/datetimepicker/jquery.datetimepicker.full.js"></script>
     <!-- JavaScript in File -->
-    <script src="<%=request.getContextPath()%>/back-end/EVENT_TITLE/js/addEventTitle.js"></script>
+    <script src="<%=request.getContextPath()%>/back-end/EVENT_TITLE/js/updateEventTitle.js"></script>
     <!-- JavaScript in HTML -->
     <script type="text/javascript">
     $(function() {
-
         initInfoEditor();
         initNoticesEditor();
         initEticpurchaserulesEditor();
@@ -209,12 +211,8 @@
 
         $("#evetit_poster").change(function() {
             imagesPreview(this);
-            $("#evetit_poster_status").attr("value", "yesUpload");
         });
-      
     });
-    
-    
     </script>
 </body>
 
