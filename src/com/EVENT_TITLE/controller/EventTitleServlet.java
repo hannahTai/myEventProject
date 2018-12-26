@@ -1,19 +1,17 @@
 package com.EVENT_TITLE.controller;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.Base64;
-import java.util.Collection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -46,21 +44,26 @@ public class EventTitleServlet extends HttpServlet {
 		// 基本款
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html; charset=utf-8");
-		PrintWriter out = response.getWriter();
 
 		String action = request.getParameter("action");
 
 		
 		
 		
-		if (action.indexOf("getOneEventTitle_For_Display") != -1) {
+		
+		
+		
+		
+		
+		
+		if ("getOneEventTitle_For_Display".equals(action)) {
 
 			List<String> eventTitleErrorMsgs = new LinkedList<String>();
 			request.setAttribute("eventTitleErrorMsgs", eventTitleErrorMsgs);
 
 			try {
 				/****************************** 1.接收請求參數 **************************************************/
-				String evetit_no = action.substring(29, 34);
+				String evetit_no = request.getParameter("evetit_no");
 
 				/****************************** 2.開始查詢資料 **************************************************/
 				EventTitleService eventTitleService = new EventTitleService();
@@ -69,67 +72,19 @@ public class EventTitleServlet extends HttpServlet {
 					eventTitleErrorMsgs.add("查無資料");
 				}
 				if (!eventTitleErrorMsgs.isEmpty()) {
-					RequestDispatcher failureView = request
-							.getRequestDispatcher("/back-end/EVENT_TITLE/listAllEventTitle.jsp");
+					RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/listAllEventTitle.jsp");
 					failureView.forward(request, response);
 					return;
 				}
 
 				/****************************** 3.查詢完成,準備轉交 **************************************************/
 				request.setAttribute("eventTitleVO", eventTitleVO);
-				RequestDispatcher successView = request
-						.getRequestDispatcher("/back-end/EVENT_TITLE/listOneEventTitle.jsp");
+				RequestDispatcher successView = request.getRequestDispatcher("/back-end/EVENT_TITLE/listOneEventTitle.jsp");
 				successView.forward(request, response);
 
 				/****************************** 其他可能的錯誤處理 ******************************/
 			} catch (Exception e) {
 				eventTitleErrorMsgs.add("無法取得資料 : " + e.getMessage());
-				RequestDispatcher failureView = request
-						.getRequestDispatcher("/back-end/EVENT_TITLE/listAllEventTitle.jsp");
-				failureView.forward(request, response);
-			}
-			return;
-		}
-
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		else if (action.indexOf("getOneEventTitle_For_Update") != -1) {
-
-			List<String> eventTitleErrorMsgs = new LinkedList<String>();
-			request.setAttribute("eventTitleErrorMsgs", eventTitleErrorMsgs);
-
-			try {
-				/****************************** 1.接收請求參數 **************************************************/
-				String evetit_no = action.substring(28, 33);
-
-				/****************************** 2.開始查詢資料 **************************************************/
-				EventTitleService eventTitleService = new EventTitleService();
-				EventTitleVO eventTitleVO = eventTitleService.getOneEventTitle(evetit_no);
-				if (eventTitleVO == null) {
-					eventTitleErrorMsgs.add("查無資料");
-				}
-				if (!eventTitleErrorMsgs.isEmpty()) {
-					RequestDispatcher failureView = request
-							.getRequestDispatcher("/back-end/EVENT_TITLE/listAllEventTitle.jsp");
-					failureView.forward(request, response);
-					return;
-				}
-
-				/******************************* 3.查詢完成,準備轉交 **************************************************/
-				request.setAttribute("eventTitleVO", eventTitleVO);
-				RequestDispatcher successView = request.getRequestDispatcher("/back-end/EVENT_TITLE/updateEventTitle.jsp");
-				successView.forward(request, response);
-
-				/****************************** 其他可能的錯誤處理 **************************************************/
-			} catch (Exception e) {
-				eventTitleErrorMsgs.add(e.getMessage());
 				RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/listAllEventTitle.jsp");
 				failureView.forward(request, response);
 			}
@@ -145,35 +100,36 @@ public class EventTitleServlet extends HttpServlet {
 		
 		
 		
-		else if (action.indexOf("deleteEventTitle") != -1) {
+		else if ("getOneEventTitle_For_Update".equals(action)) {
 
 			List<String> eventTitleErrorMsgs = new LinkedList<String>();
 			request.setAttribute("eventTitleErrorMsgs", eventTitleErrorMsgs);
 
 			try {
 				/****************************** 1.接收請求參數 **************************************************/
-				String evetit_no = action.substring(17, 22);
-				if (evetit_no == null || evetit_no.trim().length() == 0) {
-					eventTitleErrorMsgs.add("找不到活動主題編號");
+				String evetit_no = request.getParameter("evetit_no");
+
+				/****************************** 2.開始查詢資料 **************************************************/
+				EventTitleService eventTitleService = new EventTitleService();
+				EventTitleVO eventTitleVO = eventTitleService.getOneEventTitle(evetit_no);
+				if (eventTitleVO == null) {
+					eventTitleErrorMsgs.add("查無資料");
+				}
+				if (!eventTitleErrorMsgs.isEmpty()) {
+					RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/listAllEventTitle.jsp");
+					failureView.forward(request, response);
+					return;
 				}
 
-				/****************************** 2.開始刪除資料 **************************************************/
-				EventTitleService eventTitleService = new EventTitleService();
-				eventTitleService.deleteEventTitle(evetit_no);
-
-				/****************************** 3.刪除完成,準備轉交 **************************************************/
-				List<EventTitleVO> eventTitleList = eventTitleService.getAll();
-				request.setAttribute("eventTitleList", eventTitleList);
-				System.out.println("hey");
-				RequestDispatcher successView = request
-						.getRequestDispatcher("/back-end/EVENT_TITLE/listAllEventTitle.jsp");
+				/******************************* 3.查詢完成,準備轉交 **************************************************/
+				request.setAttribute("eventTitleVO", eventTitleVO);
+				RequestDispatcher successView = request.getRequestDispatcher("/back-end/EVENT_TITLE/updateEventTitle.jsp");
 				successView.forward(request, response);
 
 				/****************************** 其他可能的錯誤處理 **************************************************/
 			} catch (Exception e) {
-				eventTitleErrorMsgs.add(e.getMessage());
-				RequestDispatcher failureView = request
-						.getRequestDispatcher("/back-end/EVENT_TITLE/listAllEventTitle.jsp");
+				eventTitleErrorMsgs.add("無法取得資料 : " + e.getMessage());
+				RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/listAllEventTitle.jsp");
 				failureView.forward(request, response);
 			}
 			return;
@@ -195,7 +151,7 @@ public class EventTitleServlet extends HttpServlet {
 
 			ByteArrayOutputStream baos = null;
 
-			try {
+//			try {
 				/****************************** 1.接收請求參數 - 輸入格式的錯誤處理 **************************************************/
 				String evetit_no = request.getParameter("evetit_no");
 				
@@ -206,69 +162,87 @@ public class EventTitleServlet extends HttpServlet {
 				
 				String ticrefpolicy_no = request.getParameter("ticrefpolicy_no");
 		
+				java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
 				java.sql.Date evetit_startdate = null;
 				try {
 					evetit_startdate = java.sql.Date.valueOf(request.getParameter("evetit_startdate").trim());
+//					if (today.compareTo(evetit_startdate) > 0) {
+//						System.out.println("hey");
+//						eventTitleErrorMsgs.add("開始日期不得早於今天");
+//					}					
 				} catch (IllegalArgumentException e) {
 					eventTitleErrorMsgs.add("請輸入開始日期");
 				}
 				java.sql.Date evetit_enddate = null;
 				try {
 					evetit_enddate = java.sql.Date.valueOf(request.getParameter("evetit_enddate").trim());
+					if (today.compareTo(evetit_enddate) > 0) {
+						eventTitleErrorMsgs.add("結束日期不得早於今天");
+					} 				
+					if (evetit_startdate.compareTo(evetit_enddate) > 0) {
+						eventTitleErrorMsgs.add("結束日期不得早於開始日期");
+					} 
 				} catch (IllegalArgumentException e) {
 					eventTitleErrorMsgs.add("請輸入結束日期");
+				} catch (NullPointerException e){
+					
 				}
-				
-				java.sql.Date today = new java.sql.Date(System.currentTimeMillis());				
-				if (today.compareTo(evetit_startdate) > 0) {
-					eventTitleErrorMsgs.add("開始日期不得早於今天");
-				}				
-				if (today.compareTo(evetit_enddate) > 0) {
-					eventTitleErrorMsgs.add("結束日期不得早於今天");
-				} 				
-				if (evetit_startdate.compareTo(evetit_enddate) > 0) {
-					eventTitleErrorMsgs.add("結束日期不得早於開始日期");
-				} 
-				
+							
 				java.sql.Date launchdate = null;
 				try {
 					launchdate = java.sql.Date.valueOf(request.getParameter("launchdate").trim());
+//					if (today.compareTo(launchdate) > 0) {
+//						eventTitleErrorMsgs.add("上架日期不得早於今天");
+//					}	
 				} catch (IllegalArgumentException e) {
 					eventTitleErrorMsgs.add("請輸入上架日期");
 				}
 				java.sql.Date offdate = null;
 				try {
 					offdate = java.sql.Date.valueOf(request.getParameter("offdate").trim());
+					if (today.compareTo(offdate) > 0) {
+						eventTitleErrorMsgs.add("下架日期不得早於今天");
+					} 				
+					if (launchdate.compareTo(offdate) > 0) {
+						eventTitleErrorMsgs.add("下架日期不得早於上架日期");
+					} 
 				} catch (IllegalArgumentException e) {
 					eventTitleErrorMsgs.add("請輸入下架日期");
+				} catch (NullPointerException e){
+					
 				}
-				
-				if (today.compareTo(launchdate) > 0) {
-					eventTitleErrorMsgs.add("上架日期不得早於今天");
-				}				
-				if (today.compareTo(offdate) > 0) {
-					eventTitleErrorMsgs.add("下架日期不得早於今天");
-				} 				
-				if (launchdate.compareTo(offdate) > 0) {
-					eventTitleErrorMsgs.add("下架日期不得早於上架日期");
-				} 
 				
 				String eveclass_no = request.getParameter("eveclass_no");
 				Integer promotionranking = new Integer(request.getParameter("promotionranking"));
 				String evetit_status = request.getParameter("evetit_status");
-				Integer evetit_sessions = new Integer(request.getParameter("evetit_sessions"));
+				Integer evetit_sessions = new Integer(request.getParameter("evetit_sessions"));			
 				
 				byte[] evetit_poster = null;
-				if( request.getPart("evetit_poster") == null ) {
-					
-				} else {
+				String evetit_poster_status = request.getParameter("evetit_poster_status");
+				if("noUpload".equals(evetit_poster_status)) {
+						
+					request.setAttribute("evetit_poster_status", "noUpload");					
+				} else if ("yesUpload".equals(evetit_poster_status)){
+					String saveDirectory = "/tempEventTitle";
+					String realPath = getServletContext().getRealPath(saveDirectory);
+					File fileSaveDirectory = new File(realPath);		
+					if(!fileSaveDirectory.exists()) {
+						fileSaveDirectory.mkdirs();
+					}
 					Part part = request.getPart("evetit_poster");
-					InputStream in = part.getInputStream();
-					baos = new ByteArrayOutputStream();
-					int i;
-					while ((i = in.read()) != -1)
-						baos.write(i);
-					evetit_poster = baos.toByteArray();
+					DateFormat dateFormat = new SimpleDateFormat("yyyymmdd_hhmmss_");  
+					String strToday = dateFormat.format(today); 
+					String submittedFileName = strToday + part.getSubmittedFileName();
+
+					if(submittedFileName.length() != 0 && part.getContentType() != null) {
+						File fileHere = new File(fileSaveDirectory, submittedFileName);
+						part.write(fileHere.toString());								
+					}			
+					
+					request.setAttribute("evetit_poster_status", "alreadyUpload");						
+					request.getSession().setAttribute("evetit_poster_path", request.getContextPath() + saveDirectory + "/" + submittedFileName);									
+				} else if ("alreadyUpload".equals(evetit_poster_status)){
+					request.setAttribute("evetit_poster_status", "alreadyUpload");	
 				}
 
 				String info = request.getParameter("info");
@@ -278,8 +252,7 @@ public class EventTitleServlet extends HttpServlet {
 				String refundrules = request.getParameter("refundrules");
 				
 				//====================================================================================================
-
-				
+			
 				EventTitleVO eventTitleVO = new EventTitleVO();				
 				eventTitleVO.setEvetit_no(evetit_no);
 				eventTitleVO.setEveclass_no(eveclass_no);
@@ -305,6 +278,23 @@ public class EventTitleServlet extends HttpServlet {
 					failureView.forward(request, response);
 					return;
 				}
+				
+				//====================================================================================================
+				
+				if(!"noUpload".equals(evetit_poster_status)) {
+					String evetit_poster_path = (String) request.getSession().getAttribute("evetit_poster_path");				
+					String evetit_poster_path_forUse = evetit_poster_path.replace(request.getContextPath(), "").replace("/", "\\");
+					String realPath = getServletContext().getRealPath("/") + evetit_poster_path_forUse.substring(1);
+					InputStream in = new FileInputStream(realPath);
+					baos = new ByteArrayOutputStream();
+					int i;
+					while ((i = in.read()) != -1)
+						baos.write(i);
+					evetit_poster = baos.toByteArray();
+					
+				}
+				eventTitleVO.setEvetit_poster(evetit_poster);
+				
 
 				/****************************** 2.開始修改資料 **************************************************/
 				EventTitleService eventTitleService = new EventTitleService();
@@ -316,13 +306,15 @@ public class EventTitleServlet extends HttpServlet {
 				request.setAttribute("eventTitleVO", eventTitleVO);
 				RequestDispatcher successView = request.getRequestDispatcher("/back-end/EVENT_TITLE/listOneEventTitle.jsp");
 				successView.forward(request, response);
+				
+				request.getSession().removeAttribute("evetit_poster_path");
 
 				/****************************** 其他可能的錯誤處理 **************************************************/
-			} catch (Exception e) {
-				eventTitleErrorMsgs.add("修改資料失敗 : "+e.getMessage());
-				RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/updateEventTitle.jsp");
-				failureView.forward(request, response);
-			}
+//			} catch (Exception e) {
+//				eventTitleErrorMsgs.add("修改資料失敗 : " + e.getMessage());
+//				RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/listOneEventTitle.jsp");
+//				failureView.forward(request, response);
+//			}
 
 		}
 
@@ -352,53 +344,55 @@ public class EventTitleServlet extends HttpServlet {
 				
 				String ticrefpolicy_no = request.getParameter("ticrefpolicy_no");
 		
+				java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
 				java.sql.Date evetit_startdate = null;
 				try {
 					evetit_startdate = java.sql.Date.valueOf(request.getParameter("evetit_startdate").trim());
+//					if (today.compareTo(evetit_startdate) > 0) {
+//						eventTitleErrorMsgs.add("開始日期不得早於今天");
+//					}	
 				} catch (IllegalArgumentException e) {
 					eventTitleErrorMsgs.add("請輸入開始日期");
 				}
 				java.sql.Date evetit_enddate = null;
 				try {
 					evetit_enddate = java.sql.Date.valueOf(request.getParameter("evetit_enddate").trim());
+					if (today.compareTo(evetit_enddate) > 0) {
+						eventTitleErrorMsgs.add("結束日期不得早於今天");
+					} 				
+					if (evetit_startdate.compareTo(evetit_enddate) > 0) {
+						eventTitleErrorMsgs.add("結束日期不得早於開始日期");
+					} 
 				} catch (IllegalArgumentException e) {
 					eventTitleErrorMsgs.add("請輸入結束日期");
+				} catch (NullPointerException e){
+					
 				}
-				
-//				java.sql.Date today = new java.sql.Date(System.currentTimeMillis());				
-//				if (today.compareTo(evetit_startdate) > 0) {
-//					eventTitleErrorMsgs.add("開始日期不得早於今天");
-//				}				
-//				if (today.compareTo(evetit_enddate) > 0) {
-//					eventTitleErrorMsgs.add("結束日期不得早於今天");
-//				} 				
-//				if (evetit_startdate.compareTo(evetit_enddate) > 0) {
-//					eventTitleErrorMsgs.add("結束日期不得早於開始日期");
-//				} 
-				
+							
 				java.sql.Date launchdate = null;
 				try {
 					launchdate = java.sql.Date.valueOf(request.getParameter("launchdate").trim());
+//					if (today.compareTo(launchdate) > 0) {
+//						eventTitleErrorMsgs.add("上架日期不得早於今天");
+//					}	
 				} catch (IllegalArgumentException e) {
 					eventTitleErrorMsgs.add("請輸入上架日期");
 				}
 				java.sql.Date offdate = null;
 				try {
 					offdate = java.sql.Date.valueOf(request.getParameter("offdate").trim());
+					if (today.compareTo(offdate) > 0) {
+						eventTitleErrorMsgs.add("下架日期不得早於今天");
+					} 				
+					if (launchdate.compareTo(offdate) > 0) {
+						eventTitleErrorMsgs.add("下架日期不得早於上架日期");
+					} 
 				} catch (IllegalArgumentException e) {
 					eventTitleErrorMsgs.add("請輸入下架日期");
+				} catch (NullPointerException e){
+					
 				}
-							
-//				if (today.compareTo(launchdate) > 0) {
-//					eventTitleErrorMsgs.add("上架日期不得早於今天");
-//				}				
-//				if (today.compareTo(offdate) > 0) {
-//					eventTitleErrorMsgs.add("下架日期不得早於今天");
-//				} 				
-//				if (launchdate.compareTo(offdate) > 0) {
-//					eventTitleErrorMsgs.add("下架日期不得早於上架日期");
-//				} 
-				
+											
 				String eveclass_no = request.getParameter("eveclass_no");
 				Integer promotionranking = new Integer(request.getParameter("promotionranking"));
 				String evetit_status = request.getParameter("evetit_status");
@@ -406,23 +400,20 @@ public class EventTitleServlet extends HttpServlet {
 				
 				byte[] evetit_poster = null;
 				String evetit_poster_status = request.getParameter("evetit_poster_status");
-				System.out.println(evetit_poster_status);
-				
 				if("noUpload".equals(evetit_poster_status)) {
 					eventTitleErrorMsgs.add("請上傳主海報");	
-					request.setAttribute("evetit_poster_status", "noUpload");
-					
+					request.setAttribute("evetit_poster_status", "noUpload");					
 				} else if ("yesUpload".equals(evetit_poster_status)){
-									
 					String saveDirectory = "/tempEventTitle";
 					String realPath = getServletContext().getRealPath(saveDirectory);
 					File fileSaveDirectory = new File(realPath);		
 					if(!fileSaveDirectory.exists()) {
 						fileSaveDirectory.mkdirs();
 					}
-									
 					Part part = request.getPart("evetit_poster");
-					String submittedFileName = part.getSubmittedFileName();
+					DateFormat dateFormat = new SimpleDateFormat("yyyymmdd_hhmmss_");  
+					String strToday = dateFormat.format(today); 
+					String submittedFileName = strToday + part.getSubmittedFileName();
 
 					if(submittedFileName.length() != 0 && part.getContentType() != null) {
 						File fileHere = new File(fileSaveDirectory, submittedFileName);
@@ -430,8 +421,7 @@ public class EventTitleServlet extends HttpServlet {
 					}			
 					
 					request.setAttribute("evetit_poster_status", "alreadyUpload");						
-					request.getSession().setAttribute("evetit_poster_path", request.getContextPath() + saveDirectory + "/" + submittedFileName);
-										
+					request.getSession().setAttribute("evetit_poster_path", request.getContextPath() + saveDirectory + "/" + submittedFileName);									
 				} else if ("alreadyUpload".equals(evetit_poster_status)){
 					request.setAttribute("evetit_poster_status", "alreadyUpload");	
 				}
@@ -470,10 +460,9 @@ public class EventTitleServlet extends HttpServlet {
 				
 				//====================================================================================================
 				
-				String evetit_poster_path = (String) request.getSession().getAttribute("evetit_poster_path");
+				String evetit_poster_path = (String) request.getSession().getAttribute("evetit_poster_path");				
 				String evetit_poster_path_forUse = evetit_poster_path.replace(request.getContextPath(), "").replace("/", "\\");
-				String realPath = getServletContext().getRealPath("/") + evetit_poster_path_forUse;
-
+				String realPath = getServletContext().getRealPath("/") + evetit_poster_path_forUse.substring(1);
 				InputStream in = new FileInputStream(realPath);
 				baos = new ByteArrayOutputStream();
 				int i;
@@ -487,21 +476,8 @@ public class EventTitleServlet extends HttpServlet {
 				EventTitleService eventTitleService = new EventTitleService();
 				eventTitleVO = eventTitleService.addEventTitle(eveclass_no, ticrefpolicy_no, evetit_name,
 						evetit_startdate, evetit_enddate, evetit_poster, info, notices, eticpurchaserules, eticrules, refundrules, evetit_sessions,
-						evetit_status, launchdate, offdate, promotionranking);			
-				
-				// I can't remove the file that is already uploaded........................!!!!
-//				System.out.println(realPath);
-//				File realPathFile = new File(realPath);				
-//				System.out.println("realPathFile" + realPathFile.getPath());
-//				File fileRemove = new File("C:\\CA105G2_ETIckeTs\\CA105G2_workspace\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\myEventProject\\tempEventTitle\\E0001_EVETIT_POSTER.jpg");								
-//				String deletePath = realPath.replace("\\", "\\\\");	
-//				System.out.println(deletePath);
-//				File fileRemove = new File(deletePath);				
-//				System.out.println("fileRemove" + fileRemove.getPath());			
-//				File fileRemove = new File("/tempEventTitle");	
-//				fileRemove.delete();			
-//				C:\CA105G2_ETIckeTs\CA105G2_workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\myEventProject\tempEventTitle\E0001_EVETIT_POSTER.jpg
-				
+						evetit_status, launchdate, offdate, promotionranking);	
+												
 				request.getSession().removeAttribute("evetit_poster_path");
 				
 				/****************************** 3.修改完成,準備轉交 ***************************************************/
@@ -511,11 +487,88 @@ public class EventTitleServlet extends HttpServlet {
 
 				/****************************** 其他可能的錯誤處理 **************************************************/
 			} catch (Exception e) {
-				eventTitleErrorMsgs.add("修改資料失敗 : "+e.getMessage());
-				RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/updateEventTitle.jsp");
+				eventTitleErrorMsgs.add("新增資料失敗 : " + e.getMessage());
+				RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/addEventTitle.jsp");
 				failureView.forward(request, response);
 			}
+				
+		}
 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		else if ("deleteEventTitle".equals(action)) {
+
+			List<String> eventTitleErrorMsgs = new LinkedList<String>();
+			request.setAttribute("eventTitleErrorMsgs", eventTitleErrorMsgs);
+
+			try {
+				/****************************** 1.接收請求參數 **************************************************/
+				String evetit_no = request.getParameter("evetit_no");
+				if (evetit_no == null || evetit_no.trim().length() == 0) {
+					eventTitleErrorMsgs.add("找不到活動主題編號");
+				}
+
+				/****************************** 2.開始刪除資料 **************************************************/
+				EventTitleService eventTitleService = new EventTitleService();
+				eventTitleService.deleteEventTitle(evetit_no);
+
+				/****************************** 3.刪除完成,準備轉交 **************************************************/
+				List<EventTitleVO> eventTitleList = eventTitleService.getAll();
+				request.setAttribute("eventTitleList", eventTitleList);
+				RequestDispatcher successView = request.getRequestDispatcher("/back-end/EVENT_TITLE/listAllEventTitle.jsp");
+				successView.forward(request, response);
+
+				/****************************** 其他可能的錯誤處理 **************************************************/
+			} catch (Exception e) {
+				eventTitleErrorMsgs.add("無法刪除資料 : " + e.getMessage());
+				RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/listAllEventTitle.jsp");
+				failureView.forward(request, response);
+			}
+			return;
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		if ("listEventTitle_ByCompositeQuery".equals(action)) {
+		
+			List<String> eventTitleErrorMsgs = new LinkedList<String>();
+			request.setAttribute("eventTitleErrorMsgs", eventTitleErrorMsgs);
+			
+			try {				
+				/****************************** 1.將輸入資料轉為Map **************************************************/ 
+				Map<String, String[]> map = request.getParameterMap();
+				
+				/****************************** 2.開始複合查詢 **************************************************/
+				EventTitleService eventTitleService = new EventTitleService();
+				List<EventTitleVO> list  = eventTitleService.getAllLaunched(map);
+				
+				/****************************** 3.查詢完成,準備轉交 **************************************************/
+				request.setAttribute("listEventTitle_ByCompositeQuery", list);
+				
+				RequestDispatcher successView = request.getRequestDispatcher("/front-end/EVENT_TITLE/selectEventTitle.jsp");
+				successView.forward(request, response);
+				
+				/***************************其他可能的錯誤處理**********************************/
+			} catch (Exception e) {
+				eventTitleErrorMsgs.add("無法取得資料 : " + e.getMessage());
+				RequestDispatcher failureView = request.getRequestDispatcher("/front-end/EVENT_TITLE/selectEventTitle.jsp");
+				failureView.forward(request, response);
+			}
+			
 		}
 
 		

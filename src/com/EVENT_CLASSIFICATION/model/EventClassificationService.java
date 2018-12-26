@@ -31,7 +31,7 @@ public class EventClassificationService {
 		eventClassificationDAO.delete(eveclass_no);
 	}	
 	
-	public EventClassificationVO getOneAdvertisement(String eveclass_no) {			
+	public EventClassificationVO getOneEventClassification(String eveclass_no) {			
 		return eventClassificationDAO.findByPrimaryKey(eveclass_no);
 	}
 	

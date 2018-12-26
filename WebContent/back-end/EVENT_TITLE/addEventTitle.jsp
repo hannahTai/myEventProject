@@ -25,8 +25,7 @@
 </head>
 
 <body>
-    	<div class="container">
-    	
+		<div class="container">    	
 	    	<%-- 錯誤表列 --%>
 			<c:if test="${not empty eventTitleErrorMsgs}">
 				<font style="color: red">請修正以下錯誤 : </font>
@@ -36,7 +35,9 @@
 					</c:forEach>
 				</ul>
 			</c:if>
-    	
+		</div>
+
+    	<div class="container">    	
 	        <form method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/EVENT_TITLE/EventTitleServlet.do">        
 	           
 	            <div class="form-group">
@@ -178,10 +179,10 @@
 	                </div>
 	            </div>
 				<span class="form-group">
-					<button type="submit" class="btn btn-primary" name="action" value="insertEventTitle">儲存</button>
+					<button type="submit" class="btn btn-info" name="action" value="insertEventTitle">儲存</button>
 				</span>
 				<span class="form-group">
-					<a href="<%=request.getContextPath() %>/back-end/EVENT_TITLE/listAllEventTitle.jsp" class="btn btn-danger" id="cancelInsertEventTitle">取消</a>
+					<a href="<%=request.getContextPath() %>/back-end/EVENT_TITLE/listAllEventTitle.jsp" class="btn btn-danger">取消</a>
 				</span>				
 			</form>
         </div>
@@ -200,7 +201,6 @@
     <!-- JavaScript in HTML -->
     <script type="text/javascript">
     $(function() {
-
         initInfoEditor();
         initNoticesEditor();
         initEticpurchaserulesEditor();
@@ -211,7 +211,8 @@
             imagesPreview(this);
             $("#evetit_poster_status").attr("value", "yesUpload");
         });
-      
+        
+    	localStorage.removeItem("DataTables_eventTitleListTable");     
     });
     
     

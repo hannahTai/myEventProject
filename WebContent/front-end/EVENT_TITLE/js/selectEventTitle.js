@@ -2,7 +2,6 @@
 $("#evetit_startdate").datetimepicker({
 	format:'Y-m-d',
 	timepicker: false,
-	minDate:new Date(),
 	onShow:function(){
 		this.setOptions({maxDate: $("#evetit_enddate").val() ? $("#evetit_enddate").val() : false})}
 });

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Title Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- toggle -->
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <ul class="checkbox-wrapper">
+        <li>
+            <input type="checkbox" id="selecctall" />Selecct All</li>
+        <li>
+            <input class="checkbox" type="checkbox" >1St Checkbox</li>
+        <li>
+            <input class="checkbox" type="checkbox" >2nd Checkbox</li>
+        <li>
+            <input class="checkbox" type="checkbox" >3rd Checkbox</li>
+        <li>
+            <input class="checkbox2" type="checkbox" >This should not be checked</li>
+    </ul>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- toggle -->
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#selecctall').click(function(event) {
+            if (this.checked) {
+                $('.checkbox').each(function() { //loop through each checkbox
+                    $(this).prop('checked', true); //check 
+                });
+            } else {
+                $('.checkbox').each(function() { //loop through each checkbox
+                    $(this).prop('checked', false); //uncheck              
+                });
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>

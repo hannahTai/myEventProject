@@ -16,14 +16,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
         .container img {
-        width: 100%;
-    }
+     	   width: 100%;
+    	}
+    	.actionForm{
+			display: inline;
+		}
     </style>
 </head>
 
 <body>
     	<div class="container">
-            
+	            
+            <div class="form-group">
+                <label for="evetit_no">活動主題編號</label>
+                <input type="text" name="evetit_no" id="evetit_no" class="form-control" value="${eventTitleVO.evetit_no}" readonly>
+            </div>	        
+    		    
             <div class="form-group">
                 <label for="evetit_name">活動主題名稱</label>
                 <input type="text" name="evetit_name" id="evetit_name" class="form-control" value="${eventTitleVO.evetit_name}" readonly>
@@ -123,15 +131,16 @@
                 <div class="col-xs-12 col-sm-12 col-md-9">
                     <h4>${eventTitleVO.evetit_name}</h4>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-3 text-right">
-	            	<form method="post" action="<%=request.getContextPath()%>/EVENT_TITLE/EventTitleServlet.do">
-	            		<span class="form-group">
-							<a class="btn btn-info" href="<%=request.getContextPath()%>/back-end/EVENT_TITLE/listAllEventTitle.jsp">活動總覽</a>
-						</span>                   
-						<span class="form-group">
-							<button type="submit" class="btn btn-warning" name="action" value="getOneEventTitle_For_Update_${eventTitleVO.evetit_no}">修改</button>
-						</span>
-					</form>
+                <div class="col-xs-12 col-sm-12 col-md-3 text-right">	            	
+            		<span class="form-group">
+						<a class="btn btn-info" href="<%=request.getContextPath()%>/back-end/EVENT_TITLE/listAllEventTitle.jsp?evetit_no=${eventTitleVO.evetit_no}">回到活動總覽</a>
+					</span>
+					<form method="post" action="<%=request.getContextPath()%>/EVENT_TITLE/EventTitleServlet.do" class="actionForm">								
+					    <input type="hidden" name="evetit_no"   value="${eventTitleVO.evetit_no}">
+					    <input type="hidden" name="requestURL"	value="<%=request.getServletPath()%>">
+					    <input type="hidden" name="action"	    value="getOneEventTitle_For_Update">
+					    <input type="submit" value="修改" class="btn btn-warning" onClick="getWhichPage(this)"> 							
+					</form>	
                 </div>
             </div>
              

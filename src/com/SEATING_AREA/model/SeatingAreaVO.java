@@ -6,7 +6,6 @@ public class SeatingAreaVO implements java.io.Serializable{
 	private String ticarea_no;
 	private String eve_no;
 	private String tictype_no;
-	private String ticarea_ename;
 	private String ticarea_color;
 	private String ticarea_name;
 	private Integer tictotalnumber;
@@ -18,13 +17,12 @@ public class SeatingAreaVO implements java.io.Serializable{
 		super();
 	}
 	
-	public SeatingAreaVO(String ticarea_no, String eve_no, String tictype_no, String ticarea_ename,
+	public SeatingAreaVO(String ticarea_no, String eve_no, String tictype_no, 
 			String ticarea_color, String ticarea_name, Integer tictotalnumber, Integer ticbookednumber) {
 		super();
 		this.ticarea_no = ticarea_no;
 		this.eve_no = eve_no;
 		this.tictype_no = tictype_no;
-		this.ticarea_ename = ticarea_ename;
 		this.ticarea_color = ticarea_color;
 		this.ticarea_name = ticarea_name;
 		this.tictotalnumber = tictotalnumber;
@@ -50,12 +48,6 @@ public class SeatingAreaVO implements java.io.Serializable{
 	}
 	public void setTictype_no(String tictype_no) {
 		this.tictype_no = tictype_no;
-	}
-	public String getTicarea_ename() {
-		return ticarea_ename;
-	}
-	public void setTicarea_ename(String ticarea_ename) {
-		this.ticarea_ename = ticarea_ename;
 	}
 	public String getTicarea_color() {
 		return ticarea_color;

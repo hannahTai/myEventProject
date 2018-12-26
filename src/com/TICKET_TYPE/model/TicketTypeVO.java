@@ -5,7 +5,6 @@ public class TicketTypeVO implements java.io.Serializable{
 	
 	private String tictype_no;
 	private String eve_no;
-	private String tictype_ename;
 	private String tictype_color;
 	private String tictype_name;
 	private Integer tictype_price;
@@ -15,12 +14,11 @@ public class TicketTypeVO implements java.io.Serializable{
 	public TicketTypeVO() {
 		super();
 	}
-	public TicketTypeVO(String tictype_no, String eve_no, String tictype_ename, String tictype_color,
+	public TicketTypeVO(String tictype_no, String eve_no, String tictype_color,
 			String tictype_name, Integer tictype_price) {
 		super();
 		this.tictype_no = tictype_no;
 		this.eve_no = eve_no;
-		this.tictype_ename = tictype_ename;
 		this.tictype_color = tictype_color;
 		this.tictype_name = tictype_name;
 		this.tictype_price = tictype_price;
@@ -39,12 +37,6 @@ public class TicketTypeVO implements java.io.Serializable{
 	}
 	public void setEve_no(String eve_no) {
 		this.eve_no = eve_no;
-	}
-	public String getTictype_ename() {
-		return tictype_ename;
-	}
-	public void setTictype_ename(String tictype_ename) {
-		this.tictype_ename = tictype_ename;
 	}
 	public String getTictype_color() {
 		return tictype_color;

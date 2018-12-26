@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface TicketTypeDAO_interface {
 
-	public void insert(TicketTypeVO ticketTypeVO);
+	public String insert(TicketTypeVO ticketTypeVO);
     public void update(TicketTypeVO ticketTypeVO);
     public void delete(String ticketTypeVO);
     public TicketTypeVO findByPrimaryKey(String tictype_no);

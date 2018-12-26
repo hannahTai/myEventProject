@@ -17,9 +17,22 @@
 
 	<br><br><br>
 	<div class="container">	
-		<a href="<%=request.getContextPath()%>/back-end/EVENT_TITLE/listAllEventTitle.jsp">活動管理</a>	
+		<a href="<%=request.getContextPath()%>/back-end/EVENT_TITLE/listAllEventTitle.jsp">活動管理</a><br>	
+		
+		<a href="<%=request.getContextPath()%>/back-end/VENUE/listAllVenue.jsp">場地管理</a><br>	
+		
+		<a href="<%=request.getContextPath()%>/back-end/">廣告管理</a><br>	
 	</div>
-
+	
+	
+	<!-- Basic -->
+	<script src="https://code.jquery.com/jquery.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script>
+	$(document).ready(function() {
+		localStorage.removeItem("DataTables_eventTitleListTable");
+	});
+	</script>
 
 
 </body>

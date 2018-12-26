@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Title Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .btn span.glyphicon {    			
+			opacity: 0.2;				
+		}
+		.btn.active span.glyphicon {				
+			opacity: 1;				
+		}
+
+	</style>
+</head>
+
+<body>
+
+    <!-- <div class="container"> -->
+        <!-- <div class="well well-sm text-center"> -->
+            <!-- <h3>Checkbox</h3> -->
+            <div data-toggle="buttons">
+                <label class="btn btn-info">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    <input type="checkbox" id="xxx">演唱會
+                </label>
+				<label class="btn btn-info">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    <input type="checkbox" id="yyy">音樂會
+                </label>
+            </div>
+        <!-- </div> -->
+    <!-- </div> -->
+
+    <div class="container">
+        <div class="well well-sm text-center">
+            <h3>Checkbox</h3>
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-success active">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    <input type="checkbox" autocomplete="off" checked id="xxx">123
+                </label>
+                <label class="btn btn-primary">
+                	<span class="glyphicon glyphicon-ok"></span>
+                    <input type="checkbox" autocomplete="off" id="yyy">456
+                </label>
+                <label class="btn btn-info">
+                    <input type="checkbox" autocomplete="off">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </label>
+                <label class="btn btn-default">
+                    <input type="checkbox" autocomplete="off">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </label>
+                <label class="btn btn-warning">
+                    <input type="checkbox" autocomplete="off">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </label>
+                <label class="btn btn-danger">
+                    <input type="checkbox" autocomplete="off">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <input type="button" value="SaveStorage!" id="save" class="btn btn-info"><br><br>
+	<input type="button" value="TakeFromStorage!" id="take" class="btn btn-info">
+  
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+    $(function() {
+
+        var status = new Object();
+
+        $("#save").click(function() {
+            status.xxx = $("#xxx").prop("checked");
+            console.log(status.xxx);
+            status.yyy = $("#yyy").prop("checked");
+            console.log(status.yyy);
+            var JSONstatus = JSON.stringify(status);
+            localStorage.setItem('status', JSONstatus);
+        });
+
+        $("#take").click(function() {
+        	
+            var gotTheStatus = JSON.parse(localStorage.getItem('status'));
+            $("#xxx").prop('checked', gotTheStatus.xxx);
+            console.log($("#xxx").prop('checked'));
+            $("#yyy").prop('checked', gotTheStatus.yyy);
+            if(gotTheStatus.yyy){
+            	$("#yyy").parent().addClass("active");
+            } else {
+            	$("#yyy").parent().removeClass("active");
+            }
+            if(gotTheStatus.xxx){
+            	$("#xxx").parent().addClass("active");
+            } else {
+            	$("#xxx").parent().removeClass("active");
+            }
+            console.log($("#yyy").prop('checked'));
+        });
+
+
+    });
+    </script>
+</body>
+
+</html>

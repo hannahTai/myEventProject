@@ -97,7 +97,7 @@
 		<div class="container">
 				<div class="col-xs-12 col-sm-2">
 					<div class="list-group">
-						<a href="<%=request.getContextPath()%>/front-end/EVENT_TITLE/listAllEventTitle.jsp" class="list-group-item" align="center">所有活動</a>
+						<a href="<%=request.getContextPath()%>/front-end/EVENT_TITLE/selectEventTitle.jsp" class="list-group-item" align="center">所有活動</a>
 					</div>
 				</div>
 				<div class="col-xs-12 col-sm-2">
@@ -310,5 +310,13 @@
 		
 		<script src="https://code.jquery.com/jquery.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script>    	
+	
+	    $(document).ready(function() {
+	        localStorage.removeItem("searchStatus");
+	    });
+    
+    
+	</script>
 	</body>
 </html>

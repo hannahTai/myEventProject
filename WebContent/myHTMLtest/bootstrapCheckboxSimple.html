@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Title Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+</head>
+
+<body>
+    <div class="has-success">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" id="xxx" value="option1">
+                Checkbox with success
+            </label>
+        </div>
+    </div>
+    <div class="has-warning">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" id="yyy" value="option1">
+                Checkbox with warning
+            </label>
+        </div>
+    </div>
+    <input type="button" value="SaveStorage!" id="save" class="btn btn-info"><br><br>
+	<input type="button" value="TakeFromStorage!" id="take" class="btn btn-info">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+    $(function() {
+
+        var status = new Object();
+
+        $("#save").click(function() {
+            status.xxx = $("#xxx").prop("checked");
+            console.log(status.xxx);
+            status.yyy = $("#yyy").prop("checked");
+            console.log(status.yyy);
+            var JSONstatus = JSON.stringify(status);
+            localStorage.setItem('status', JSONstatus);
+        });
+
+        $("#take").click(function() {
+        	
+            var gotTheStatus = JSON.parse(localStorage.getItem('status'));
+            $("#xxx").prop('checked', gotTheStatus.xxx);
+            console.log($("#xxx").prop('checked'));
+            $("#yyy").prop('checked', gotTheStatus.yyy);
+            if(gotTheStatus.yyy){
+            	$("#yyy").parent().addClass("active");
+            } else {
+            	$("#yyy").parent().removeClass("active");
+            }
+            if(gotTheStatus.xxx){
+            	$("#xxx").parent().addClass("active");
+            } else {
+            	$("#xxx").parent().removeClass("active");
+            }
+            console.log($("#yyy").prop('checked'));
+        });
+
+
+    });
+    </script>
+</body>
+
+</html>

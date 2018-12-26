@@ -42,7 +42,7 @@ public class VenueService {
 		venueDAO.delete(venue_no);
 	}
 
-	public VenueVO getOneEventTitle(String venue_no) {
+	public VenueVO getOneVenue(String venue_no) {
 		return venueDAO.findByPrimaryKey(venue_no);
 	}
 

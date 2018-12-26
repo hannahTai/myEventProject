@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>jQuery UI Checkboxradio - Default functionality</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+</head>
+
+<body>
+
+	<label for="xxx">xxx</label>
+    <input type="checkbox" class="form-checkbox" id="xxx"><br><br>
+
+    <label for="yyy">yyy</label>
+    <input type="checkbox" class="form-checkbox" id="yyy"><br><br>
+
+    <input type="button" value="SaveStorage!" id="save" class="btn btn-info"><br><br>
+	<input type="button" value="TakeFromStorage!" id="take" class="btn btn-info">
+
+    <script>
+        $( function() {
+    		$( "input[type=checkbox]" ).checkboxradio();
+
+
+	        var status = new Object();
+
+	        $("#save").click(function() {
+	            status.xxx = $("#xxx").prop("checked");
+	            console.log(status.xxx);
+	            status.yyy = $("#yyy").prop("checked");
+	            console.log(status.yyy);
+	            var JSONstatus = JSON.stringify(status);
+	            localStorage.setItem('status', JSONstatus);
+	        });
+
+	        $("#take").click(function() {
+	        	var gotTheStatus = JSON.parse(localStorage.getItem('status'));
+	            $("#xxx").prop('checked', gotTheStatus.xxx);
+	            console.log($("#xxx").prop('checked'));
+	            $("#yyy").prop('checked', gotTheStatus.yyy); 
+	            console.log($("#yyy").prop('checked'));
+	        });
+
+
+  		});
+  </script>
+
+</body>
+
+</html>

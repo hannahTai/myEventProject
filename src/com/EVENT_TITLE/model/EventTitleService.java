@@ -1,6 +1,7 @@
 package com.EVENT_TITLE.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class EventTitleService {
 
@@ -69,7 +70,7 @@ public class EventTitleService {
 		eventTitleVO.setPromotionranking(promotionranking);
 		
 		
-		if(evetit_poster.length == 0) {
+		if(evetit_poster == null || evetit_poster.length == 0) {
 			eventTitleDao.update_withoutPoster(eventTitleVO);
 		} else {
 			eventTitleDao.update(eventTitleVO);
@@ -92,6 +93,10 @@ public class EventTitleService {
 	
 	public List<EventTitleVO> getAllLaunched() {
 		return eventTitleDao.getAllLaunched();
+	}
+	
+	public List<EventTitleVO> getAllLaunched(Map<String, String[]> map) {
+		return eventTitleDao.getAllLaunched(map);
 	}
 
 }

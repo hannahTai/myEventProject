@@ -8,7 +8,6 @@ public class EventVO implements java.io.Serializable{
 	private String eve_no;
 	private String evetit_no;
 	private String venue_no;
-	private String eve_session;
 	private String eve_sessionname;
 	private byte[] eve_seatmap;
 	private Timestamp eve_startdate;
@@ -19,20 +18,17 @@ public class EventVO implements java.io.Serializable{
 	private Timestamp fullrefundenddate;
 	private String eve_status;
 	
-	
-	
 	public EventVO() {
 		super();
 	}
 
-	public EventVO(String eve_no, String evetit_no, String venue_no, String eve_session, String eve_sessionname,
-			byte[] eve_seatmap, Timestamp eve_startdate, Timestamp eve_enddate, Timestamp eve_onsaledate,
-			Timestamp eve_offsaledate, Integer ticlimit, Timestamp fullrefundenddate, String eve_status) {
+	public EventVO(String eve_no, String evetit_no, String venue_no, String eve_sessionname, byte[] eve_seatmap,
+			Timestamp eve_startdate, Timestamp eve_enddate, Timestamp eve_onsaledate, Timestamp eve_offsaledate,
+			Integer ticlimit, Timestamp fullrefundenddate, String eve_status) {
 		super();
 		this.eve_no = eve_no;
 		this.evetit_no = evetit_no;
 		this.venue_no = venue_no;
-		this.eve_session = eve_session;
 		this.eve_sessionname = eve_sessionname;
 		this.eve_seatmap = eve_seatmap;
 		this.eve_startdate = eve_startdate;
@@ -44,8 +40,6 @@ public class EventVO implements java.io.Serializable{
 		this.eve_status = eve_status;
 	}
 
-	
-	
 	public String getEve_no() {
 		return eve_no;
 	}
@@ -68,14 +62,6 @@ public class EventVO implements java.io.Serializable{
 
 	public void setVenue_no(String venue_no) {
 		this.venue_no = venue_no;
-	}
-
-	public String getEve_session() {
-		return eve_session;
-	}
-
-	public void setEve_session(String eve_session) {
-		this.eve_session = eve_session;
 	}
 
 	public String getEve_sessionname() {
@@ -149,7 +135,9 @@ public class EventVO implements java.io.Serializable{
 	public void setEve_status(String eve_status) {
 		this.eve_status = eve_status;
 	}
-	
-	
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 	
 }

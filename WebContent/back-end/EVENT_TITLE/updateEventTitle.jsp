@@ -25,8 +25,7 @@
 </head>
 
 <body>
-    	<div class="container">
-    	
+		<div class="container">   	
 	    	<%-- 錯誤表列 --%>
 			<c:if test="${not empty eventTitleErrorMsgs}">
 				<font style="color: red">請修正以下錯誤:</font>
@@ -36,9 +35,12 @@
 					</c:forEach>
 				</ul>
 			</c:if>
-    	
-	        <form method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/EVENT_TITLE/EventTitleServlet.do"> 
-	            
+		</div>
+
+
+
+    	<div class="container">    	
+	        <form method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/EVENT_TITLE/EventTitleServlet.do"> 	            
 	            <div class="form-group">
 	                <label for="evetit_no">活動主題編號</label>
 	                <input type="text" name="evetit_no" id="evetit_no" class="form-control" value="${eventTitleVO.evetit_no}" readonly>
@@ -142,7 +144,14 @@
 				<div class="form-group">
 					<label for="evetit_poster">主海報</label>
 					<input type="file" id="evetit_poster" name="evetit_poster" class="form-control" accept="image/*">
-					<img src="<%= request.getContextPath()%>/EVENT_TITLE/EventTitleGifReader?action=add&scaleSize=850&evetit_no=${eventTitleVO.evetit_no}" id="evetit_poster_preview">
+					<input type="hidden" id="evetit_poster_status" name="evetit_poster_status" value="${(evetit_poster_status == 'alreadyUpload') ? 'alreadyUpload' : 'noUpload'}">
+					<c:if test="${evetit_poster_status != 'alreadyUpload'}">
+	                	<img src="<%= request.getContextPath()%>/EVENT_TITLE/EventTitleGifReader?action=add&scaleSize=850&evetit_no=${eventTitleVO.evetit_no}" id="evetit_poster_preview">
+                    </c:if>
+					
+					<c:if test="${evetit_poster_status == 'alreadyUpload'}">
+	                	<img src="${evetit_poster_path}" id="evetit_poster_preview">
+                    </c:if>
 				</div>
 	            
 	            <div class="tabbable">
@@ -184,7 +193,7 @@
 	                </div>
 	            </div>
 				<span class="form-group">
-					<button type="submit" class="btn btn-success" name="action" value="updateEventTitle" id="updateEventTitle">儲存</button>
+					<button type="submit" class="btn btn-success" name="action" value="updateEventTitle">儲存</button>
 				</span>
 			</form>
         </div>
@@ -211,6 +220,7 @@
 
         $("#evetit_poster").change(function() {
             imagesPreview(this);
+            $("#evetit_poster_status").attr("value", "yesUpload");
         });
     });
     </script>

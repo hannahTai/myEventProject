@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
  
 public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 	
@@ -112,6 +113,13 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
 			if (pstmt != null) {
 				try {
 					pstmt.close();
@@ -697,6 +705,151 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 	
 	
 	
+	@Override
+	public List<EventTitleVO> getAllLaunched(Map<String, String[]> map) {
+
+		List<EventTitleVO> list = new ArrayList<EventTitleVO>();
+		EventTitleVO eventTitleVO = null;
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		BufferedReader br = null;
+
+		try {
+
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+
+			String finalSQL = "SELECT * FROM EVENT_TITLE WHERE (evetit_status = 'confirmed') AND (CURRENT_DATE BETWEEN launchdate AND offdate) "
+			          + CompositeQuery_EventTitle_Launched.get_WhereCondition(map)
+			          + "ORDER BY promotionranking DESC, launchdate";
+			System.out.println("getAllLaunched_EventTitle_CompositeQuery_EventTitle_Launched" + finalSQL);
+			
+			pstmt = con.prepareStatement(finalSQL);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				eventTitleVO = new EventTitleVO();
+				eventTitleVO.setEvetit_no(rs.getString("evetit_no"));
+				eventTitleVO.setEveclass_no(rs.getString("eveclass_no"));
+				eventTitleVO.setTicrefpolicy_no(rs.getString("ticrefpolicy_no"));
+				eventTitleVO.setEvetit_name(rs.getString("evetit_name"));
+				eventTitleVO.setEvetit_startdate(rs.getDate("evetit_startdate"));
+				eventTitleVO.setEvetit_enddate(rs.getDate("evetit_enddate"));
+				
+				eventTitleVO.setEvetit_poster(rs.getBytes("evetit_poster"));  //B
+				
+				if(rs.getCharacterStream("info") == null) {
+					eventTitleVO.setInfo("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("info"));
+					StringBuilder infoSb = new StringBuilder();
+					String infoStr = null;			
+					while((infoStr = br.readLine()) != null)
+						infoSb.append(infoStr).append("\n");				
+					eventTitleVO.setInfo(infoSb.toString());
+				}
+				
+				if(rs.getCharacterStream("notices") == null) {
+					eventTitleVO.setNotices("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("notices"));
+					StringBuilder noticesSb = new StringBuilder();
+					String noticesStr = null;			
+					while((noticesStr = br.readLine()) != null)
+						noticesSb.append(noticesStr).append("\n");				
+					eventTitleVO.setNotices(noticesSb.toString());
+				}
+				
+				if(rs.getCharacterStream("eticpurchaserules") == null) {
+					eventTitleVO.setEticpurchaserules("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("eticpurchaserules"));
+					StringBuilder eticpurchaserulesSb = new StringBuilder();
+					String eticpurchaserulesStr = null;			
+					while((eticpurchaserulesStr = br.readLine()) != null)
+						eticpurchaserulesSb.append(eticpurchaserulesStr).append("\n");				
+					eventTitleVO.setEticpurchaserules(eticpurchaserulesSb.toString());
+				}
+				
+				if(rs.getCharacterStream("eticrules") == null) {
+					eventTitleVO.setEticrules("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("eticrules"));
+					StringBuilder eticrulesSb = new StringBuilder();
+					String eticrulesStr = null;			
+					while((eticrulesStr = br.readLine()) != null)
+						eticrulesSb.append(eticrulesStr).append("\n");				
+					eventTitleVO.setEticrules(eticrulesSb.toString());
+				}
+
+				if(rs.getCharacterStream("refundrules") == null) {
+					eventTitleVO.setRefundrules("");
+				} else {
+					br = new BufferedReader(rs.getCharacterStream("refundrules"));
+					StringBuilder refundrulesSb = new StringBuilder();
+					String refundrulesStr = null;			
+					while((refundrulesStr = br.readLine()) != null)
+						refundrulesSb.append(refundrulesStr).append("\n");				
+					eventTitleVO.setRefundrules(refundrulesSb.toString());
+				}
+						
+				eventTitleVO.setEvetit_sessions(rs.getInt("evetit_sessions"));
+				eventTitleVO.setEvetit_status(rs.getString("evetit_status"));				
+				eventTitleVO.setLaunchdate(rs.getDate("launchdate"));
+				eventTitleVO.setOffdate(rs.getDate("offdate"));
+				eventTitleVO.setPromotionranking(rs.getInt("promotionranking"));
+				
+				list.add(eventTitleVO);
+				
+			}
+			
+			System.out.println("----------getAllLaunched:CompositeQuery_EventTitle_Launched finished----------");
+			
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());	
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} catch (IOException ie) {
+			throw new RuntimeException("An IO error occured. " + ie.getMessage());
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException ioe) {
+					ioe.printStackTrace(System.err);
+				}
+			}		
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return list;
+	}
+	
+	
+	
+	
+	
 	public static void main(String[] args) {
 		
 		
@@ -949,6 +1102,8 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 		
 		
 	}
+
+	
 
 	
 	

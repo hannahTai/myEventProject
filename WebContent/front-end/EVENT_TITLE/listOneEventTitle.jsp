@@ -26,8 +26,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
         .container img {
-        width: 100%;
-    }
+    	    width: 100%;
+	    }
     </style>
 </head>
 
@@ -38,8 +38,10 @@
                 <div class="col-xs-12 col-sm-12 col-md-9">
                     <h4>${aEventTitle.evetit_name}</h4>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-3 text-right">
-                     <h4><i class="glyphicon glyphicon-heart"></i> 加入最愛</h4>
+                <div id="toggleFavoriteEvent">
+	                <div class="col-xs-12 col-sm-12 col-md-3 text-right" style="color:red;">
+	                     <h4><i class="glyphicon glyphicon-heart-empty"></i> 加入最愛</h4>
+	                </div>
                 </div>
             </div>
             <img src="<%= request.getContextPath()%>/EVENT_TITLE/EventTitleGifReader?scaleSize=850&evetit_no=${aEventTitle.evetit_no}">
@@ -96,6 +98,10 @@
     $(document).ready(function() {
         $("#flip").click(function() {
             $("#panel").slideToggle("fast");
+        });
+        
+        $("#toggleFavoriteEvent").click(function(){
+        	$(".glyphicon").toggleClass("glyphicon-heart glyphicon-heart-empty");
         });
     });
     </script>
