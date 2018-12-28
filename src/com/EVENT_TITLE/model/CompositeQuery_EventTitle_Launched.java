@@ -20,9 +20,11 @@ public class CompositeQuery_EventTitle_Launched {
 			String value = map.get(key)[0];
 			if (value != null && value.trim().length() != 0	&& !"action".equals(key)) {
 
-				if ("evetit_name".equals(key))
-					whereCondition.append("AND " + key + " LIKE upper('%" + values[0] + "%') ");
-					
+				if ("evetit_name".equals(key)) {
+					whereCondition.append("AND (" + key + " LIKE upper('%" + values[0] + "%') ");
+					whereCondition.append("or " + key + " LIKE lower('%" + values[0] + "%')) ");
+				}					
+				
 				else if ("eveclass_no".equals(key)) {
 					whereCondition.append("AND " + key + " IN (");
 					for(int i = 0; i < values.length; i++) {				

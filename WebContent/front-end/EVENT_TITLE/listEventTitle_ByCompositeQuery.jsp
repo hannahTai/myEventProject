@@ -56,18 +56,6 @@
 
 <body>
 
-	<div class="container">
-		<%-- 錯誤表列 --%>
-		<c:if test="${not empty eventTitleErrorMsgs}">
-			<font style="color: red">請修正以下錯誤:</font>
-			<ul>
-				<c:forEach var="message" items="${eventTitleErrorMsgs}">
-					<li style="color: red">${message}</li>
-				</c:forEach>
-			</ul>
-		</c:if>
-	</div>
-
     <div class="container">
         <div class="row flex-row">
             <c:forEach var="eventTitleVO" items="${listEventTitle_ByCompositeQuery}">

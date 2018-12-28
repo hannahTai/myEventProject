@@ -25,16 +25,9 @@
 </head>
 
 <body>
-		<div class="container">    	
-	    	<%-- 錯誤表列 --%>
-			<c:if test="${not empty eventTitleErrorMsgs}">
-				<font style="color: red">請修正以下錯誤 : </font>
-				<ul>
-					<c:forEach var="message" items="${eventTitleErrorMsgs}">
-						<li style="color: red">${message}</li>
-					</c:forEach>
-				</ul>
-			</c:if>
+
+		<div class="container">
+			<span class="text-danger">${eventTitleErrorMsgs.Exception}</span>
 		</div>
 
     	<div class="container">    	
@@ -42,7 +35,8 @@
 	           
 	            <div class="form-group">
 	                <label for="evetit_name">活動主題名稱</label>
-	                <input type="text" name="evetit_name" id="evetit_name" class="form-control" value="${eventTitleVO.evetit_name}">
+	                <span class="text-danger">${eventTitleErrorMsgs.evetit_name}</span>
+	                <input type="text" name="evetit_name" id="evetit_name" class="form-control" value="${param.evetit_name}">	                
 	            </div>
 	            
 	            <jsp:useBean id="ticketRefundPolicyService" scope="page" class="com.TICKET_REFUND_POLICY.model.TicketRefundPolicyService" />            
@@ -50,7 +44,7 @@
 	                <label>退款政策</label>
 	                <select class="form-control" name="ticrefpolicy_no">
 	                    <c:forEach var="ticketRefundPolicyVO" items="${ticketRefundPolicyService.all}">
-	                        <option value="${ticketRefundPolicyVO.ticRefPolicy_no}" ${(ticketRefundPolicyVO.ticRefPolicy_no == eventTitleVO.ticrefpolicy_no) ? 'selected' : '' }>
+	                        <option value="${ticketRefundPolicyVO.ticRefPolicy_no}" ${(ticketRefundPolicyVO.ticRefPolicy_no == param.ticrefpolicy_no) ? 'selected' : '' }>
 	                            ${ticketRefundPolicyVO.ticRefPolicy_name} : ${ticketRefundPolicyVO.ticRefPolicy_content}
 	                        </option>
 	                    </c:forEach>
@@ -61,15 +55,18 @@
 	                <div class="col-xs-12 col-sm-6">
 	                    <div class="form-group">
 	                        <label for="evetit_startdate">開始日期</label>
-	                        <input type="text" id="evetit_startdate" name="evetit_startdate" class="form-control" 
-	                        value="<fmt:formatDate value="${eventTitleVO.evetit_startdate}" pattern="yyyy-MM-dd"/>">
+	                        <span class="text-danger">${eventTitleErrorMsgs.evetit_startdate}</span>
+	                        <input type="text" id="evetit_startdate" name="evetit_startdate" class="form-control" value="${param.evetit_startdate}">	                        
 	                    </div>
 	                </div>
 	                <div class="col-xs-12 col-sm-6">
 	                    <div class="form-group">
 	                        <label for="evetit_enddate">結束日期</label>
-	                        <input type="text" id="evetit_enddate" name="evetit_enddate" class="form-control" 
-	                        value="<fmt:formatDate value="${eventTitleVO.evetit_enddate}" pattern="yyyy-MM-dd"/>"> 
+	                        <span class="text-danger">${eventTitleErrorMsgs.evetit_enddate}</span>
+	                        <span class="text-danger">${eventTitleErrorMsgs.evetit_enddate_BiggerThanToday}</span>
+	                        <span class="text-danger">${eventTitleErrorMsgs.evetit_enddate_BiggerThanEvetitStartdate}</span>
+	                        <input type="text" id="evetit_enddate" name="evetit_enddate" class="form-control" value="${param.evetit_enddate}"> 
+	                	                    	
 	                    </div>
 	                </div>
 	            </div>           
@@ -78,15 +75,17 @@
 	                <div class="col-xs-12 col-sm-6">
 	                     <div class="form-group">
 	                         <label for="launchdate">上架日期</label>
-	                         <input type="text" id="launchdate" name="launchdate" class="form-control" 
-	                         value="<fmt:formatDate value="${eventTitleVO.launchdate}" pattern="yyyy-MM-dd"/>">
+	                         <span class="text-danger">${eventTitleErrorMsgs.launchdate}</span>
+	                         <input type="text" id="launchdate" name="launchdate" class="form-control" value="${param.launchdate}">
 	                     </div>
 	                </div>
 	                <div class="col-xs-12 col-sm-6">
 	                     <div class="form-group">
 	                         <label for="offdate">下架日期</label>
-	                         <input type="text" id="offdate" name="offdate" class="form-control"
-	                         value="<fmt:formatDate value="${eventTitleVO.offdate}" pattern="yyyy-MM-dd"/>">
+	                         <span class="text-danger">${eventTitleErrorMsgs.offdate}</span>
+	                         <span class="text-danger">${eventTitleErrorMsgs.offdate_BiggerThanToday}</span>
+	                         <span class="text-danger">${eventTitleErrorMsgs.offdate_BiggerThanLaunchdate}</span>
+	                         <input type="text" id="offdate" name="offdate" class="form-control" value="${param.offdate}">
 	                     </div>
 	                </div>
 	            </div>
@@ -98,7 +97,7 @@
 	                        <label>分類</label>
 	                        <select class="form-control" name="eveclass_no">
 	                            <c:forEach var="eventClassificationVO" items="${eventClassificationService.all}">
-	                                <option value="${eventClassificationVO.eveclass_no}" ${(eventClassificationVO.eveclass_no == eventTitleVO.eveclass_no) ? 'selected' : '' }>
+	                                <option value="${eventClassificationVO.eveclass_no}" ${(eventClassificationVO.eveclass_no == param.eveclass_no) ? 'selected' : '' }>
 	                                    ${eventClassificationVO.eveclass_name}
 	                                </option>
 	                            </c:forEach>
@@ -109,11 +108,11 @@
 	                     <div class="form-group">
 	                         <label>推銷熱度</label>                         
 	                         <select class="form-control" name="promotionranking">
-	                         	<option value="1" ${(eventTitleVO.promotionranking == "1") ? 'selected' : '' }>1</option>
-	                         	<option value="2" ${(eventTitleVO.promotionranking == "2") ? 'selected' : '' }>2</option>
-	                         	<option value="3" ${(eventTitleVO.promotionranking == "3") ? 'selected' : '' }>3</option>
-	                         	<option value="4" ${(eventTitleVO.promotionranking == "4") ? 'selected' : '' }>4</option>
-	                         	<option value="5" ${(eventTitleVO.promotionranking == "5") ? 'selected' : '' }>5</option>
+	                         	<option value="1" ${(param.promotionranking == "1") ? 'selected' : '' }>1</option>
+	                         	<option value="2" ${(param.promotionranking == "2") ? 'selected' : '' }>2</option>
+	                         	<option value="3" ${(param.promotionranking == "3") ? 'selected' : '' }>3</option>
+	                         	<option value="4" ${(param.promotionranking == "4") ? 'selected' : '' }>4</option>
+	                         	<option value="5" ${(param.promotionranking == "5") ? 'selected' : '' }>5</option>
 	                         </select>                      
 	                     </div>
 	                </div>             
@@ -135,6 +134,7 @@
 	            
 				<div class="form-group">
 					<label for="evetit_poster">主海報</label>
+					<span class="text-danger">${eventTitleErrorMsgs.evetit_poster}</span>
 					<input type="file" id="evetit_poster" name="evetit_poster" class="form-control" accept="image/*">
 					<input type="hidden" id="evetit_poster_status" name="evetit_poster_status" value="${(evetit_poster_status == 'alreadyUpload') ? 'alreadyUpload' : 'noUpload'}">
 					<img src="${evetit_poster_path}" id="evetit_poster_preview">
@@ -153,37 +153,34 @@
 	                <div class="tab-content">
 	                    <div class="tab-pane active" id="infoTab">
 		                	<textarea name="info" id="infoEditor">
-		                		${eventTitleVO.info}
+		                		${param.info}
 		               		</textarea>
 	                    </div>
 	                    <div class="tab-pane" id="noticeTab">
 	                    	<textarea name="notices" id="noticesEditor">
-	                    		${eventTitleVO.notices}
+	                    		${param.notices}
 	                 		</textarea>
 	                    </div>
 	                    <div class="tab-pane" id="eticpurchaserulesTab">
 	                        <textarea name="eticpurchaserules" id="eticpurchaserulesEditor">
-	                        	${eventTitleVO.eticpurchaserules}
+	                        	${param.eticpurchaserules}
 	                        </textarea>
 	                    </div>
 	                    <div class="tab-pane" id="eticrulesTab">
 	                        <textarea name="eticrules" id="eticrulesEditor">
-	                        	${eventTitleVO.eticrules}
+	                        	${param.eticrules}
 	                        </textarea>
 	                    </div>
 	                    <div class="tab-pane" id="refundrulesTab">
 	                    	<textarea name="refundrules" id="refundrulesEditor">
-	                            ${eventTitleVO.refundrules}
+	                            ${param.refundrules}
 	                    	</textarea>
 	                    </div>
 	                </div>
 	            </div>
 				<span class="form-group">
 					<button type="submit" class="btn btn-info" name="action" value="insertEventTitle">儲存</button>
-				</span>
-				<span class="form-group">
-					<a href="<%=request.getContextPath() %>/back-end/EVENT_TITLE/listAllEventTitle.jsp" class="btn btn-danger">取消</a>
-				</span>				
+				</span>			
 			</form>
         </div>
 
@@ -212,6 +209,13 @@
             $("#evetit_poster_status").attr("value", "yesUpload");
         });
         
+        $(".text-danger").each(function(){
+        	var errorMsg = $(this).text();
+        	if( errorMsg.trim() != "" ){
+        		$(this).prepend("<i class='glyphicon glyphicon-triangle-left'></i>");
+        	}        	
+        });
+               
     	localStorage.removeItem("DataTables_eventTitleListTable");     
     });
     

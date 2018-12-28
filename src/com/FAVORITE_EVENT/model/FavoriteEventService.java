@@ -11,11 +11,11 @@ public class FavoriteEventService {
 	}
 
 	public FavoriteEventVO addFavoriteEvent(String member_no, String evetit_no) {
-		FavoriteEventVO ticketRefundPolicyVO = new FavoriteEventVO();
-		ticketRefundPolicyVO.setMember_no(member_no);
-		ticketRefundPolicyVO.setEvetit_no(evetit_no);
-		favoriteEventDAO.insert(ticketRefundPolicyVO);
-		return ticketRefundPolicyVO;
+		FavoriteEventVO favoriteEventVO = new FavoriteEventVO();
+		favoriteEventVO.setMember_no(member_no);
+		favoriteEventVO.setEvetit_no(evetit_no);
+		favoriteEventDAO.insert(favoriteEventVO);
+		return favoriteEventVO;
 	}
 
 	public void deleteFavoriteEvent(String member_no, String evetit_no) {

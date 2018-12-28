@@ -7,6 +7,11 @@
 <%@ page import="com.EVENT_TITLE.controller.*"%>
 
 <%
+	// just for add&delete FavoriteEvent Test
+	String member_no = "member_no";
+%>
+
+<%
 	String evetit_no = request.getParameter("evetit_no");
 
 	EventTitleService eventTitleService = new EventTitleService();
@@ -28,6 +33,8 @@
         .container img {
     	    width: 100%;
 	    }
+	    
+	    .pointer {cursor: pointer;}
     </style>
 </head>
 
@@ -36,15 +43,16 @@
         <div class="col-xs-12 col-sm-8 col-sm-offset-2">
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-9">
-                    <h4>${aEventTitle.evetit_name}</h4>
+                    <h4 id="evetit_name">${aEventTitle.evetit_name}</h4>
                 </div>
-                <div id="toggleFavoriteEvent">
+                <div id="toggleFavoriteEvent" class="pointer">
 	                <div class="col-xs-12 col-sm-12 col-md-3 text-right" style="color:red;">
-	                     <h4><i class="glyphicon glyphicon-heart-empty"></i> 加入最愛</h4>
+	                     <h4><i class="glyphicon glyphicon-heart-empty"></i>加入最愛</h4>
+	                     <input type="hidden" id="favoriteEventStatus" value="inTheFavoriteEvent">
 	                </div>
                 </div>
             </div>
-            <img src="<%= request.getContextPath()%>/EVENT_TITLE/EventTitleGifReader?scaleSize=850&evetit_no=${aEventTitle.evetit_no}">
+            <img src="<%= request.getContextPath()%>/EVENT_TITLE/EventTitleGifReader?scaleSize=850&evetit_no=${aEventTitle.evetit_no}" id="poster">
             <div>
                 <input id="flip" type="button" value="查看活動場次" class="btn btn-primary"></input>
                 <div id="panel" style="display:none;">
@@ -94,7 +102,8 @@
     <!-- Basic -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript">   
+    
     $(document).ready(function() {
         $("#flip").click(function() {
             $("#panel").slideToggle("fast");
@@ -102,8 +111,73 @@
         
         $("#toggleFavoriteEvent").click(function(){
         	$(".glyphicon").toggleClass("glyphicon-heart glyphicon-heart-empty");
+        	
+        	if($("#favoriteEventStatus").val() == "inTheFavoriteEvent"){
+        		$("#favoriteEventStatus").val("outTheFavoriteEvent");
+        		console.log($("#favoriteEventStatus").val());
+        	} else {
+        		$("#favoriteEventStatus").val("inTheFavoriteEvent");
+        		console.log($("#favoriteEventStatus").val());
+        	}
+        	
         });
+        
+        toDataURL($("#poster").attr("src"), function(dataUrl) {
+        	
+//         	localStorage.clear();
+        	        	
+        	if(localStorage.getItem("eventTitleBrowsingHistory") == null){
+        		var eventTitleBrowsingHistoryArray = [];
+        		console.log("123");
+        	} else {
+        		var eventTitleBrowsingHistoryJSONstr = localStorage.getItem("eventTitleBrowsingHistory");
+        		var eventTitleBrowsingHistoryArray = JSON.parse(eventTitleBrowsingHistoryJSONstr);
+        	}
+        	
+//         				console.log(eventTitleBrowsingHistoryStr);
+      	
+            var evetit_name = $("#evetit_name").html();
+// 			            console.log("evetit_name : ", evetit_name);
+// 						console.log('RESULT:', dataUrl);
+
+			var oneEventTitleBrowsingHistory = new eventTitleBrowsingHistory(evetit_name, dataUrl);
+// 						console.log("oneEventTitleBrowsingHistory", oneEventTitleBrowsingHistory);
+			console.log(oneEventTitleBrowsingHistory);
+			
+			//!!!!!!!!!!!!!!!!!!!!!!!!!檢查是否在array出現過
+			eventTitleBrowsingHistoryArray.push(oneEventTitleBrowsingHistory);
+			var eventTitleBrowsingHistoryJSONstr = JSON.stringify(eventTitleBrowsingHistoryArray);
+					
+			localStorage.setItem('eventTitleBrowsingHistory', eventTitleBrowsingHistoryJSONstr);
+			console.log(localStorage.getItem('eventTitleBrowsingHistory'));
+					    
+        });       
+        
     });
+    
+
+    
+    function toDataURL(url, callback) {
+		var xhr = new XMLHttpRequest();
+		xhr.onload = function() {
+			var reader = new FileReader();
+			reader.onloadend = function() {
+			callback(reader.result);
+  	    }
+		reader.readAsDataURL(xhr.response);
+  	  };
+  	  xhr.open('GET', url);
+  	  xhr.responseType = 'blob';
+  	  xhr.send();
+  	}
+        
+    function eventTitleBrowsingHistory(evetit_name, evetit_poster) {
+        this.evetit_name = evetit_name;
+        this.evetit_poster = evetit_poster;
+    	this.toString = function (){
+    		return this.evetit_name + this.evetit_poster;
+    	};
+    }
     </script>
 </body>
 

@@ -25,20 +25,11 @@
 </head>
 
 <body>
-		<div class="container">   	
-	    	<%-- 錯誤表列 --%>
-			<c:if test="${not empty eventTitleErrorMsgs}">
-				<font style="color: red">請修正以下錯誤:</font>
-				<ul>
-					<c:forEach var="message" items="${eventTitleErrorMsgs}">
-						<li style="color: red">${message}</li>
-					</c:forEach>
-				</ul>
-			</c:if>
+		
+		<div class="container">
+			<span class="text-danger">${eventTitleErrorMsgs.Exception}</span>
 		</div>
-
-
-
+		
     	<div class="container">    	
 	        <form method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/EVENT_TITLE/EventTitleServlet.do"> 	            
 	            <div class="form-group">
@@ -48,6 +39,7 @@
 	           
 	            <div class="form-group">
 	                <label for="evetit_name">活動主題名稱</label>
+	                <span class="text-danger">${eventTitleErrorMsgs.evetit_name}</span>
 	                <input type="text" name="evetit_name" id="evetit_name" class="form-control" value="${eventTitleVO.evetit_name}">
 	            </div>
 	            
@@ -67,13 +59,17 @@
 	                <div class="col-xs-12 col-sm-6">
 	                    <div class="form-group">
 	                        <label for="evetit_startdate">開始日期</label>
+	                        <span class="text-danger">${eventTitleErrorMsgs.evetit_startdate}</span>
 	                        <input type="text" id="evetit_startdate" name="evetit_startdate" class="form-control" 
 	                        value="<fmt:formatDate value="${eventTitleVO.evetit_startdate}" pattern="yyyy-MM-dd"/>">
 	                    </div>
 	                </div>
 	                <div class="col-xs-12 col-sm-6">
 	                    <div class="form-group">
-	                        <label for="evetit_enddate">結束日期</label>
+	                        <label for="evetit_enddate">結束日期</label>	                        
+	                        <span class="text-danger">${eventTitleErrorMsgs.evetit_enddate}</span>
+	                        <span class="text-danger">${eventTitleErrorMsgs.evetit_enddate_BiggerThanToday}</span>
+	                        <span class="text-danger">${eventTitleErrorMsgs.evetit_enddate_BiggerThanEvetitStartdate}</span>
 	                        <input type="text" id="evetit_enddate" name="evetit_enddate" class="form-control" 
 	                        value="<fmt:formatDate value="${eventTitleVO.evetit_enddate}" pattern="yyyy-MM-dd"/>"> 
 	                    </div>
@@ -84,6 +80,7 @@
 	                <div class="col-xs-12 col-sm-6">
 	                     <div class="form-group">
 	                         <label for="launchdate">上架日期</label>
+	                         <span class="text-danger">${eventTitleErrorMsgs.launchdate}</span>
 	                         <input type="text" id="launchdate" name="launchdate" class="form-control" 
 	                         value="<fmt:formatDate value="${eventTitleVO.launchdate}" pattern="yyyy-MM-dd"/>">
 	                     </div>
@@ -91,6 +88,9 @@
 	                <div class="col-xs-12 col-sm-6">
 	                     <div class="form-group">
 	                         <label for="offdate">下架日期</label>
+	                         <span class="text-danger">${eventTitleErrorMsgs.offdate}</span>
+	                         <span class="text-danger">${eventTitleErrorMsgs.offdate_BiggerThanToday}</span>
+	                         <span class="text-danger">${eventTitleErrorMsgs.offdate_BiggerThanLaunchdate}</span>
 	                         <input type="text" id="offdate" name="offdate" class="form-control"
 	                         value="<fmt:formatDate value="${eventTitleVO.offdate}" pattern="yyyy-MM-dd"/>">
 	                     </div>
@@ -143,6 +143,7 @@
 	            
 				<div class="form-group">
 					<label for="evetit_poster">主海報</label>
+					<span class="text-danger">${eventTitleErrorMsgs.evetit_poster}</span>
 					<input type="file" id="evetit_poster" name="evetit_poster" class="form-control" accept="image/*">
 					<input type="hidden" id="evetit_poster_status" name="evetit_poster_status" value="${(evetit_poster_status == 'alreadyUpload') ? 'alreadyUpload' : 'noUpload'}">
 					<c:if test="${evetit_poster_status != 'alreadyUpload'}">
@@ -222,6 +223,15 @@
             imagesPreview(this);
             $("#evetit_poster_status").attr("value", "yesUpload");
         });
+        
+        
+        $(".text-danger").each(function(){
+        	var errorMsg = $(this).text();
+        	if( errorMsg.trim() != "" ){
+        		$(this).prepend("<i class='glyphicon glyphicon-triangle-left'></i>");
+        	}        	
+        });
+               
     });
     </script>
 </body>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Title Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Owl Stylesheets -->
+    <link rel="stylesheet" href="OwlCarousel2-2.3.4/docs/assets/owlcarousel/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="OwlCarousel2-2.3.4/docs/assets/owlcarousel/assets/owl.theme.default.min.css">
+</head>
+
+<body>
+
+
+<div class="container">
+	<div class="owl-carousel owl-theme eventTitleBrowsingHistoryOwlArea">
+	</div>
+</div>
+
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="OwlCarousel2-2.3.4/docs/assets/owlcarousel/owl.carousel.js"></script>
+    <script>
+    $(document).ready(function() {
+
+    	var img = 'https://api.fnkr.net/testimg/850x370/00CED1/FFF/?text=hey';
+    	var word = '哈哈哈哈哈哈哈哈哈'
+
+        $(".eventTitleBrowsingHistoryOwlArea")
+        .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
+        .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
+        .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
+        .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
+        .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
+        .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
+        .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
+        .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
+        .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
+        .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
+        .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>");
+
+
+
+        var eventTitleBrowsingHistoryOwlArea = $(".eventTitleBrowsingHistoryOwlArea");
+        eventTitleBrowsingHistoryOwlArea.owlCarousel({
+            margin: 10,
+            nav: true,
+            loop: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 3
+                },
+                1000: {
+                    items: 5
+                }
+            }
+        })
+    })
+    </script>
+</body>
+
+</html>

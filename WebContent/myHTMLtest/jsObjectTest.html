@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Title Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+</head>
+
+<body>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+
+
+    // ----------------------------------------------------------------------------
+    function browseHistory(name, poster) {
+        this.name = name;
+        this.poster = poster;
+    }
+    var hisArray = [];
+
+    var bh = new browseHistory("活動名字", "活動圖片");
+    hisArray.push(bh);
+
+    var bh2 = new browseHistory("活動名字2", "活動圖片2");
+    hisArray.push(bh2);
+
+    var bh3 = new browseHistory("活動名字3", "活動圖片3");
+    hisArray.push(bh3);
+
+    var bh4 = new browseHistory("活動名字4", "活動圖片4");
+    hisArray.push(bh4);
+
+    var bhJsonStr = JSON.stringify(hisArray);
+    document.write("bhJsonStr: ", bhJsonStr, "<br>");
+
+
+
+    // ----------------------------------------------------------------------------
+    var afterParse = JSON.parse(bhJsonStr);
+
+    console.log(afterParse);
+    console.log(afterParse[0]);
+    console.log(afterParse[0].name);
+    console.log(afterParse[0].poster);
+    console.log(afterParse[1]);
+
+    afterParse.forEach(function(element) {
+        console.log(element);
+        console.log(element.name);
+        console.log(element.poster);
+    });
+
+    var bh5 = new browseHistory("活動名字5", "活動圖片5");
+    afterParse.push(bh5);
+
+    afterParse.forEach(function(element) {
+        console.log("add", element);
+        console.log("add", element.name);
+        console.log("add", element.poster);
+    });
+
+    </script>
+</body>
+
+</html>

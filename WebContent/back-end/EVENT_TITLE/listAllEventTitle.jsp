@@ -18,9 +18,11 @@
 
 <head>
 <meta charset="utf-8">
+
+
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-<title>瀏覽所有活動</title>
+<title></title>
 <!-- Basic -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
 <!-- dataTables -->
@@ -36,15 +38,8 @@
 <body>
 
 	<div class="container">
-		<%-- 錯誤表列 --%>
-		<c:if test="${not empty eventTitleErrorMsgs}">
-			<font style="color: red">請修正以下錯誤:</font>
-			<ul>
-				<c:forEach var="message" items="${eventTitleErrorMsgs}">
-					<li style="color: red">${message}</li>
-				</c:forEach>
-			</ul>
-		</c:if>
+		<span class="text-danger">${eventTitleErrorMsgs.evetit_no}</span>
+		<span class="text-danger">${eventTitleErrorMsgs.Exception}</span>
 	</div>
 
 	<div class="container">

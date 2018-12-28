@@ -11,7 +11,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title></title>
+    <title>所有活動</title>
     <!-- Basic -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- datetimepicker -->
@@ -33,21 +33,9 @@
 
 <body>
 
-
-
 	<div class="container">
-		<%-- 錯誤表列 --%>
-		<c:if test="${not empty eventTitleErrorMsgs}">
-			<font style="color: red">請修正以下錯誤:</font>
-			<ul>
-				<c:forEach var="message" items="${eventTitleErrorMsgs}">
-					<li style="color: red">${message}</li>
-				</c:forEach>
-			</ul>
-		</c:if>
+		<span class="text-danger">${eventTitleErrorMsgs.Exception}</span>
 	</div>
-
-
 
     <div class="container">
 		<form method="post" action="<%=request.getContextPath()%>/EVENT_TITLE/EventTitleServlet.do">
@@ -59,13 +47,13 @@
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
                         <label for="evetit_startdate">開始日期</label>
-                        <input type="text" id="evetit_startdate" name="evetit_startdate" class="form-control" value="">
+                        <input type="text" name="evetit_startdate" id="evetit_startdate" placeholder="請選擇開始日期" class="form-control" value="">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
                         <label for="evetit_enddate">結束日期</label>
-                        <input type="text" id="evetit_enddate" name="evetit_enddate" class="form-control" value="">
+                        <input type="text" name="evetit_enddate" id="evetit_enddate" placeholder="請選擇結束日期" class="form-control" value="">
                     </div>
                 </div>
             </div>
