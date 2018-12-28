@@ -7,8 +7,10 @@
 <%@ page import="com.event_title.controller.*"%>
 
 <%
+	// --------------------尚未處理:::把活動主題加入最愛--------------------
 	// just for add&delete FavoriteEvent Test
 	String member_no = "member_no";
+	// --------------------尚未處理:::把活動主題加入最愛--------------------
 %>
 
 <%
@@ -48,7 +50,9 @@
                 <div id="toggleFavoriteEvent" class="pointer">
 	                <div class="col-xs-12 col-sm-12 col-md-3 text-right" style="color:red;">
 	                     <h4><i class="glyphicon glyphicon-heart-empty"></i>加入最愛</h4>
+						 <!-- // --------------------尚未處理:::把活動主題加入最愛-------------------- -->
 	                     <input type="hidden" id="favoriteEventStatus" value="inTheFavoriteEvent">
+	                     <!-- // --------------------尚未處理:::把活動主題加入最愛-------------------- -->
 	                </div>
                 </div>
             </div>
@@ -125,37 +129,44 @@
         toDataURL($("#poster").attr("src"), function(dataUrl) {
         	
 //         	localStorage.clear();
-        	        	
+
         	if(localStorage.getItem("eventTitleBrowsingHistory") == null){
         		var eventTitleBrowsingHistoryArray = [];
-        		console.log("123");
         	} else {
         		var eventTitleBrowsingHistoryJSONstr = localStorage.getItem("eventTitleBrowsingHistory");
         		var eventTitleBrowsingHistoryArray = JSON.parse(eventTitleBrowsingHistoryJSONstr);
         	}
-        	
-//         				console.log(eventTitleBrowsingHistoryStr);
       	
             var evetit_name = $("#evetit_name").html();
-// 			            console.log("evetit_name : ", evetit_name);
-// 						console.log('RESULT:', dataUrl);
-
 			var oneEventTitleBrowsingHistory = new eventTitleBrowsingHistory(evetit_name, dataUrl);
-// 						console.log("oneEventTitleBrowsingHistory", oneEventTitleBrowsingHistory);
-			console.log(oneEventTitleBrowsingHistory);
-			
-			//!!!!!!!!!!!!!!!!!!!!!!!!!檢查是否在array出現過
-			eventTitleBrowsingHistoryArray.push(oneEventTitleBrowsingHistory);
+
+
+			if(!isEventTitleBrowsingHistoryExist(eventTitleBrowsingHistoryArray, oneEventTitleBrowsingHistory)){
+ 				eventTitleBrowsingHistoryArray.push(oneEventTitleBrowsingHistory);
+ 			}
+
 			var eventTitleBrowsingHistoryJSONstr = JSON.stringify(eventTitleBrowsingHistoryArray);
 					
-			localStorage.setItem('eventTitleBrowsingHistory', eventTitleBrowsingHistoryJSONstr);
-			console.log(localStorage.getItem('eventTitleBrowsingHistory'));
+			localStorage.setItem("eventTitleBrowsingHistory", eventTitleBrowsingHistoryJSONstr);
 					    
         });       
         
     });
     
-
+    
+    
+	function isEventTitleBrowsingHistoryExist (eventTitleBrowsingHistoryArray, oneEventTitleBrowsingHistory){
+		var isEventTitleBrowsingHistoryExist = false;
+		for(var i = 0; i < eventTitleBrowsingHistoryArray.length; i++){
+			if(eventTitleBrowsingHistoryArray[i].evetit_name === oneEventTitleBrowsingHistory.evetit_name){
+				isEventTitleBrowsingHistoryExist = true;
+				break;
+			} 
+		}		
+		return isEventTitleBrowsingHistoryExist;
+	}
+    
+    
     
     function toDataURL(url, callback) {
 		var xhr = new XMLHttpRequest();
@@ -174,9 +185,6 @@
     function eventTitleBrowsingHistory(evetit_name, evetit_poster) {
         this.evetit_name = evetit_name;
         this.evetit_poster = evetit_poster;
-    	this.toString = function (){
-    		return this.evetit_name + this.evetit_poster;
-    	};
     }
     </script>
 </body>
