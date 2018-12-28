@@ -13,7 +13,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-public class SeatingAreaDAO implements SeatingAreaDAO_interface{
+public class SeatingAreaJNDIDAO implements SeatingAreaDAO_interface{
 
 	private static DataSource ds = null;
 	static {

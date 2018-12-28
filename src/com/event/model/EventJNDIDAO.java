@@ -19,7 +19,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-public class EventDAO implements EventDAO_interface{
+public class EventJNDIDAO implements EventDAO_interface{
 
 	private static DataSource ds = null;
 	static {

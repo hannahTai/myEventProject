@@ -1,4 +1,4 @@
-package com.seating_area.model;
+package com.ticket_type.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,7 +13,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-public class SeatingAreaDAO implements SeatingAreaDAO_interface{
+public class TicketTypeJNDIDAO implements TicketTypeDAO_interface{
 
 	private static DataSource ds = null;
 	static {
@@ -25,56 +25,54 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 		}
 	}
 	
-	private static final String INSERT_STMT=
-			"INSERT INTO seating_area (ticarea_no, eve_no, tictype_no, ticarea_color, ticarea_name, tictotalnumber, ticbookednumber) "
-			+ "VALUES ('ES'||LPAD(to_char(TICAREA_SEQ.NEXTVAL), 8, '0'), ?, ?, ?, ?, ?, ?)";
+	private static final String INSERT_STMT = 
+			"INSERT INTO TICKET_TYPE (tictype_no, eve_no, tictype_color, tictype_name, tictype_price) "
+			+ "VALUES ('ET'||LPAD(to_char(TICTYPE_SEQ.NEXTVAL), 6, '0'), ?, ?, ?, ?)";
 	
 	private static final String UPDATE_STMT = 
-			"UPDATE seating_area set ticarea_color=?, ticarea_name=?, tictotalnumber=?, ticbookednumber=? "
-			+ "WHERE ticarea_no=?";
-			
-	private static final String DELETE_STMT = 
-			"DELETE FROM seating_area WHERE ticarea_no=?";
-		 
-	private static final String GET_ONE_STMT=
-			"SELECT ticarea_no, eve_no, tictype_no, ticarea_color, ticarea_name, tictotalnumber, ticbookednumber "
-			+ "FROM seating_area WHERE ticarea_no=?";
+			"UPDATE TICKET_TYPE SET tictype_color=?, tictype_name=?, tictype_price=? "
+			+ "WHERE tictype_no=?";
 	
-	private static final String GET_ALL_STMT=
-			"SELECT ticarea_no, eve_no, tictype_no, ticarea_color, ticarea_name, tictotalnumber, ticbookednumber "
-			+ "FROM seating_area ORDER BY ticarea_no";
+	private static final String DELETE_STMT = 
+			"DELETE FROM TICKET_TYPE WHERE tictype_no=?";
+	
+	private static final String GET_ONE_STMT = 
+			"SELECT tictype_no, eve_no, tictype_color, tictype_name, tictype_price "
+			+ "FROM TICKET_TYPE WHERE tictype_no=?";
+	
+	private static final String GET_ALL_STMT = 
+			"SELECT tictype_no, eve_no, tictype_color, tictype_name, tictype_price "
+			+ "FROM TICKET_TYPE ORDER BY tictype_no";
 	
 	
 	
 	@Override
-	public String insert(SeatingAreaVO seatingareaVO) {
+	public String insert(TicketTypeVO ticketTypeVO) {
 		
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		PreparedStatement pstmt = null;	
 		ResultSet rs = null;
-		String ticarea_no = null;
-
+		String tictype_no = null;
+		
 		try {
 			con = ds.getConnection();
 			
-			String[] cols = { "ticarea_no" };
+			String[] cols = { "tictype_no" };
 			pstmt = con.prepareStatement(INSERT_STMT, cols);
-			
-			pstmt.setString(1, seatingareaVO.getEve_no());
-			pstmt.setString(2, seatingareaVO.getTictype_no());
-			pstmt.setString(3, seatingareaVO.getTicarea_color());
-			pstmt.setString(4, seatingareaVO.getTicarea_name());
-			pstmt.setInt(5, seatingareaVO.getTictotalnumber());
-			pstmt.setInt(6, seatingareaVO.getTicbookednumber());
 
+			pstmt.setString(1, ticketTypeVO.getEve_no()); 
+			pstmt.setString(2, ticketTypeVO.getTictype_color());
+			pstmt.setString(3, ticketTypeVO.getTictype_name());
+			pstmt.setInt(4, ticketTypeVO.getTictype_price());				
+		
 			pstmt.executeUpdate();
 			
 			rs = pstmt.getGeneratedKeys();
 			if(rs.next()) {
-				ticarea_no = rs.getString(1);
+				tictype_no = rs.getString(1);
 			}
 			
-			System.out.println("----------Inserted : " + ticarea_no + "----------");
+			System.out.println("----------Inserted : " + tictype_no + "----------");
 
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
@@ -100,26 +98,25 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 					e.printStackTrace(System.err);
 				}
 			}
-		}
-		return ticarea_no;
+		}	
+		return tictype_no;
 	}
-	
+
 	@Override
-	public void update(SeatingAreaVO seatingareaVO) {
+	public void update(TicketTypeVO ticketTypeVO) {
 		
 		Connection con = null;
-		PreparedStatement pstmt = null;
-
+		PreparedStatement pstmt = null;	
+		
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(UPDATE_STMT);
 			
-			pstmt.setString(1, seatingareaVO.getTicarea_color());
-			pstmt.setString(2, seatingareaVO.getTicarea_name());
-			pstmt.setInt(3, seatingareaVO.getTictotalnumber());
-			pstmt.setInt(4, seatingareaVO.getTicbookednumber());
-			pstmt.setString(5, seatingareaVO.getTicarea_no());
-
+			pstmt.setString(1, ticketTypeVO.getTictype_color());
+			pstmt.setString(2, ticketTypeVO.getTictype_name());
+			pstmt.setInt(3, ticketTypeVO.getTictype_price());	
+			pstmt.setString(4, ticketTypeVO.getTictype_no()); 
+		
 			pstmt.executeUpdate();
 			
 			System.out.println("----------Updated----------");
@@ -141,20 +138,20 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 					e.printStackTrace(System.err);
 				}
 			}
-		}
+		}		
 	}
 
 	@Override
-	public void delete(String ticarea_no) {
+	public void delete(String ticketTypeVO) {
 		
 		Connection con = null;
-		PreparedStatement pstmt = null;
-
+		PreparedStatement pstmt = null;	
+		
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(DELETE_STMT);
 
-			pstmt.setString(1, ticarea_no);
+			pstmt.setString(1, ticketTypeVO);
 
 			pstmt.executeUpdate();
 			
@@ -178,34 +175,33 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 				}
 			}
 		}
-	} 
+		
+	}
 
 	@Override
-	public SeatingAreaVO findByPrimaryKey(String ticarea_no) {
+	public TicketTypeVO findByPrimaryKey(String tictype_no) {
 		
-		SeatingAreaVO seatingareaVO = null;
+		TicketTypeVO ticketTypeVO = null;
 		
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		PreparedStatement pstmt = null;	
 		ResultSet rs = null;
-
+		
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ONE_STMT);
-
-			pstmt.setString(1, ticarea_no);
-
+			
+			pstmt.setString(1, tictype_no); 
+					
 			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				seatingareaVO = new SeatingAreaVO();
-				seatingareaVO.setTicarea_no(rs.getString("ticarea_no"));
-				seatingareaVO.setEve_no(rs.getString("eve_no"));
-				seatingareaVO.setTictype_no(rs.getString("tictype_no"));
-				seatingareaVO.setTicarea_color(rs.getString("ticarea_color"));
-				seatingareaVO.setTicarea_name(rs.getString("ticarea_name"));
-				seatingareaVO.setTictotalnumber(rs.getInt("tictotalnumber"));
-				seatingareaVO.setTicbookednumber(rs.getInt("ticbookednumber"));
+			
+			while(rs.next()) {
+				ticketTypeVO = new TicketTypeVO();				
+				ticketTypeVO.setTictype_no(rs.getString("tictype_no"));
+				ticketTypeVO.setEve_no(rs.getString("eve_no"));
+				ticketTypeVO.setTictype_color(rs.getString("tictype_color"));
+				ticketTypeVO.setTictype_name(rs.getString("tictype_name"));				
+				ticketTypeVO.setTictype_price(rs.getInt("tictype_price"));				
 			}
 			
 			System.out.println("----------findByPrimaryKey finished----------");
@@ -235,37 +231,35 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 				}
 			}
 		}
-		return seatingareaVO;
+		return ticketTypeVO;
 	}
 
 	@Override
-	public List<SeatingAreaVO> getAll() {
+	public List<TicketTypeVO> getAll() {
 		
-		List<SeatingAreaVO> list = new ArrayList<SeatingAreaVO>();
-		SeatingAreaVO seatingareaVO = null;
-
+		List<TicketTypeVO> list = new ArrayList<TicketTypeVO>();
+		TicketTypeVO ticketTypeVO = null;
+		
 		Connection con = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;		
+		
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ALL_STMT);
-			
+					
 			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				seatingareaVO = new SeatingAreaVO();
-				seatingareaVO.setTicarea_no(rs.getString("ticarea_no"));
-				seatingareaVO.setEve_no(rs.getString("eve_no"));
-				seatingareaVO.setTictype_no(rs.getString("tictype_no"));
-				seatingareaVO.setTicarea_color(rs.getString("ticarea_color"));
-				seatingareaVO.setTicarea_name(rs.getString("ticarea_name"));
-				seatingareaVO.setTictotalnumber(rs.getInt("tictotalnumber"));
-				seatingareaVO.setTicbookednumber(rs.getInt("ticbookednumber"));
-				list.add(seatingareaVO);
+			
+			while(rs.next()) {				
+				ticketTypeVO = new TicketTypeVO();				
+				ticketTypeVO.setTictype_no(rs.getString("tictype_no"));
+				ticketTypeVO.setEve_no(rs.getString("eve_no"));
+				ticketTypeVO.setTictype_color(rs.getString("tictype_color"));
+				ticketTypeVO.setTictype_name(rs.getString("tictype_name"));				
+				ticketTypeVO.setTictype_price(rs.getInt("tictype_price"));
+				list.add(ticketTypeVO);				
 			}
-
+			
 			System.out.println("----------getAll finished----------");
 
 		} catch (SQLException se) {
@@ -294,8 +288,6 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 			}
 		}
 		return list;
-	}
-	
-	
+	}	
 	
 }

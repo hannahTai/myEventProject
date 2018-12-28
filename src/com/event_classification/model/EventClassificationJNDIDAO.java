@@ -1,4 +1,4 @@
-package com.ticket_type.model;
+package com.event_classification.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,7 +13,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-public class TicketTypeDAO implements TicketTypeDAO_interface{
+public class EventClassificationJNDIDAO implements EventClassificationDAO_interface{
 
 	private static DataSource ds = null;
 	static {
@@ -26,64 +26,41 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 	}
 	
 	private static final String INSERT_STMT = 
-			"INSERT INTO TICKET_TYPE (tictype_no, eve_no, tictype_color, tictype_name, tictype_price) "
-			+ "VALUES ('ET'||LPAD(to_char(TICTYPE_SEQ.NEXTVAL), 6, '0'), ?, ?, ?, ?)";
-	
+			"INSERT INTO EVENT_CLASSIFICATION (EVECLASS_NO,EVECLASS_NAME) VALUES (?, ?)";
+
 	private static final String UPDATE_STMT = 
-			"UPDATE TICKET_TYPE SET tictype_color=?, tictype_name=?, tictype_price=? "
-			+ "WHERE tictype_no=?";
+			"UPDATE EVENT_CLASSIFICATION SET EVECLASS_NAME=? WHERE EVECLASS_NO=?";
 	
 	private static final String DELETE_STMT = 
-			"DELETE FROM TICKET_TYPE WHERE tictype_no=?";
-	
+			"DELETE FROM EVENT_CLASSIFICATION WHERE EVECLASS_NO=?";
+
 	private static final String GET_ONE_STMT = 
-			"SELECT tictype_no, eve_no, tictype_color, tictype_name, tictype_price "
-			+ "FROM TICKET_TYPE WHERE tictype_no=?";
-	
+			"SELECT EVECLASS_NO, EVECLASS_NAME FROM EVENT_CLASSIFICATION WHERE EVECLASS_NO = ?";
+
 	private static final String GET_ALL_STMT = 
-			"SELECT tictype_no, eve_no, tictype_color, tictype_name, tictype_price "
-			+ "FROM TICKET_TYPE ORDER BY tictype_no";
+			"SELECT EVECLASS_NO, EVECLASS_NAME FROM EVENT_CLASSIFICATION";
 	
 	
 	
 	@Override
-	public String insert(TicketTypeVO ticketTypeVO) {
-		
+	public void insert(EventClassificationVO eventClassificationVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;	
-		ResultSet rs = null;
-		String tictype_no = null;
 		
 		try {
 			con = ds.getConnection();
+			pstmt = con.prepareStatement(INSERT_STMT);
 			
-			String[] cols = { "tictype_no" };
-			pstmt = con.prepareStatement(INSERT_STMT, cols);
-
-			pstmt.setString(1, ticketTypeVO.getEve_no()); 
-			pstmt.setString(2, ticketTypeVO.getTictype_color());
-			pstmt.setString(3, ticketTypeVO.getTictype_name());
-			pstmt.setInt(4, ticketTypeVO.getTictype_price());				
-		
+			pstmt.setString(1,eventClassificationVO.getEveclass_no());
+			pstmt.setString(2,eventClassificationVO.getEveclass_name());
+			
 			pstmt.executeUpdate();
 			
-			rs = pstmt.getGeneratedKeys();
-			if(rs.next()) {
-				tictype_no = rs.getString(1);
-			}
-			
-			System.out.println("----------Inserted : " + tictype_no + "----------");
+			System.out.println("----------Inserted----------");
 
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
 			if (pstmt != null) {
 				try {
 					pstmt.close();
@@ -98,25 +75,21 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 					e.printStackTrace(System.err);
 				}
 			}
-		}	
-		return tictype_no;
+		}
 	}
 
 	@Override
-	public void update(TicketTypeVO ticketTypeVO) {
-		
+	public void update(EventClassificationVO eventClassificationVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;	
 		
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(UPDATE_STMT);
+			pstmt.setString(1,eventClassificationVO.getEveclass_name());
+			pstmt.setString(2,eventClassificationVO.getEveclass_no());
+	
 			
-			pstmt.setString(1, ticketTypeVO.getTictype_color());
-			pstmt.setString(2, ticketTypeVO.getTictype_name());
-			pstmt.setInt(3, ticketTypeVO.getTictype_price());	
-			pstmt.setString(4, ticketTypeVO.getTictype_no()); 
-		
 			pstmt.executeUpdate();
 			
 			System.out.println("----------Updated----------");
@@ -138,12 +111,11 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 					e.printStackTrace(System.err);
 				}
 			}
-		}		
+		}
 	}
 
 	@Override
-	public void delete(String ticketTypeVO) {
-		
+	public void delete(String eveclass_no) {
 		Connection con = null;
 		PreparedStatement pstmt = null;	
 		
@@ -151,8 +123,8 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(DELETE_STMT);
 
-			pstmt.setString(1, ticketTypeVO);
-
+			pstmt.setString(1, eveclass_no);
+			
 			pstmt.executeUpdate();
 			
 			System.out.println("----------Deleted----------");
@@ -175,13 +147,12 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 				}
 			}
 		}
-		
 	}
 
 	@Override
-	public TicketTypeVO findByPrimaryKey(String tictype_no) {
+	public EventClassificationVO findByPrimaryKey(String eveclass_no) {
 		
-		TicketTypeVO ticketTypeVO = null;
+		EventClassificationVO eventClassificationVO = null;
 		
 		Connection con = null;
 		PreparedStatement pstmt = null;	
@@ -191,17 +162,14 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ONE_STMT);
 			
-			pstmt.setString(1, tictype_no); 
-					
+			pstmt.setString(1,eveclass_no);
+			
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				ticketTypeVO = new TicketTypeVO();				
-				ticketTypeVO.setTictype_no(rs.getString("tictype_no"));
-				ticketTypeVO.setEve_no(rs.getString("eve_no"));
-				ticketTypeVO.setTictype_color(rs.getString("tictype_color"));
-				ticketTypeVO.setTictype_name(rs.getString("tictype_name"));				
-				ticketTypeVO.setTictype_price(rs.getInt("tictype_price"));				
+				eventClassificationVO = new EventClassificationVO();
+				eventClassificationVO.setEveclass_no(rs.getString("EVECLASS_NO"));
+				eventClassificationVO.setEveclass_name(rs.getString("EVECLASS_NAME"));
 			}
 			
 			System.out.println("----------findByPrimaryKey finished----------");
@@ -209,13 +177,6 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
 			if (pstmt != null) {
 				try {
 					pstmt.close();
@@ -231,33 +192,28 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 				}
 			}
 		}
-		return ticketTypeVO;
+		return eventClassificationVO;
 	}
 
 	@Override
-	public List<TicketTypeVO> getAll() {
-		
-		List<TicketTypeVO> list = new ArrayList<TicketTypeVO>();
-		TicketTypeVO ticketTypeVO = null;
-		
+	public List<EventClassificationVO> getAll() {
+		List<EventClassificationVO> list = new ArrayList<EventClassificationVO>();
+		EventClassificationVO eventClassificationVO = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;	
-		ResultSet rs = null;		
+		ResultSet rs = null;	
 		
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ALL_STMT);
-					
+
 			rs = pstmt.executeQuery();
 			
-			while(rs.next()) {				
-				ticketTypeVO = new TicketTypeVO();				
-				ticketTypeVO.setTictype_no(rs.getString("tictype_no"));
-				ticketTypeVO.setEve_no(rs.getString("eve_no"));
-				ticketTypeVO.setTictype_color(rs.getString("tictype_color"));
-				ticketTypeVO.setTictype_name(rs.getString("tictype_name"));				
-				ticketTypeVO.setTictype_price(rs.getInt("tictype_price"));
-				list.add(ticketTypeVO);				
+			while(rs.next()) {
+				eventClassificationVO = new EventClassificationVO();
+				eventClassificationVO.setEveclass_no(rs.getString("EVECLASS_NO"));
+				eventClassificationVO.setEveclass_name(rs.getString("EVECLASS_NAME"));
+				list.add(eventClassificationVO);
 			}
 			
 			System.out.println("----------getAll finished----------");
@@ -265,13 +221,6 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
 			if (pstmt != null) {
 				try {
 					pstmt.close();
@@ -288,6 +237,6 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 			}
 		}
 		return list;
-	}	
-	
+	}
+
 }

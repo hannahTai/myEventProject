@@ -1,4 +1,4 @@
-package com.event_classification.model;
+package com.favorite_event.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,8 +12,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+     
 
-public class EventClassificationDAO implements EventClassificationDAO_interface{
+public class FavoriteEventJNDIDAO implements FavoriteEventDAO_interface{
 
 	private static DataSource ds = null;
 	static {
@@ -26,24 +27,16 @@ public class EventClassificationDAO implements EventClassificationDAO_interface{
 	}
 	
 	private static final String INSERT_STMT = 
-			"INSERT INTO EVENT_CLASSIFICATION (EVECLASS_NO,EVECLASS_NAME) VALUES (?, ?)";
-
-	private static final String UPDATE_STMT = 
-			"UPDATE EVENT_CLASSIFICATION SET EVECLASS_NAME=? WHERE EVECLASS_NO=?";
+			"INSERT INTO FAVORITE_EVENT (MEMBER_NO,EVETIT_NO) VALUES (?, ?)";
 	
 	private static final String DELETE_STMT = 
-			"DELETE FROM EVENT_CLASSIFICATION WHERE EVECLASS_NO=?";
-
-	private static final String GET_ONE_STMT = 
-			"SELECT EVECLASS_NO, EVECLASS_NAME FROM EVENT_CLASSIFICATION WHERE EVECLASS_NO = ?";
+			"DELETE FROM FAVORITE_EVENT WHERE MEMBER_NO=? and EVETIT_NO=?";
 
 	private static final String GET_ALL_STMT = 
-			"SELECT EVECLASS_NO, EVECLASS_NAME FROM EVENT_CLASSIFICATION";
-	
-	
-	
+			"SELECT MEMBER_NO,EVETIT_NO FROM FAVORITE_EVENT WHERE MEMBER_NO=?";
+
 	@Override
-	public void insert(EventClassificationVO eventClassificationVO) {
+	public void insert(FavoriteEventVO favoriteEventVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;	
 		
@@ -51,8 +44,8 @@ public class EventClassificationDAO implements EventClassificationDAO_interface{
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(INSERT_STMT);
 			
-			pstmt.setString(1,eventClassificationVO.getEveclass_no());
-			pstmt.setString(2,eventClassificationVO.getEveclass_name());
+			pstmt.setString(1,favoriteEventVO.getMember_no());
+			pstmt.setString(2,favoriteEventVO.getEvetit_no());
 			
 			pstmt.executeUpdate();
 			
@@ -79,43 +72,7 @@ public class EventClassificationDAO implements EventClassificationDAO_interface{
 	}
 
 	@Override
-	public void update(EventClassificationVO eventClassificationVO) {
-		Connection con = null;
-		PreparedStatement pstmt = null;	
-		
-		try {
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(UPDATE_STMT);
-			pstmt.setString(1,eventClassificationVO.getEveclass_name());
-			pstmt.setString(2,eventClassificationVO.getEveclass_no());
-	
-			
-			pstmt.executeUpdate();
-			
-			System.out.println("----------Updated----------");
-
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. " + se.getMessage());
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
-	}
-
-	@Override
-	public void delete(String eveclass_no) {
+	public void delete(String member_no, String evetit_no) {
 		Connection con = null;
 		PreparedStatement pstmt = null;	
 		
@@ -123,8 +80,9 @@ public class EventClassificationDAO implements EventClassificationDAO_interface{
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(DELETE_STMT);
 
-			pstmt.setString(1, eveclass_no);
-			
+			pstmt.setString(1, member_no);
+			pstmt.setString(2, evetit_no);
+
 			pstmt.executeUpdate();
 			
 			System.out.println("----------Deleted----------");
@@ -150,77 +108,40 @@ public class EventClassificationDAO implements EventClassificationDAO_interface{
 	}
 
 	@Override
-	public EventClassificationVO findByPrimaryKey(String eveclass_no) {
-		
-		EventClassificationVO eventClassificationVO = null;
-		
+	public List<FavoriteEventVO> findByMember(String member_no) {
+		List<FavoriteEventVO> list = new ArrayList<>();
+		FavoriteEventVO favoriteEventVO = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;	
 		ResultSet rs = null;
 		
 		try {
 			con = ds.getConnection();
-			pstmt = con.prepareStatement(GET_ONE_STMT);
+			pstmt = con.prepareStatement(GET_ALL_STMT);
 			
-			pstmt.setString(1,eveclass_no);
-			
+			pstmt.setString(1, member_no); 
+					
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				eventClassificationVO = new EventClassificationVO();
-				eventClassificationVO.setEveclass_no(rs.getString("EVECLASS_NO"));
-				eventClassificationVO.setEveclass_name(rs.getString("EVECLASS_NAME"));
+				favoriteEventVO = new FavoriteEventVO();
+				favoriteEventVO.setMember_no(rs.getString("MEMBER_NO"));
+				favoriteEventVO.setEvetit_no(rs.getString("EVETIT_NO"));
+				list.add(favoriteEventVO);
 			}
 			
-			System.out.println("----------findByPrimaryKey finished----------");
+			System.out.println("----------findByMember finished----------");
 
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
-			if (pstmt != null) {
+			if (rs != null) {
 				try {
-					pstmt.close();
+					rs.close();
 				} catch (SQLException se) {
 					se.printStackTrace(System.err);
 				}
 			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
-		return eventClassificationVO;
-	}
-
-	@Override
-	public List<EventClassificationVO> getAll() {
-		List<EventClassificationVO> list = new ArrayList<EventClassificationVO>();
-		EventClassificationVO eventClassificationVO = null;
-		Connection con = null;
-		PreparedStatement pstmt = null;	
-		ResultSet rs = null;	
-		
-		try {
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(GET_ALL_STMT);
-
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				eventClassificationVO = new EventClassificationVO();
-				eventClassificationVO.setEveclass_no(rs.getString("EVECLASS_NO"));
-				eventClassificationVO.setEveclass_name(rs.getString("EVECLASS_NAME"));
-				list.add(eventClassificationVO);
-			}
-			
-			System.out.println("----------getAll finished----------");
-
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. " + se.getMessage());
-		} finally {
 			if (pstmt != null) {
 				try {
 					pstmt.close();
@@ -237,6 +158,42 @@ public class EventClassificationDAO implements EventClassificationDAO_interface{
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public void insertbyNo(String member_no, String evetit_no) {
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(INSERT_STMT);
+			
+			pstmt.setString(1,member_no);
+			pstmt.setString(2,evetit_no);
+			
+			pstmt.executeUpdate();
+			
+			System.out.println("----------insertbyNo finished----------");
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
 	}
 
 }

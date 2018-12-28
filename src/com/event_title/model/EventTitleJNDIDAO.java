@@ -23,7 +23,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
  
-public class EventTitleDAO implements EventTitleDAO_interface{
+public class EventTitleJNDIDAO implements EventTitleDAO_interface{
 	
 	private static DataSource ds = null;
 	static {

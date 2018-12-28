@@ -21,7 +21,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-public class VenueDAO implements VenueDAO_interface {
+public class VenueJNDIDAO implements VenueDAO_interface {
 
 	private static DataSource ds = null;
 	static {

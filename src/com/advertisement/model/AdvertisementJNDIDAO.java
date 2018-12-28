@@ -1,7 +1,6 @@
-package com.ticket_type.model;
+package com.advertisement.model;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,8 +12,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-public class TicketTypeDAO implements TicketTypeDAO_interface{
 
+public class AdvertisementJNDIDAO implements AdvertisementDAO_interface{
+	
 	private static DataSource ds = null;
 	static {
 		try {
@@ -26,64 +26,40 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 	}
 	
 	private static final String INSERT_STMT = 
-			"INSERT INTO TICKET_TYPE (tictype_no, eve_no, tictype_color, tictype_name, tictype_price) "
-			+ "VALUES ('ET'||LPAD(to_char(TICTYPE_SEQ.NEXTVAL), 6, '0'), ?, ?, ?, ?)";
-	
+			"INSERT INTO ADVERTISEMENT (AD_NO, EVETIT_NO, AD_STARTDATE, AD_ENDDATE) VALUES ('AD'||LPAD(TO_CHAR(AD_SEQ.NEXTVAL),4,'0'), ?, ?, ?)";
+
 	private static final String UPDATE_STMT = 
-			"UPDATE TICKET_TYPE SET tictype_color=?, tictype_name=?, tictype_price=? "
-			+ "WHERE tictype_no=?";
+			"UPDATE ADVERTISEMENT SET EVETIT_NO=?,AD_STARTDATE=?,AD_ENDDATE=? WHERE AD_NO=?";
 	
 	private static final String DELETE_STMT = 
-			"DELETE FROM TICKET_TYPE WHERE tictype_no=?";
-	
+			"DELETE FROM ADVERTISEMENT WHERE AD_NO=?";
+
 	private static final String GET_ONE_STMT = 
-			"SELECT tictype_no, eve_no, tictype_color, tictype_name, tictype_price "
-			+ "FROM TICKET_TYPE WHERE tictype_no=?";
-	
+			"SELECT AD_NO,EVETIT_NO,AD_STARTDATE,AD_ENDDATE FROM ADVERTISEMENT WHERE AD_NO = ?";
+
 	private static final String GET_ALL_STMT = 
-			"SELECT tictype_no, eve_no, tictype_color, tictype_name, tictype_price "
-			+ "FROM TICKET_TYPE ORDER BY tictype_no";
-	
-	
+			"SELECT AD_NO,EVETIT_NO,AD_STARTDATE,AD_ENDDATE FROM ADVERTISEMENT";
 	
 	@Override
-	public String insert(TicketTypeVO ticketTypeVO) {
-		
+	public void insert(AdvertisementVO advertisementVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;	
-		ResultSet rs = null;
-		String tictype_no = null;
 		
 		try {
 			con = ds.getConnection();
+			pstmt = con.prepareStatement(INSERT_STMT);
 			
-			String[] cols = { "tictype_no" };
-			pstmt = con.prepareStatement(INSERT_STMT, cols);
-
-			pstmt.setString(1, ticketTypeVO.getEve_no()); 
-			pstmt.setString(2, ticketTypeVO.getTictype_color());
-			pstmt.setString(3, ticketTypeVO.getTictype_name());
-			pstmt.setInt(4, ticketTypeVO.getTictype_price());				
-		
+			pstmt.setString(1,advertisementVO.getEvetit_no());
+			pstmt.setDate(2,advertisementVO.getAd_startdate());
+			pstmt.setDate(3,advertisementVO.getAd_enddate());
+			
 			pstmt.executeUpdate();
 			
-			rs = pstmt.getGeneratedKeys();
-			if(rs.next()) {
-				tictype_no = rs.getString(1);
-			}
-			
-			System.out.println("----------Inserted : " + tictype_no + "----------");
+			System.out.println("----------Inserted----------");
 
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
 			if (pstmt != null) {
 				try {
 					pstmt.close();
@@ -98,13 +74,11 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 					e.printStackTrace(System.err);
 				}
 			}
-		}	
-		return tictype_no;
+		}
 	}
 
 	@Override
-	public void update(TicketTypeVO ticketTypeVO) {
-		
+	public void update(AdvertisementVO advertisementVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;	
 		
@@ -112,10 +86,10 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(UPDATE_STMT);
 			
-			pstmt.setString(1, ticketTypeVO.getTictype_color());
-			pstmt.setString(2, ticketTypeVO.getTictype_name());
-			pstmt.setInt(3, ticketTypeVO.getTictype_price());	
-			pstmt.setString(4, ticketTypeVO.getTictype_no()); 
+			pstmt.setString(1,advertisementVO.getEvetit_no());
+			pstmt.setDate(2,advertisementVO.getAd_startdate());
+			pstmt.setDate(3,advertisementVO.getAd_enddate());
+			pstmt.setString(4,advertisementVO.getAd_no());
 		
 			pstmt.executeUpdate();
 			
@@ -138,12 +112,11 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 					e.printStackTrace(System.err);
 				}
 			}
-		}		
+		}
 	}
 
 	@Override
-	public void delete(String ticketTypeVO) {
-		
+	public void delete(String ad_no) {
 		Connection con = null;
 		PreparedStatement pstmt = null;	
 		
@@ -151,7 +124,7 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(DELETE_STMT);
 
-			pstmt.setString(1, ticketTypeVO);
+			pstmt.setString(1, ad_no);
 
 			pstmt.executeUpdate();
 			
@@ -175,14 +148,11 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 				}
 			}
 		}
-		
 	}
 
 	@Override
-	public TicketTypeVO findByPrimaryKey(String tictype_no) {
-		
-		TicketTypeVO ticketTypeVO = null;
-		
+	public AdvertisementVO findByPrimaryKey(String ad_no) {
+		AdvertisementVO advertisementVO = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;	
 		ResultSet rs = null;
@@ -191,17 +161,16 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ONE_STMT);
 			
-			pstmt.setString(1, tictype_no); 
+			pstmt.setString(1, ad_no); 
 					
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				ticketTypeVO = new TicketTypeVO();				
-				ticketTypeVO.setTictype_no(rs.getString("tictype_no"));
-				ticketTypeVO.setEve_no(rs.getString("eve_no"));
-				ticketTypeVO.setTictype_color(rs.getString("tictype_color"));
-				ticketTypeVO.setTictype_name(rs.getString("tictype_name"));				
-				ticketTypeVO.setTictype_price(rs.getInt("tictype_price"));				
+				advertisementVO = new AdvertisementVO();
+				advertisementVO.setAd_no(rs.getString("AD_NO"));
+				advertisementVO.setEvetit_no(rs.getString("EVETIT_NO"));
+				advertisementVO.setAd_startdate(rs.getDate("AD_STARTDATE"));
+				advertisementVO.setAd_enddate(rs.getDate("AD_ENDDATE"));
 			}
 			
 			System.out.println("----------findByPrimaryKey finished----------");
@@ -231,36 +200,32 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 				}
 			}
 		}
-		return ticketTypeVO;
+		return advertisementVO;
 	}
 
 	@Override
-	public List<TicketTypeVO> getAll() {
-		
-		List<TicketTypeVO> list = new ArrayList<TicketTypeVO>();
-		TicketTypeVO ticketTypeVO = null;
-		
+	public List<AdvertisementVO> getAll() {
+		List<AdvertisementVO> list = new ArrayList<>();
+		AdvertisementVO advertisementVO = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;	
-		ResultSet rs = null;		
+		ResultSet rs = null;
 		
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ALL_STMT);
-					
 			rs = pstmt.executeQuery();
 			
-			while(rs.next()) {				
-				ticketTypeVO = new TicketTypeVO();				
-				ticketTypeVO.setTictype_no(rs.getString("tictype_no"));
-				ticketTypeVO.setEve_no(rs.getString("eve_no"));
-				ticketTypeVO.setTictype_color(rs.getString("tictype_color"));
-				ticketTypeVO.setTictype_name(rs.getString("tictype_name"));				
-				ticketTypeVO.setTictype_price(rs.getInt("tictype_price"));
-				list.add(ticketTypeVO);				
+			while(rs.next()) {
+				advertisementVO = new AdvertisementVO();
+				advertisementVO.setAd_no(rs.getString("AD_NO"));
+				advertisementVO.setEvetit_no(rs.getString("EVETIT_NO"));
+				advertisementVO.setAd_startdate(rs.getDate("AD_STARTDATE"));
+				advertisementVO.setAd_enddate(rs.getDate("AD_ENDDATE"));
+				list.add(advertisementVO);
 			}
 			
-			System.out.println("----------getAll finished----------");
+			System.out.println("----------findByPrimaryKey finished----------");
 
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
@@ -288,6 +253,6 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 			}
 		}
 		return list;
-	}	
-	
+	}
+ 
 }
