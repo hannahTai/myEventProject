@@ -1,5 +1,5 @@
-<%@page import="com.TICKET_TYPE.model.TicketTypeVO"%>
-<%@page import="com.TICKET_TYPE.model.TicketTypeJDBCDAO"%>
+<%@page import="com.ticket_type.model.TicketTypeVO"%>
+<%@page import="com.ticket_type.model.TicketTypeJDBCDAO"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="Big5"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
