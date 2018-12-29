@@ -57,8 +57,9 @@
                 </div>
             </div>
             <img src="<%= request.getContextPath()%>/event_title/EventTitleGifReader?scaleSize=850&evetit_no=${aEventTitle.evetit_no}" id="poster">
+            <input type="hidden" name="evetit_no" id="evetit_no" value="${aEventTitle.evetit_no}">
             <div>
-                <input id="flip" type="button" value="查看活動場次" class="btn btn-primary"></input>
+                <input id="flip" type="button" value="查看活動場次" class="btn btn-primary">
                 <div id="panel" style="display:none;">
                     <table class="table table-hover">
                         <thead>
@@ -127,8 +128,6 @@
         });
         
         toDataURL($("#poster").attr("src"), function(dataUrl) {
-        	
-//         	localStorage.clear();
 
         	if(localStorage.getItem("eventTitleBrowsingHistory") == null){
         		var eventTitleBrowsingHistoryArray = [];
@@ -138,7 +137,8 @@
         	}
       	
             var evetit_name = $("#evetit_name").html();
-			var oneEventTitleBrowsingHistory = new eventTitleBrowsingHistory(evetit_name, dataUrl);
+            var evetit_no = $("#evetit_no").val();
+			var oneEventTitleBrowsingHistory = new eventTitleBrowsingHistory(evetit_no, evetit_name, dataUrl);
 
 
 			if(!isEventTitleBrowsingHistoryExist(eventTitleBrowsingHistoryArray, oneEventTitleBrowsingHistory)){
@@ -182,8 +182,9 @@
   	  xhr.send();
   	}
         
-    function eventTitleBrowsingHistory(evetit_name, evetit_poster) {
-        this.evetit_name = evetit_name;
+    function eventTitleBrowsingHistory(evetit_no, evetit_name, evetit_poster) {
+    	this.evetit_no = evetit_no;
+    	this.evetit_name = evetit_name;
         this.evetit_poster = evetit_poster;
     }
     </script>

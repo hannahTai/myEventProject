@@ -17,7 +17,7 @@
 
 	<br><br><br>
 	<div class="container">	
-		<a href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitle.jsp">活動管理</a><br>	
+		<a href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp">活動管理</a><br>	
 		
 		<a href="<%=request.getContextPath()%>/backend/VENUE/listAllVenue.jsp">場地管理</a><br>	
 		

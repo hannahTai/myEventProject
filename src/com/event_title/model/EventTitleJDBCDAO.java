@@ -15,8 +15,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import com.event.model.EventVO;
  
 public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 	
@@ -60,9 +64,12 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 			"UPDATE EVENT_TITLE SET eveclass_no=?, ticrefpolicy_no=?, evetit_name=?, evetit_startdate=?, evetit_enddate=?, "
 			+ "info=?, notices=?, eticpurchaserules=?, eticrules=?, refundrules=?, evetit_sessions=?, evetit_status=?, launchdate=?, offdate=?, promotionranking=? "
 			+ "WHERE evetit_no=?";
-			
+
 	
 	
+	private static final String GET_Event_ByEventTitle_STMT = "SELECT eve_no, evetit_no, venue_no, eve_sessionname, eve_seatmap, "
+	+ "eve_startdate, eve_enddate, eve_onsaledate, eve_offsaledate, ticlimit, fullrefundenddate, eve_status "
+	+ "FROM EVENT WHERE evetit_no=? order by eve_no";
 	
 	
 	
@@ -847,6 +854,72 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 	}
 	
 	
+	@Override
+	public Set<EventVO> getEventsByEventTitle(String evetit_no){
+		Set<EventVO> set = new LinkedHashSet<>();
+		EventVO eventVO = null;
+	
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+	
+		try {
+	
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(GET_Event_ByEventTitle_STMT);
+			pstmt.setString(1, evetit_no);
+			rs = pstmt.executeQuery();
+	
+			while(rs.next()) {
+				eventVO = new EventVO();				
+				eventVO.setEve_no(rs.getString("eve_no"));
+				eventVO.setEvetit_no(rs.getString("evetit_no"));
+				eventVO.setVenue_no(rs.getString("venue_no"));
+				eventVO.setEve_sessionname(rs.getString("eve_sessionname"));				
+				eventVO.setEve_seatmap(rs.getBytes("eve_seatmap"));
+				eventVO.setEve_startdate(rs.getTimestamp("eve_startdate"));
+				eventVO.setEve_enddate(rs.getTimestamp("eve_enddate"));				
+				eventVO.setEve_onsaledate(rs.getTimestamp("eve_onsaledate"));
+				eventVO.setEve_offsaledate(rs.getTimestamp("eve_offsaledate"));
+				eventVO.setTiclimit(rs.getInt("ticlimit"));
+				eventVO.setFullrefundenddate(rs.getTimestamp("fullrefundenddate"));
+				eventVO.setEve_status(rs.getString("eve_status"));
+				set.add(eventVO);
+			}
+			
+			System.out.println("----------getEventsByEventTitle finished----------");
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());	
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return set;
+	}
+	
+	
 	
 	
 	
@@ -859,59 +932,59 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 		
 		
 		// 新增		
-		FileInputStream fis1 = null;
-		ByteArrayOutputStream baos1 = null;	
-		try {
-			EventTitleVO EventTitleVO1 = new EventTitleVO();
-			
-			EventTitleVO1.setEveclass_no("A"); 
-			EventTitleVO1.setTicrefpolicy_no("TRP2");
-			EventTitleVO1.setEvetit_name("SingAround");
-			EventTitleVO1.setEvetit_startdate(java.sql.Date.valueOf("2019-01-31"));
-			EventTitleVO1.setEvetit_enddate(java.sql.Date.valueOf("2019-01-31"));
-			
-			fis1 = new FileInputStream("writeImgJDBC/tomcat.jpg");		  //B	
-			baos1 = new ByteArrayOutputStream();			
-			int i;
-			while ((i = fis1.read()) != -1)
-				baos1.write(i);			
-			EventTitleVO1.setEvetit_poster(baos1.toByteArray());
-						
-			EventTitleVO1.setInfo("This is INFO.");		
-			EventTitleVO1.setNotices("This is NOTICES.");
-			EventTitleVO1.setEticpurchaserules("This is ETICPURCHASERULES.");
-			EventTitleVO1.setEticrules("This is ETICRULES.");
-			EventTitleVO1.setRefundrules("This is REFUNDRULES.");
-			EventTitleVO1.setEvetit_sessions(new Integer(1));
-			EventTitleVO1.setEvetit_status("temporary");
-			EventTitleVO1.setLaunchdate(java.sql.Date.valueOf("2019-01-31"));
-			EventTitleVO1.setOffdate(java.sql.Date.valueOf("2019-01-31"));
-			EventTitleVO1.setPromotionranking(new Integer(1));
-			
-			String evetit_no = dao.insert(EventTitleVO1);
-			
-			System.out.println(evetit_no);
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (baos1 != null) {
-				try {
-					baos1.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (fis1 != null) {
-				try {
-					fis1.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+//		FileInputStream fis1 = null;
+//		ByteArrayOutputStream baos1 = null;	
+//		try {
+//			EventTitleVO EventTitleVO1 = new EventTitleVO();
+//			
+//			EventTitleVO1.setEveclass_no("A"); 
+//			EventTitleVO1.setTicrefpolicy_no("TRP2");
+//			EventTitleVO1.setEvetit_name("SingAround");
+//			EventTitleVO1.setEvetit_startdate(java.sql.Date.valueOf("2019-01-31"));
+//			EventTitleVO1.setEvetit_enddate(java.sql.Date.valueOf("2019-01-31"));
+//			
+//			fis1 = new FileInputStream("writeImgJDBC/tomcat.jpg");		  //B	
+//			baos1 = new ByteArrayOutputStream();			
+//			int i;
+//			while ((i = fis1.read()) != -1)
+//				baos1.write(i);			
+//			EventTitleVO1.setEvetit_poster(baos1.toByteArray());
+//						
+//			EventTitleVO1.setInfo("This is INFO.");		
+//			EventTitleVO1.setNotices("This is NOTICES.");
+//			EventTitleVO1.setEticpurchaserules("This is ETICPURCHASERULES.");
+//			EventTitleVO1.setEticrules("This is ETICRULES.");
+//			EventTitleVO1.setRefundrules("This is REFUNDRULES.");
+//			EventTitleVO1.setEvetit_sessions(new Integer(1));
+//			EventTitleVO1.setEvetit_status("temporary");
+//			EventTitleVO1.setLaunchdate(java.sql.Date.valueOf("2019-01-31"));
+//			EventTitleVO1.setOffdate(java.sql.Date.valueOf("2019-01-31"));
+//			EventTitleVO1.setPromotionranking(new Integer(1));
+//			
+//			String evetit_no = dao.insert(EventTitleVO1);
+//			
+//			System.out.println(evetit_no);
+//			
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (baos1 != null) {
+//				try {
+//					baos1.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			if (fis1 != null) {
+//				try {
+//					fis1.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
 		
 		
 		
@@ -1099,6 +1172,33 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 //		dao.update_withoutPoster(EventTitleVO8);
 //	
 	
+		// 用活動主題查活動場次
+//		Set<EventVO> set = dao.getEventsByEventTitle("E0001");
+//		for (EventVO aEventVO : set) {
+//			System.out.println(aEventVO.getEve_no());
+//			System.out.println(aEventVO.getEvetit_no());
+//			System.out.println(aEventVO.getVenue_no());
+//			System.out.println(aEventVO.getEve_sessionname());
+//			
+//			try (PrintStream ps = new PrintStream(new FileOutputStream("readImgJDBC/" + aEventVO.getEve_no() + ".jpg"), true)){
+//				ps.write(aEventVO.getEve_seatmap());
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			
+//			System.out.println(aEventVO.getEve_startdate());
+//			System.out.println(aEventVO.getEve_enddate());
+//			System.out.println(aEventVO.getEve_onsaledate());
+//			System.out.println(aEventVO.getEve_offsaledate());
+//			System.out.println(aEventVO.getTiclimit());
+//			
+//			System.out.println(aEventVO.getFullrefundenddate());
+//			System.out.println(aEventVO.getEve_status());	
+//			System.out.println("------------------------------");	
+//		}
+		
+		
+		
 		
 		
 	}

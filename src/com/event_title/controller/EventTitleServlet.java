@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import com.event.model.EventVO;
 import com.event_title.model.EventTitleService;
 import com.event_title.model.EventTitleVO;
 
@@ -57,8 +59,10 @@ public class EventTitleServlet extends HttpServlet {
 		
 
 		
-		// 請求來源 : back-end -> listAllEventTitle.jsp
+		// 請求來源 : backend -> listAllEventTitleRelatives.jsp
 		if ("getOneEventTitle_For_Display".equals(action)) {
+			
+			String requestURL = request.getParameter("requestURL");
 
 			Map<String, String> eventTitleErrorMsgs = new LinkedHashMap<String, String>();
 			request.setAttribute("eventTitleErrorMsgs", eventTitleErrorMsgs);
@@ -74,7 +78,7 @@ public class EventTitleServlet extends HttpServlet {
 					eventTitleErrorMsgs.put("evetit_no", "查無資料");
 				}
 				if (!eventTitleErrorMsgs.isEmpty()) {
-					RequestDispatcher failureView = request.getRequestDispatcher("/backend/event_title/listAllEventTitle.jsp");
+					RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
 					failureView.forward(request, response);
 					return;
 				}
@@ -87,7 +91,7 @@ public class EventTitleServlet extends HttpServlet {
 				/****************************** 其他可能的錯誤處理 ******************************/
 			} catch (Exception e) {
 				eventTitleErrorMsgs.put("Exception", "無法取得資料 : " + e.getMessage());
-				RequestDispatcher failureView = request.getRequestDispatcher("/backend/event_title/listAllEventTitle.jsp");
+				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
 				failureView.forward(request, response);
 			}
 			return;
@@ -102,8 +106,10 @@ public class EventTitleServlet extends HttpServlet {
 		
 
 		
-		// 請求來源 : back-end -> listAllEventTitle.jsp / listOneEventTitle.jsp
+		// 請求來源 : backend -> listAllEventTitleRelatives.jsp / listOneEventTitle.jsp
 		else if ("getOneEventTitle_For_Update".equals(action)) {
+			
+			String requestURL = request.getParameter("requestURL");
 
 			Map<String, String> eventTitleErrorMsgs = new LinkedHashMap<String, String>();
 			request.setAttribute("eventTitleErrorMsgs", eventTitleErrorMsgs);
@@ -120,7 +126,7 @@ public class EventTitleServlet extends HttpServlet {
 				}
 				
 				if (!eventTitleErrorMsgs.isEmpty()) {
-					RequestDispatcher failureView = request.getRequestDispatcher("/backend/event_title/listAllEventTitle.jsp");
+					RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
 					failureView.forward(request, response);
 					return;
 				}
@@ -133,7 +139,7 @@ public class EventTitleServlet extends HttpServlet {
 				/****************************** 其他可能的錯誤處理 **************************************************/
 			} catch (Exception e) {
 				eventTitleErrorMsgs.put("Exception", "無法取得資料 : " + e.getMessage());
-				RequestDispatcher failureView = request.getRequestDispatcher("/backend/event_title/listAllEventTitle.jsp");
+				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
 				failureView.forward(request, response);
 			}
 			return;
@@ -148,7 +154,7 @@ public class EventTitleServlet extends HttpServlet {
 		
 
 		
-		// 請求來源 : back-end -> updateEventTitle.jsp
+		// 請求來源 : backend -> updateEventTitle.jsp
 		else if ("updateEventTitle".equals(action)) {
 
 			Map<String, String> eventTitleErrorMsgs = new LinkedHashMap<String, String>();
@@ -325,7 +331,7 @@ public class EventTitleServlet extends HttpServlet {
 		
 
 		
-		// 請求來源 : back-end -> addEventTitle.jsp
+		// 請求來源 : backend -> addEventTitle.jsp
 		else if ("insertEventTitle".equals(action)) {
 
 			Map<String, String> eventTitleErrorMsgs = new LinkedHashMap<String, String>();
@@ -475,8 +481,10 @@ public class EventTitleServlet extends HttpServlet {
 		
 
 		
-		// 請求來源 : back-end -> listAllEventTitle.jsp
+		// 請求來源 : backend -> listAllEventTitleRelatives.jsp
 		else if ("deleteEventTitle".equals(action)) {
+			
+			String requestURL = request.getParameter("requestURL");
 
 			Map<String, String> eventTitleErrorMsgs = new LinkedHashMap<String, String>();
 			request.setAttribute("eventTitleErrorMsgs", eventTitleErrorMsgs);
@@ -495,13 +503,13 @@ public class EventTitleServlet extends HttpServlet {
 				/****************************** 3.刪除完成,準備轉交 **************************************************/
 				List<EventTitleVO> eventTitleList = eventTitleService.getAll();
 				request.setAttribute("eventTitleList", eventTitleList);
-				RequestDispatcher successView = request.getRequestDispatcher("/backend/event_title/listAllEventTitle.jsp");
+				RequestDispatcher successView = request.getRequestDispatcher(requestURL);
 				successView.forward(request, response);
 
 				/****************************** 其他可能的錯誤處理 **************************************************/
 			} catch (Exception e) {
 				eventTitleErrorMsgs.put("Exception", "無法刪除資料 : " + e.getMessage());
-				RequestDispatcher failureView = request.getRequestDispatcher("/backend/event_title/listAllEventTitle.jsp");
+				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
 				failureView.forward(request, response);
 			}
 			return;
@@ -516,7 +524,7 @@ public class EventTitleServlet extends HttpServlet {
 		
 
 		
-		// 請求來源 : front-end -> selectEventTitle.jsp
+		// 請求來源 : frontend -> selectEventTitle.jsp
 		if ("listEventTitle_ByCompositeQuery".equals(action)) {
 		
 			Map<String, String> eventTitleErrorMsgs = new LinkedHashMap<String, String>();
@@ -546,6 +554,42 @@ public class EventTitleServlet extends HttpServlet {
 		}
 
 		
+		
+		
+		
+		
+		
+		
+
+		// 請求來源 : backend -> listAllEventTitleRelatives.jsp
+		if ("listEvents_ByEventTitle".equals(action)) {
+			
+			String requestURL = request.getParameter("requestURL");
+			
+			Map<String, String> eventTitleErrorMsgs = new LinkedHashMap<String, String>();
+			request.setAttribute("eventTitleErrorMsgs", eventTitleErrorMsgs);
+
+			try {
+				/****************************** 1.接收請求參數 **************************************************/
+				String evetit_no = request.getParameter("evetit_no");
+
+				/****************************** 2.開始查詢資料 **************************************************/
+//				EventTitleService eventTitleService = new EventTitleService();
+//				Set<EventVO> set = eventTitleService.getEventsByEventTitle(evetit_no);
+
+				/****************************** 3.查詢完成,準備轉交 **************************************************/
+//				request.setAttribute("listEvents_ByEventTitle", set);
+
+				RequestDispatcher successView = request.getRequestDispatcher(requestURL);
+				successView.forward(request, response);
+
+				/****************************** 其他可能的錯誤處理 **************************************************/
+			} catch (Exception e) {
+				eventTitleErrorMsgs.put("Exception", "無法取得資料 : " + e.getMessage());
+				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
+				failureView.forward(request, response);
+			}
+		}
 		
 	}
 

@@ -133,7 +133,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-3 text-right">	            	
             		<span class="form-group">
-						<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitle.jsp?evetit_no=${eventTitleVO.evetit_no}">回到活動總覽</a>
+						<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventTitleVO.evetit_no}">回到活動總覽</a>
 					</span>
 					<form method="post" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do" class="actionForm">								
 					    <input type="hidden" name="evetit_no"   value="${eventTitleVO.evetit_no}">

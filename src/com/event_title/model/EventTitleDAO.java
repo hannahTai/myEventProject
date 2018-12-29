@@ -15,13 +15,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import com.event.model.EventVO;
  
 public class EventTitleDAO implements EventTitleDAO_interface{
 	
@@ -72,6 +76,10 @@ public class EventTitleDAO implements EventTitleDAO_interface{
 			+ "WHERE evetit_no=?";
 			
 	
+	
+	private static final String GET_Event_ByEventTitle_STMT = "SELECT eve_no, evetit_no, venue_no, eve_sessionname, eve_seatmap, "
+	+ "eve_startdate, eve_enddate, eve_onsaledate, eve_offsaledate, ticlimit, fullrefundenddate, eve_status "
+	+ "FROM EVENT WHERE evetit_no=? order by eve_no";
 	
 	
 	
@@ -836,7 +844,69 @@ public class EventTitleDAO implements EventTitleDAO_interface{
 	
 	
 	
+	
+	@Override
+	public Set<EventVO> getEventsByEventTitle(String evetit_no){
+		Set<EventVO> set = new LinkedHashSet<>();
+		EventVO eventVO = null;
+	
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+	
+		try {
+	
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_Event_ByEventTitle_STMT);
+			pstmt.setString(1, evetit_no);
+			rs = pstmt.executeQuery();
+	
+			while(rs.next()) {
+				eventVO = new EventVO();				
+				eventVO.setEve_no(rs.getString("eve_no"));
+				eventVO.setEvetit_no(rs.getString("evetit_no"));
+				eventVO.setVenue_no(rs.getString("venue_no"));
+				eventVO.setEve_sessionname(rs.getString("eve_sessionname"));				
+				eventVO.setEve_seatmap(rs.getBytes("eve_seatmap"));
+				eventVO.setEve_startdate(rs.getTimestamp("eve_startdate"));
+				eventVO.setEve_enddate(rs.getTimestamp("eve_enddate"));				
+				eventVO.setEve_onsaledate(rs.getTimestamp("eve_onsaledate"));
+				eventVO.setEve_offsaledate(rs.getTimestamp("eve_offsaledate"));
+				eventVO.setTiclimit(rs.getInt("ticlimit"));
+				eventVO.setFullrefundenddate(rs.getTimestamp("fullrefundenddate"));
+				eventVO.setEve_status(rs.getString("eve_status"));
+				set.add(eventVO);
+			}
+			
+			System.out.println("----------getEventsByEventTitle finished----------");
 
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return set;
+	}
 	
 
 	

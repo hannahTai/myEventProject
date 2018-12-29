@@ -11,62 +11,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Title Page</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <!-- Owl Stylesheets -->
+    <!-- Owl Carousel -->
     <link rel="stylesheet" href="<%=request.getContextPath()%>/vendor/OwlCarousel2-2.3.4/docs/assets/owlcarousel/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="<%=request.getContextPath()%>/vendor/OwlCarousel2-2.3.4/docs/assets/owlcarousel/assets/owl.theme.default.min.css">
 </head>
 
+
+
 <body>
 
-
-<div class="container">
-	<div class="owl-carousel owl-theme eventTitleBrowsingHistoryOwlArea">
+	<div class="container">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+			    <span class="panel-title">活動瀏覽紀錄</span>
+			    <small><a href="" id="cleanEventTitleBrowsingHistory">清除</a></small>
+			</div>
+			
+			<div class="panel-body">
+				<div class="owl-carousel owl-theme eventTitleBrowsingHistoryOwlArea"></div>
+			</div>
+		</div>
 	</div>
-</div>
+
 
 
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Owl Carousel -->
     <script src="<%=request.getContextPath()%>/vendor/OwlCarousel2-2.3.4/docs/assets/owlcarousel/owl.carousel.js"></script>
     <script>
     $(document).ready(function() {
     	
     	var eventTitleBrowsingHistoryArray = JSON.parse(localStorage.getItem("eventTitleBrowsingHistory"));
 
-    	eventTitleBrowsingHistoryArray.forEach(function(element) {
-            
-    		var evetit_name = element.evetit_name;
-        	var evetit_poster = element.evetit_poster;
-        	
-    		console.log(element);
-            console.log(element.evetit_name);
-            console.log(element.evetit_poster);
-            
-            $(".eventTitleBrowsingHistoryOwlArea").append("<div class='item'><h6>" + evetit_name + "</h6><img src='" + evetit_poster + "'></div>");
-        });
-    	
-    	
-
-//         $(".eventTitleBrowsingHistoryOwlArea")
-//         .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
-//         .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
-//         .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
-//         .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
-//         .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
-//         .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
-//         .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
-//         .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
-//         .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
-//         .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>")
-//         .append("<div class='item'><h6>" + word + "</h6><img src='" + img + "'></div>");
-
-
+    	if(eventTitleBrowsingHistoryArray.length != 0){
+        	eventTitleBrowsingHistoryArray.forEach(function(element) {              
+            	var evetit_no = element.evetit_no;
+        		var evetit_name = element.evetit_name;
+            	var evetit_poster = element.evetit_poster;             
+                $(".eventTitleBrowsingHistoryOwlArea")
+                .append("<div class='item'><div style='height:30px;'><a href='listOneEventTitle.jsp?evetit_no=" + evetit_no + "' target='_blank'><h6>" + evetit_name + "</h6></a></div><img src='" + evetit_poster + "'></div>");
+            });
+    	} 	
 
         var eventTitleBrowsingHistoryOwlArea = $(".eventTitleBrowsingHistoryOwlArea");
         eventTitleBrowsingHistoryOwlArea.owlCarousel({
             margin: 10,
             nav: true,
-            loop: true,
             responsive: {
                 0: {
                     items: 1
@@ -79,6 +70,10 @@
                 }
             }
         })
+        
+        $("#cleanEventTitleBrowsingHistory").click(function(){
+        	localStorage.removeItem("eventTitleBrowsingHistory");
+        });
     });
     </script>
 </body>

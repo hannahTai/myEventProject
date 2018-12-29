@@ -2,6 +2,9 @@ package com.event_title.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import com.event.model.EventVO;
 
 public class EventTitleService {
 
@@ -97,6 +100,10 @@ public class EventTitleService {
 	
 	public List<EventTitleVO> getAllLaunched(Map<String, String[]> map) {
 		return eventTitleDao.getAllLaunched(map);
+	}
+	
+	public Set<EventVO> getEventsByEventTitle(String evetit_no) {
+		return eventTitleDao.getEventsByEventTitle(evetit_no);
 	}
 
 }
