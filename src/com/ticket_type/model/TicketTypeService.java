@@ -1,6 +1,9 @@
 package com.ticket_type.model;
 
 import java.util.List;
+import java.util.Set;
+
+import com.seating_area.model.SeatingAreaVO;
 
 public class TicketTypeService {
 
@@ -43,6 +46,8 @@ public class TicketTypeService {
 		return ticketTypeDAO.getAll();
 	}
 
-	
+	public Set<SeatingAreaVO> getSeatingAreasByTicketType(String tictype_no) {
+		return ticketTypeDAO.getSeatingAreasByTicketType(tictype_no);
+	}
 	
 }

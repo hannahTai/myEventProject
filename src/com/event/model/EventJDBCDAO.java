@@ -12,7 +12,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.ticket_type.model.TicketTypeVO;
 
 public class EventJDBCDAO implements EventDAO_interface{
 
@@ -44,6 +48,29 @@ public class EventJDBCDAO implements EventDAO_interface{
 			+ "eve_startdate, eve_enddate, eve_onsaledate, eve_offsaledate, ticlimit, fullrefundenddate, eve_status "
 			+ "FROM EVENT ORDER BY eve_no";
 
+	
+	private static final String GET_TicketType_ByEvent_STMT = 
+			"SELECT tictype_no, eve_no, tictype_color, tictype_name, tictype_price "
+			+ "FROM TICKET_TYPE WHERE eve_no=? ORDER BY tictype_no";
+	
+	
+	private static final String UPDATE_STMT_withoutSeatmap = 
+			"UPDATE EVENT SET venue_no=?, eve_sessionname=?, "
+			+ "eve_startdate=?, eve_enddate=?, eve_onsaledate=?, eve_offsaledate=?, ticlimit=?, fullrefundenddate=?, eve_status=? "
+			+ "WHERE eve_no=?";
+	
+	private static final String INSERT_STMT_init = 
+			"INSERT INTO EVENT (eve_no, evetit_no, venue_no) "
+			+ "VALUES ('EV'||LPAD(to_char(EVE_SEQ.NEXTVAL), 5, '0'), ?, ?)";
+	
+	
+	
+	private static final String DELETE_TicketTypes_ByEvent_STMT = 
+			"DELETE FROM ticket_type WHERE eve_no=?";
+	
+	private static final String DELETE_SeatingAreas_ByEvent_STMT = 
+			"DELETE FROM seating_area WHERE eve_no=?";
+	
 
 	
 	@Override
@@ -171,17 +198,36 @@ public class EventJDBCDAO implements EventDAO_interface{
 		try {
 			Class.forName(DRIVER);
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
-			pstmt = con.prepareStatement(DELETE_STMT);
-
+			
+			con.setAutoCommit(false);
+			
+			pstmt = con.prepareStatement(DELETE_SeatingAreas_ByEvent_STMT);
 			pstmt.setString(1, eve_no);
-
 			pstmt.executeUpdate();
 			
-			System.out.println("----------Deleted----------");
+			pstmt = con.prepareStatement(DELETE_TicketTypes_ByEvent_STMT);
+			pstmt.setString(1, eve_no);
+			pstmt.executeUpdate();
+			
+			pstmt = con.prepareStatement(DELETE_STMT);
+			pstmt.setString(1, eve_no);
+			pstmt.executeUpdate();
+			
+			con.commit();
+			con.setAutoCommit(true);
+			
+			System.out.println("----------Deleted seatingArea, ticketType, event----------");
 
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
 		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. " + excep.getMessage());
+				}
+			}
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
 			if (pstmt != null) {
@@ -332,10 +378,170 @@ public class EventJDBCDAO implements EventDAO_interface{
 		return list;
 	}
 	
+	@Override
+	public Set<TicketTypeVO> getTicketTypesByEvent(String eve_no){
+		Set<TicketTypeVO> set = new LinkedHashSet<>();
+		TicketTypeVO ticketTypeVO = null;
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;		
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(GET_TicketType_ByEvent_STMT);
+			pstmt.setString(1, eve_no);
+					
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {				
+				ticketTypeVO = new TicketTypeVO();				
+				ticketTypeVO.setTictype_no(rs.getString("tictype_no"));
+				ticketTypeVO.setEve_no(rs.getString("eve_no"));
+				ticketTypeVO.setTictype_color(rs.getString("tictype_color"));
+				ticketTypeVO.setTictype_name(rs.getString("tictype_name"));				
+				ticketTypeVO.setTictype_price(rs.getInt("tictype_price"));
+				set.add(ticketTypeVO);				
+			}
+			
+			System.out.println("----------getTicketTypesByEvent finished----------");
+
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return set;
+	}
 	
 	
+	@Override
+	public void update_withoutSeatmap(EventVO eventVO) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(UPDATE_STMT_withoutSeatmap);
+			
+			pstmt.setString(1, eventVO.getVenue_no());			
+			pstmt.setString(2, eventVO.getEve_sessionname());			
+			pstmt.setTimestamp(3, eventVO.getEve_startdate());							
+			pstmt.setTimestamp(4, eventVO.getEve_enddate());		
+			pstmt.setTimestamp(5, eventVO.getEve_onsaledate()); 				
+			pstmt.setTimestamp(6, eventVO.getEve_offsaledate());			
+			pstmt.setInt(7, eventVO.getTiclimit());			
+			pstmt.setTimestamp(8, eventVO.getFullrefundenddate());
+			pstmt.setString(9, eventVO.getEve_status());
+			pstmt.setString(10, eventVO.getEve_no()); 
+		
+			pstmt.executeUpdate();
+			
+			System.out.println("----------update_withoutPoster done----------");
+
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+	}
 	
-	
+	@Override
+	public String insert(String evetit_no) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;
+		String eve_no = null;
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+
+			String[] cols = { "eve_no" };
+			pstmt = con.prepareStatement(INSERT_STMT_init, cols);
+			
+			pstmt.setString(1, evetit_no); 
+			pstmt.setString(2, "V001"); 
+		
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				eve_no = rs.getString(1);
+			}
+			
+			System.out.println("----------Inserted_init with evetit_no----------");
+
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return eve_no;
+	}
 
 	
 	
@@ -450,7 +656,7 @@ public class EventJDBCDAO implements EventDAO_interface{
 		
 		
 		// 刪除
-//		dao.delete("EV00003");
+//		dao.delete("EV00005");
 //		System.out.println("------------------------------");
 		
 		
@@ -481,29 +687,63 @@ public class EventJDBCDAO implements EventDAO_interface{
 		
 		
 		// 查詢全部
-		List<EventVO> list = dao.getAll();	
-		for(EventVO aEventVO : list) {
-			System.out.println(aEventVO.getEve_no());
-			System.out.println(aEventVO.getEvetit_no());
-			System.out.println(aEventVO.getVenue_no());
-			System.out.println(aEventVO.getEve_sessionname());
+//		List<EventVO> list = dao.getAll();	
+//		for(EventVO aEventVO : list) {
+//			System.out.println(aEventVO.getEve_no());
+//			System.out.println(aEventVO.getEvetit_no());
+//			System.out.println(aEventVO.getVenue_no());
+//			System.out.println(aEventVO.getEve_sessionname());
+//			
+//			try (PrintStream ps = new PrintStream(new FileOutputStream("readImgJDBC/" + aEventVO.getEve_no() + ".jpg"), true)){
+//				ps.write(aEventVO.getEve_seatmap());
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			
+//			System.out.println(aEventVO.getEve_startdate());
+//			System.out.println(aEventVO.getEve_enddate());
+//			System.out.println(aEventVO.getEve_onsaledate());
+//			System.out.println(aEventVO.getEve_offsaledate());
+//			System.out.println(aEventVO.getTiclimit());
+//			
+//			System.out.println(aEventVO.getFullrefundenddate());
+//			System.out.println(aEventVO.getEve_status());	
+//			System.out.println("------------------------------");
+//		}
+		
+		
+		// 用活動查票種
+//		Set<TicketTypeVO> set = dao.getTicketTypesByEvent("EV00001");	
+//		for(TicketTypeVO aTicketTypeVO : set) {
+//			System.out.println(aTicketTypeVO.getTictype_no());
+//			System.out.println(aTicketTypeVO.getEve_no());
+//			System.out.println(aTicketTypeVO.getTictype_color());
+//			System.out.println(aTicketTypeVO.getTictype_name());
+//			System.out.println(aTicketTypeVO.getTictype_price());		
+//			System.out.println("------------------------------");
+//		}
+		
+		
+		
+		// 無圖片修改			
+//		EventVO eventVO4 = new EventVO();		
+//		eventVO4.setEve_no("EV00002"); 			
+//		eventVO4.setVenue_no("V001");
+//		eventVO4.setEve_sessionname("第一場!!!!!!!!!!!!!!!!");								
+//		eventVO4.setEve_startdate(java.sql.Timestamp.valueOf("2022-08-22 12:00:00"));							
+//		eventVO4.setEve_enddate(java.sql.Timestamp.valueOf("2022-03-12 14:30:00"));		
+//		eventVO4.setEve_onsaledate(java.sql.Timestamp.valueOf("2022-09-01 10:00:00")); 				
+//		eventVO4.setEve_offsaledate(java.sql.Timestamp.valueOf("2022-03-31 24:00:00"));				
+//		eventVO4.setTiclimit(new Integer(3));			
+//		eventVO4.setFullrefundenddate(null);
+//		eventVO4.setEve_status("cancel");		
+//		dao.update_withoutSeatmap(eventVO4);
 			
-			try (PrintStream ps = new PrintStream(new FileOutputStream("readImgJDBC/" + aEventVO.getEve_no() + ".jpg"), true)){
-				ps.write(aEventVO.getEve_seatmap());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		
+		// 初始化新增			
+//		dao.insert("E0003");
 			
-			System.out.println(aEventVO.getEve_startdate());
-			System.out.println(aEventVO.getEve_enddate());
-			System.out.println(aEventVO.getEve_onsaledate());
-			System.out.println(aEventVO.getEve_offsaledate());
-			System.out.println(aEventVO.getTiclimit());
-			
-			System.out.println(aEventVO.getFullrefundenddate());
-			System.out.println(aEventVO.getEve_status());	
-			System.out.println("------------------------------");
-		}
+		
 		
 		
 		

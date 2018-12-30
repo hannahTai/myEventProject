@@ -12,12 +12,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import com.ticket_type.model.TicketTypeVO;
 
 public class EventDAO implements EventDAO_interface{
 
@@ -53,8 +57,33 @@ public class EventDAO implements EventDAO_interface{
 			"SELECT eve_no, evetit_no, venue_no, eve_sessionname, eve_seatmap, "
 			+ "eve_startdate, eve_enddate, eve_onsaledate, eve_offsaledate, ticlimit, fullrefundenddate, eve_status "
 			+ "FROM EVENT ORDER BY eve_no";
+	
+	
+	
+	private static final String GET_TicketType_ByEvent_STMT = 
+			"SELECT tictype_no, eve_no, tictype_color, tictype_name, tictype_price "
+			+ "FROM TICKET_TYPE WHERE eve_no=? ORDER BY tictype_no";
 
+	private static final String UPDATE_STMT_withoutSeatmap = 
+			"UPDATE EVENT SET venue_no=?, eve_sessionname=?, "
+			+ "eve_startdate=?, eve_enddate=?, eve_onsaledate=?, eve_offsaledate=?, ticlimit=?, fullrefundenddate=?, eve_status=? "
+			+ "WHERE eve_no=?";
+	
+	
+	
+	private static final String INSERT_STMT_init = 
+			"INSERT INTO EVENT (eve_no, evetit_no, venue_no) "
+			+ "VALUES ('EV'||LPAD(to_char(EVE_SEQ.NEXTVAL), 5, '0'), ?, ?)";
 
+	
+	
+	private static final String DELETE_TicketTypes_ByEvent_STMT = 
+			"DELETE FROM ticket_type WHERE eve_no=?";
+	
+	private static final String DELETE_SeatingAreas_ByEvent_STMT = 
+			"DELETE FROM seating_area WHERE eve_no=?";
+	
+	
 	
 	@Override
 	public String insert(EventVO eventVO) {
@@ -174,15 +203,34 @@ public class EventDAO implements EventDAO_interface{
 		
 		try {
 			con = ds.getConnection();
-			pstmt = con.prepareStatement(DELETE_STMT);
-
+			
+			con.setAutoCommit(false);
+			
+			pstmt = con.prepareStatement(DELETE_SeatingAreas_ByEvent_STMT);
 			pstmt.setString(1, eve_no);
-
 			pstmt.executeUpdate();
 			
-			System.out.println("----------Deleted----------");
+			pstmt = con.prepareStatement(DELETE_TicketTypes_ByEvent_STMT);
+			pstmt.setString(1, eve_no);
+			pstmt.executeUpdate();
+			
+			pstmt = con.prepareStatement(DELETE_STMT);
+			pstmt.setString(1, eve_no);
+			pstmt.executeUpdate();
+			
+			con.commit();
+			con.setAutoCommit(true);
+			
+			System.out.println("----------Deleted seatingArea, ticketType, event----------");
 
 		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. " + excep.getMessage());
+				}
+			}
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
 			if (pstmt != null) {
@@ -327,7 +375,162 @@ public class EventDAO implements EventDAO_interface{
 		return list;
 	}
 	
+	
+	@Override
+	public Set<TicketTypeVO> getTicketTypesByEvent(String eve_no){
+		Set<TicketTypeVO> set = new LinkedHashSet<>();
+		TicketTypeVO ticketTypeVO = null;
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;		
+		
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_TicketType_ByEvent_STMT);
+			pstmt.setString(1, eve_no);
+					
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {				
+				ticketTypeVO = new TicketTypeVO();				
+				ticketTypeVO.setTictype_no(rs.getString("tictype_no"));
+				ticketTypeVO.setEve_no(rs.getString("eve_no"));
+				ticketTypeVO.setTictype_color(rs.getString("tictype_color"));
+				ticketTypeVO.setTictype_name(rs.getString("tictype_name"));				
+				ticketTypeVO.setTictype_price(rs.getInt("tictype_price"));
+				set.add(ticketTypeVO);				
+			}
+			
+			System.out.println("----------getTicketTypesByEvent finished----------");
 
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return set;
+	};
+
+	
+	@Override
+	public void update_withoutSeatmap(EventVO eventVO) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(UPDATE_STMT_withoutSeatmap);
+			
+			pstmt.setString(1, eventVO.getVenue_no());			
+			pstmt.setString(2, eventVO.getEve_sessionname());			
+			pstmt.setTimestamp(3, eventVO.getEve_startdate());							
+			pstmt.setTimestamp(4, eventVO.getEve_enddate());		
+			pstmt.setTimestamp(5, eventVO.getEve_onsaledate()); 				
+			pstmt.setTimestamp(6, eventVO.getEve_offsaledate());			
+			pstmt.setInt(7, eventVO.getTiclimit());			
+			pstmt.setTimestamp(8, eventVO.getFullrefundenddate());
+			pstmt.setString(9, eventVO.getEve_status());
+			pstmt.setString(10, eventVO.getEve_no()); 
+		
+			pstmt.executeUpdate();
+			
+			System.out.println("----------update_withoutPoster done----------");
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public String insert(String evetit_no) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;
+		String eve_no = null;
+		
+		try {
+			con = ds.getConnection();
+
+			String[] cols = { "eve_no" };
+			pstmt = con.prepareStatement(INSERT_STMT_init, cols);
+			
+			pstmt.setString(1, evetit_no); 
+			pstmt.setString(2, "V001"); 
+		
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				eve_no = rs.getString(1);
+			}
+			
+			System.out.println("----------Inserted_init with evetit_no----------");
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return eve_no;
+	}
 	
 	
 }

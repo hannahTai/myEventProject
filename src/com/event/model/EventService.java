@@ -2,6 +2,9 @@ package com.event.model;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
+
+import com.ticket_type.model.TicketTypeVO;
 
 public class EventService {
 
@@ -34,6 +37,12 @@ public class EventService {
 
 		return eventVO;
 	}
+	
+	public EventVO addEvent(String evetit_no) {
+		String eve_no = eventDao.insert(evetit_no);
+		EventVO eventVO = getOneEvent(eve_no);
+		return eventVO;
+	}
 
 	public EventVO updateEvent(String eve_no, String venue_no, String eve_sessionname, byte[] eve_seatmap,
 			Timestamp eve_startdate, Timestamp eve_enddate, Timestamp eve_onsaledate, Timestamp eve_offsaledate,
@@ -53,7 +62,11 @@ public class EventService {
 		eventVO.setFullrefundenddate(fullrefundenddate);
 		eventVO.setEve_status(eve_status);
 
-		eventDao.update(eventVO);
+		if(eve_seatmap == null || eve_seatmap.length == 0) {
+			eventDao.update_withoutSeatmap(eventVO);
+		} else {
+			eventDao.update(eventVO);
+		}
 
 		return eventVO;
 	}
@@ -68,5 +81,9 @@ public class EventService {
 
 	public List<EventVO> getAll() {
 		return eventDao.getAll();
+	}
+	
+	public Set<TicketTypeVO> getTicketTypesByEvent(String eve_no) {
+		return eventDao.getTicketTypesByEvent(eve_no);
 	}
 }

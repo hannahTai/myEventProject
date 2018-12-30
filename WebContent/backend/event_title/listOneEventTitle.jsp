@@ -139,7 +139,7 @@
 					    <input type="hidden" name="evetit_no"   value="${eventTitleVO.evetit_no}">
 					    <input type="hidden" name="requestURL"	value="<%=request.getServletPath()%>">
 					    <input type="hidden" name="action"	    value="getOneEventTitle_For_Update">
-					    <input type="submit" value="修改" class="btn btn-warning" onClick="getWhichPage(this)"> 							
+					    <input type="submit" value="修改" class="btn btn-warning"> 							
 					</form>	
                 </div>
             </div>

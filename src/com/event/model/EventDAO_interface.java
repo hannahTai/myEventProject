@@ -1,6 +1,10 @@
 package com.event.model;
 
 import java.util.List;
+import java.util.Set;
+
+import com.event_title.model.EventTitleVO;
+import com.ticket_type.model.TicketTypeVO;
 
 public interface EventDAO_interface {
 	
@@ -9,5 +13,10 @@ public interface EventDAO_interface {
     public void delete(String eve_no);
     public EventVO findByPrimaryKey(String eve_no);
     public List<EventVO> getAll();
+    
+    public void update_withoutSeatmap(EventVO eventVO);
+    
+    public Set<TicketTypeVO> getTicketTypesByEvent(String eve_no);
+	public String insert(String evetit_no);
 
 }

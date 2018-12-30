@@ -33,6 +33,7 @@ public class EventScheduleServlet extends HttpServlet {
 			public void run() {			
 				Set<String> deleteTempFileDirs = new HashSet<>();
 				deleteTempFileDirs.add("/tempEventTitle");
+				deleteTempFileDirs.add("/tempEvent");
 				
 				for(String dirName : deleteTempFileDirs) {
 					File dir = new File(getServletContext().getRealPath(dirName));
