@@ -1,0 +1,210 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Title Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .colorarea{
+            height: 13px;
+            width: 13px;
+            display: inline-block;
+            border-radius: 2px;
+        }
+        .glyphicon {
+            cursor: pointer; 
+        }
+        input:read-only { 
+            background-color: #eee;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+
+
+<div id="secretTicketArea" style="display:none;"> 
+    <div style="border-bottom: 1px dotted #31708f; margin-bottom:5px">
+        <!-- --------------------票區位置::頭-------------------- -->
+        <span >
+            票區色 : <input type="color" readonly>&nbsp;&nbsp;&nbsp;
+            票區名 : <input type="text" value="搖滾A111區" size="12" readonly>&nbsp;&nbsp;&nbsp;
+            張數 : <input type="text" value="800" size="4" readonly>張
+        </span>
+        <!-- --------------------票區位置::尾-------------------- -->
+        <span style="float:right;">
+            <i class="glyphicon glyphicon-pencil">編輯&nbsp;</i>
+            <i class="glyphicon glyphicon-ok" style="display:none;">儲存&nbsp;</i>
+            <i class="glyphicon glyphicon-trash deleteTicketArea">刪除</i>
+        </span>
+    </div>
+</div>
+
+
+
+<div id="secretTicketType" style="display:none;">
+        <div class="panel-group">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <!-- --------------------票種位置::頭-------------------- -->
+                        <span>
+                            票種色 : <input type="color" readonly>&nbsp;&nbsp;&nbsp;
+                            票種名 : <input type="text" value="搖滾A區" size="12" readonly>&nbsp;&nbsp;&nbsp;
+                            票價 : <input type="text" value="6500" size="4" readonly>元
+                        </span>
+                        <!-- --------------------票種位置::尾-------------------- -->
+                        <span style="float:right;">
+                            <i class="glyphicon glyphicon-pencil">編輯&nbsp;</i>
+                            <i class="glyphicon glyphicon-ok" style="display:none;">儲存&nbsp;</i>
+                            <i class="glyphicon glyphicon-trash deleteTicketType">刪除&nbsp;</i>
+                            <i class="glyphicon glyphicon-th-list" data-toggle="collapse" aria-expanded="false" href="#ET000002">收合</i>
+                        </span>
+                    </div>
+                </div>
+                <div id="ET000002" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div style="border-bottom: 1px dotted #31708f; margin-bottom:5px">
+                            <!-- --------------------票區位置::頭-------------------- -->
+                            <span>
+                                票區色 : <input type="color" readonly>&nbsp;&nbsp;&nbsp;
+                                票區名 : <input type="text" value="搖滾A111區" size="12" readonly>&nbsp;&nbsp;&nbsp;
+                                張數 : <input type="text" value="800" size="4" readonly>張
+                            </span>
+                            <!-- --------------------票區位置::尾-------------------- -->
+                            <span style="float:right;">
+                                <i class="glyphicon glyphicon-pencil">編輯&nbsp;</i>
+                                <i class="glyphicon glyphicon-ok" style="display:none;">儲存&nbsp;</i>
+                                <i class="glyphicon glyphicon-trash deleteTicketArea">刪除</i>
+                            </span>
+                        </div>
+                        <button class="btn btn-basic btn-sm" style="margin-top:20px;padding:0px;">
+                            <i class="glyphicon glyphicon-plus addTicketArea">新增票區</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<body>
+    <div class="container">
+        <div class="panel-group">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <!-- --------------------票種位置::頭-------------------- -->
+                        <span>
+                            票種色 : <input type="color" readonly>&nbsp;&nbsp;&nbsp;
+                            票種名 : <input type="text" value="搖滾A區" size="12" readonly>&nbsp;&nbsp;&nbsp;
+                            票價 : <input type="text" value="6500" size="4" readonly>元
+                        </span>
+                        <!-- --------------------票種位置::尾-------------------- -->
+                        <span style="float:right;">
+                            <i class="glyphicon glyphicon-pencil">編輯&nbsp;</i>
+                            <i class="glyphicon glyphicon-ok" style="display:none;">儲存&nbsp;</i>
+                            <i class="glyphicon glyphicon-trash deleteTicketType">刪除&nbsp;</i>
+                            <i class="glyphicon glyphicon-th-list" data-toggle="collapse" aria-expanded="false" href="#ET000001">收合</i>
+                        </span>
+                    </div>
+                </div>
+                <div id="ET000001" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div style="border-bottom: 1px dotted #31708f; margin-bottom:5px">
+                            <!-- --------------------票區位置::頭-------------------- -->
+                            <span>
+                                票區色 : <input type="color" readonly>&nbsp;&nbsp;&nbsp;
+                                票區名 : <input type="text" value="搖滾A111區" size="12" readonly>&nbsp;&nbsp;&nbsp;
+                                張數 : <input type="text" value="800" size="4" readonly>張
+                            </span>
+                            <!-- --------------------票區位置::尾-------------------- -->
+                            <span style="float:right;">
+                                <i class="glyphicon glyphicon-pencil">編輯&nbsp;</i>
+                                <i class="glyphicon glyphicon-ok" style="display:none;">儲存&nbsp;</i>
+                                <i class="glyphicon glyphicon-trash deleteTicketArea">刪除</i>
+                            </span>
+                        </div>
+                        <button class="btn btn-basic btn-sm" style="margin-top:20px;padding:0px;">
+                            <i class="glyphicon glyphicon-plus addTicketArea">新增票區</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-basic btn-sm" style="margin-top:20px;padding:0px;">
+            <i class="glyphicon glyphicon-plus" id="addTicketType">新增票種</i>
+        </button>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+
+        $(".glyphicon-pencil").click(function(e){
+            $(e.target).hide();
+            $(e.target).next().show();
+            $(e.target).parent().prev().children("input").each(function(){
+                $(this).prop("readonly", false);
+            });
+        });
+
+        $(".glyphicon-ok").click(function(e){
+            $(e.target).hide();
+            $(e.target).prev().show();
+            $(e.target).parent().prev().children("input").each(function(){
+                $(this).prop("readonly", true);
+            });
+        });
+
+        $(".deleteTicketArea").click(function(e){
+            $(e.target).parent().parent().remove();
+        });
+
+        $(".deleteTicketType").click(function(e){
+            $(e.target).parents(".panel-group").remove();
+        });
+
+        $(".glyphicon-th-list").click(function(e){
+            $(e.target).toggleClass("glyphicon-minus glyphicon-th-list");
+        });
+
+        $(".addTicketArea").click(function(e){
+            var secretTicketArea = $("#secretTicketArea").clone(true, true);
+            secretTicketArea.css("display", "inline");
+            $(e.target).parent().before(secretTicketArea);
+        });
+
+        $("#addTicketType").click(function(e){
+            var secretTicketType = $("#secretTicketType").clone(true, true);
+            secretTicketType.css("display", "inline");
+            secretTicketType.find(".glyphicon-th-list").attr("href", "#TTT");
+            secretTicketType.find(".panel-collapse").attr("id", "TTT");
+            $(e.target).parent().before(secretTicketType);
+        });
+    }); 
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Title Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .colorarea{
+ 			height: 13px;
+ 			width: 13px;
+			display: inline-block;
+			border-radius: 2px;
+ 		}
+ 		.glyphicon {
+ 			cursor: pointer; 
+ 		}
+ 	</style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="panel-group">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <!-- --------------------票種位置::頭-------------------- -->
+                        <span>
+	                        <div class="colorarea" style="background-color:#EE7700;"></div>
+	                        搖滾A區&nbsp;&nbsp;
+	                        票價 : 6500
+                        </span>
+                        <span>
+	                        票種顏色 : <input type="color">&nbsp;&nbsp;&nbsp;
+	                        票種名稱 : <input type="text" value="搖滾A區" size="15">&nbsp;&nbsp;&nbsp;
+	                        票價 : <input type="text" value="6500" size="8">元
+	                    </span>
+                        <!-- --------------------票種位置::尾-------------------- -->
+                        <span style="float:right;">
+	                        <i class="glyphicon glyphicon-pencil">編輯&nbsp;</i>
+	                        <i class="glyphicon glyphicon-ok">儲存&nbsp;</i>
+	                        <i class="glyphicon glyphicon-trash">刪除&nbsp;</i>
+	                        <i class="glyphicon glyphicon-th-list" data-toggle="collapse" aria-expanded="false" href="#ET000001">收合</i>
+	                    </span>
+                    </div>
+                </div>
+                <div id="ET000001" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div style="border-bottom: 1px dotted #31708f;">
+                            <!-- --------------------票區位置::頭-------------------- -->
+                            <span>
+                            	<div class="colorarea" style="background-color:#EE7700;"></div>
+								搖滾A區,&nbsp;&nbsp;
+								總張數 : 800
+							</span>
+                            <span>
+	                        	票區顏色 : <input type="color">&nbsp;&nbsp;&nbsp;
+	                        	票區名稱 : <input type="text" value="搖滾A111區" size="15">&nbsp;&nbsp;&nbsp;
+	                        	總數 : <input type="text" value="800" size="8">張
+	                    	</span>
+                            <!-- --------------------票區位置::尾-------------------- -->
+                            <span style="float:right;">
+	                            <i class="glyphicon glyphicon-pencil">編輯&nbsp;</i>
+	                            <i class="glyphicon glyphicon-ok">儲存&nbsp;</i>
+	                            <i class="glyphicon glyphicon-trash">刪除</i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $(".glyphicon-th-list").click(function(e) {
+            $(e.target).toggleClass("glyphicon-minus glyphicon-th-list");
+        });
+    });
+    </script>
+</body>
+
+</html>
