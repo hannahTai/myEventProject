@@ -1,21 +1,14 @@
 package com.favorite_event.controller;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.RequestDispatcher;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.event_title.model.EventTitleService;
-import com.event_title.model.EventTitleVO;
 import com.favorite_event.model.FavoriteEventService;
-
-import com.favorite_event.model.*;
 
 @WebServlet("/favorite_event/FavoriteEventServlet.do")
 public class FavoriteEventServlet extends HttpServlet {
@@ -32,169 +25,83 @@ public class FavoriteEventServlet extends HttpServlet {
 		// 基本款
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html; charset=utf-8");
-
+		PrintWriter out = response.getWriter();
+		
 		String action = request.getParameter("action");
 		
 		
 		
 		
 		
-		
-		
-		
-		
-		
-		// 請求來源 : front-end -> listAllEventTitle.jsp
+		// 請求來源 : front-end -> listOneEventTitle.jsp
 		if ("getOneFavoriteEvent_For_Display".equals(action)) {
-
-			Map<String, String> favoriteEventErrorMsgs = new LinkedHashMap<String, String>();
-			request.setAttribute("FavoriteEventErrorMsgs", favoriteEventErrorMsgs);
-
 			try {
 				/****************************** 1.接收請求參數 **************************************************/
 				String member_no = request.getParameter("member_no");
-				if (member_no == null || member_no.trim().length() == 0) {
-					favoriteEventErrorMsgs.put("member_no", "無法取得會員資料");
-				}
-				
 				String evetit_no = request.getParameter("evetit_no");
-				if (evetit_no == null || evetit_no.trim().length() == 0) {
-					favoriteEventErrorMsgs.put("evetit_no", "無法取得活動主題資料");
-				}
-				
-				if (!favoriteEventErrorMsgs.isEmpty()) {
-//					RequestDispatcher failureView = request.getRequestDispatcher("/front-end/EVENT_TITLE/listOneEventTitle.jsp");
-//					failureView.forward(request, response);
-					return;
-				}
 
 				/****************************** 2.開始查詢資料 **************************************************/
 				FavoriteEventService favoriteEventService = new FavoriteEventService();
-//				FavoriteEventVO favoriteEventVO = new FavoriteEventVO();
-//				favoriteEventVO = 
-				favoriteEventService.addFavoriteEvent(member_no, evetit_no);
+				boolean result = favoriteEventService.getOneFavoriteEvent(member_no, evetit_no);
 
 				/****************************** 3.查詢完成,準備轉交 **************************************************/
-//				FavoriteEventService favoriteEventService = new FavoriteEventService();
-////				FavoriteEventVO favoriteEventVO = new FavoriteEventVO();
-////				favoriteEventVO = 
-//				favoriteEventService.addFavoriteEvent(member_no, evetit_no);
+				out.println(result);
 
 				/****************************** 其他可能的錯誤處理 ******************************/
 			} catch (Exception e) {
-				favoriteEventErrorMsgs.put("Exception", "查詢資料失敗 : " + e.getMessage());
-//				RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/addEventTitle.jsp");
-//				failureView.forward(request, response);
+				out.println("  ###" + " 查詢失敗 : " +  e.getMessage());
 			}
-			return;
 		}
-		
-		
-		
-		
-		
-		
+
 		
 		
 		
 		
 		// 請求來源 : front-end -> listOneEventTitle.jsp
 		if ("addFavoriteEvent".equals(action)) {
-
-			Map<String, String> favoriteEventErrorMsgs = new LinkedHashMap<String, String>();
-			request.setAttribute("FavoriteEventErrorMsgs", favoriteEventErrorMsgs);
-
-
 			try {
 				/****************************** 1.接收請求參數 - 輸入格式的錯誤處理 **************************************************/
-				
 				String member_no = request.getParameter("member_no");
-				if (member_no == null || member_no.trim().length() == 0) {
-					favoriteEventErrorMsgs.put("member_no", "無法取得會員資料");
-				}
-				
 				String evetit_no = request.getParameter("evetit_no");
-				if (evetit_no == null || evetit_no.trim().length() == 0) {
-					favoriteEventErrorMsgs.put("evetit_no", "無法取得活動主題資料");
-				}
-				
-				if (!favoriteEventErrorMsgs.isEmpty()) {
-//					RequestDispatcher failureView = request.getRequestDispatcher("/front-end/EVENT_TITLE/listOneEventTitle.jsp");
-//					failureView.forward(request, response);
-					return;
-				}
-	
+
 				/****************************** 2.開始新增資料 **************************************************/
 				FavoriteEventService favoriteEventService = new FavoriteEventService();
-//				FavoriteEventVO favoriteEventVO = new FavoriteEventVO();
-//				favoriteEventVO = 
 				favoriteEventService.addFavoriteEvent(member_no, evetit_no);		
 				
 				/****************************** 3.修改完成,準備轉交 ***************************************************/
-//				request.setAttribute("eventTitleVO", eventTitleVO);
-//				RequestDispatcher successView = request.getRequestDispatcher("/back-end/EVENT_TITLE/listOneEventTitle.jsp");
-//				successView.forward(request, response);
-
+				out.println("  ###" + " 新增成功");
+				
 				/****************************** 其他可能的錯誤處理 **************************************************/
 			} catch (Exception e) {
-				favoriteEventErrorMsgs.put("Exception", "新增資料失敗 : " + e.getMessage());
-//				RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/addEventTitle.jsp");
-//				failureView.forward(request, response);
+				out.println("  ###" + " 新增失敗 : " +  e.getMessage());
 			} 
-				
 		}
 		
 		
 		
 		
 		
-		
-		
-		
-		
-		
-		// 請求來源 : front-end -> listAllEventTitle.jsp
+		// 請求來源 : front-end -> listOneEventTitle.jsp
 		else if ("deleteFavoriteEvent".equals(action)) {
-
-			Map<String, String> favoriteEventErrorMsgs = new LinkedHashMap<String, String>();
-			request.setAttribute("FavoriteEventErrorMsgs", favoriteEventErrorMsgs);
-
 			try {
 				/****************************** 1.接收請求參數 **************************************************/
 				String member_no = request.getParameter("member_no");
-				if (member_no == null || member_no.trim().length() == 0) {
-					favoriteEventErrorMsgs.put("member_no", "無法取得會員資料");
-				}
-				
 				String evetit_no = request.getParameter("evetit_no");
-				if (evetit_no == null || evetit_no.trim().length() == 0) {
-					favoriteEventErrorMsgs.put("evetit_no", "無法取得活動主題資料");
-				}
-				
-				if (!favoriteEventErrorMsgs.isEmpty()) {
-//					RequestDispatcher failureView = request.getRequestDispatcher("/front-end/EVENT_TITLE/listOneEventTitle.jsp");
-//					failureView.forward(request, response);
-					return;
-				}
 
 				/****************************** 2.開始刪除資料 **************************************************/
 				FavoriteEventService favoriteEventService = new FavoriteEventService();
-//				FavoriteEventVO favoriteEventVO = new FavoriteEventVO();
-//				favoriteEventVO = 
 				favoriteEventService.deleteFavoriteEvent(member_no, evetit_no);		
 
 				/****************************** 3.刪除完成,準備轉交 **************************************************/
-//				request.setAttribute("eventTitleVO", eventTitleVO);
-//				RequestDispatcher successView = request.getRequestDispatcher("/back-end/EVENT_TITLE/listOneEventTitle.jsp");
-//				successView.forward(request, response);
+				out.println("  ###" + " 刪除成功");
+				
 				/****************************** 其他可能的錯誤處理 **************************************************/
 			} catch (Exception e) {
-				favoriteEventErrorMsgs.put("Exception", "新增資料失敗 : " + e.getMessage());
-//				RequestDispatcher failureView = request.getRequestDispatcher("/back-end/EVENT_TITLE/addEventTitle.jsp");
-//				failureView.forward(request, response);
+				out.println("  ###" + " 刪除失敗 : " +  e.getMessage());
 			}
-			return;
 		}
+		
+		
 		
 	}
 	

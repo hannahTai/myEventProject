@@ -65,7 +65,7 @@
 				</div>			
 				<div class="panel-collapse collapse in" id="toggleEventTitle" style="margin:15px;">
 					<a href="<%=request.getContextPath()%>/backend/event_title/addEventTitle.jsp" class="btn btn-primary" style="margin-bottom:10px;">新增活動主題</a>
-					<table id="eventTitleListTable" class="display" style="width: 100%">
+					<table id="eventTitleListTable" class="display" style="width:100%;">
 						<thead>
 							<tr>
 								<th>編號</th>

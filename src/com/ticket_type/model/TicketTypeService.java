@@ -24,6 +24,17 @@ public class TicketTypeService {
 		return ticketTypeVO;
 	}
 	
+	public TicketTypeVO addTicketType(String eve_no) {
+		TicketTypeVO ticketTypeVO = new TicketTypeVO();		
+		ticketTypeVO.setEve_no(eve_no);	
+		ticketTypeVO.setTictype_color("#3399ff");
+		ticketTypeVO.setTictype_name("票種名");
+		ticketTypeVO.setTictype_price(new Integer(0));		
+		String tictype_no = ticketTypeDAO.insert(ticketTypeVO);
+		ticketTypeVO.setTictype_no(tictype_no);	
+		return ticketTypeVO;
+	}
+	
 	public TicketTypeVO updateTicketType(String tictype_no, String tictype_color, String tictype_name, Integer tictype_price) {
 		TicketTypeVO ticketTypeVO = new TicketTypeVO();		
 		ticketTypeVO.setTictype_no(tictype_no);		

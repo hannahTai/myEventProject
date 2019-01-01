@@ -71,6 +71,12 @@ public class EventJDBCDAO implements EventDAO_interface{
 	private static final String DELETE_SeatingAreas_ByEvent_STMT = 
 			"DELETE FROM seating_area WHERE eve_no=?";
 	
+	
+	
+	private static final String UPDATE_evetit_sessions_ByEvent_STMT = 
+			"UPDATE EVENT_TITLE SET evetit_sessions=? "
+			+ "WHERE evetit_no=?";
+	
 
 	
 	@Override
@@ -190,7 +196,7 @@ public class EventJDBCDAO implements EventDAO_interface{
 	}
 
 	@Override
-	public void delete(String eve_no) {
+	public void delete(String eve_no, String evetit_no, Integer evetit_sessions) {
 		
 		Connection con = null;
 		PreparedStatement pstmt = null;	
@@ -205,12 +211,19 @@ public class EventJDBCDAO implements EventDAO_interface{
 			pstmt.setString(1, eve_no);
 			pstmt.executeUpdate();
 			
+			
 			pstmt = con.prepareStatement(DELETE_TicketTypes_ByEvent_STMT);
 			pstmt.setString(1, eve_no);
 			pstmt.executeUpdate();
 			
 			pstmt = con.prepareStatement(DELETE_STMT);
 			pstmt.setString(1, eve_no);
+			pstmt.executeUpdate();
+			
+			pstmt = con.prepareStatement(UPDATE_evetit_sessions_ByEvent_STMT);
+			evetit_sessions -= 1;
+			pstmt.setInt(1, evetit_sessions);
+			pstmt.setString(2, evetit_no);
 			pstmt.executeUpdate();
 			
 			con.commit();
@@ -487,7 +500,7 @@ public class EventJDBCDAO implements EventDAO_interface{
 	}
 	
 	@Override
-	public String insert(String evetit_no) {
+	public String insert(String evetit_no, Integer evetit_sessions) {
 		
 		Connection con = null;
 		PreparedStatement pstmt = null;	
@@ -498,12 +511,12 @@ public class EventJDBCDAO implements EventDAO_interface{
 			Class.forName(DRIVER);
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
 
-			String[] cols = { "eve_no" };
-			pstmt = con.prepareStatement(INSERT_STMT_init, cols);
+			con.setAutoCommit(false);
 			
+			String[] cols = { "eve_no" };
+			pstmt = con.prepareStatement(INSERT_STMT_init, cols);			
 			pstmt.setString(1, evetit_no); 
-			pstmt.setString(2, "V001"); 
-		
+			pstmt.setString(2, "V001"); 		
 			pstmt.executeUpdate();
 			
 			rs = pstmt.getGeneratedKeys();
@@ -511,12 +524,27 @@ public class EventJDBCDAO implements EventDAO_interface{
 				eve_no = rs.getString(1);
 			}
 			
-			System.out.println("----------Inserted_init with evetit_no----------");
+			pstmt = con.prepareStatement(UPDATE_evetit_sessions_ByEvent_STMT);
+			evetit_sessions += 1;
+			pstmt.setInt(1, evetit_sessions);
+			pstmt.setString(2, evetit_no);
+			pstmt.executeUpdate();
+			
+			con.commit();
+			con.setAutoCommit(true);
+			
+			System.out.println("----------Inserted_init with evetit_no and evetit_sessions----------");
 
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
 		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. " + se.getMessage());
+			if (con != null) {
+				try {
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. " + excep.getMessage());
+				}
+			}
 		} finally {
 			if (rs != null) {
 				try {
@@ -656,8 +684,8 @@ public class EventJDBCDAO implements EventDAO_interface{
 		
 		
 		// 刪除
-//		dao.delete("EV00005");
-//		System.out.println("------------------------------");
+		dao.delete("EV00006", "E0003", 6);
+		System.out.println("------------------------------");
 		
 		
 		
@@ -741,7 +769,7 @@ public class EventJDBCDAO implements EventDAO_interface{
 			
 		
 		// 初始化新增			
-//		dao.insert("E0003");
+//		dao.insert("E0003", 5);
 			
 		
 		

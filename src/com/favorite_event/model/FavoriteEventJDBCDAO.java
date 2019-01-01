@@ -24,6 +24,12 @@ public class FavoriteEventJDBCDAO implements FavoriteEventDAO_interface{
 
 	private static final String GET_ALL_STMT = 
 			"SELECT MEMBER_NO,EVETIT_NO FROM FAVORITE_EVENT WHERE MEMBER_NO=?";
+	
+	private static final String GET_ONE_STMT = 
+			"SELECT MEMBER_NO,EVETIT_NO FROM FAVORITE_EVENT WHERE MEMBER_NO=? AND EVETIT_NO=?";
+	
+	
+	
 
 	@Override
 	public void insert(FavoriteEventVO favoriteEventVO) {
@@ -198,27 +204,83 @@ public class FavoriteEventJDBCDAO implements FavoriteEventDAO_interface{
 		}
 	}
 	
+	@Override
+	public boolean getOneFavoriteEvent(String member_no, String evetit_no) {
+
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;
+		boolean result;
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(GET_ONE_STMT);
+			
+			pstmt.setString(1, member_no); 
+			pstmt.setString(2, evetit_no); 
+					
+			rs = pstmt.executeQuery();
+			
+			result = rs.next();
+
+			System.out.println("----------getOnefavoriteEvent finished----------");
+
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return result;
+	}
+	
 	public static void main(String[] args) {
 		
 		FavoriteEventJDBCDAO dao = new FavoriteEventJDBCDAO();
 		
 		// 新增
-		FavoriteEventVO FavoriteEventVO1 = new FavoriteEventVO();
-		FavoriteEventVO1.setMember_no("M000002"); 
-		FavoriteEventVO1.setEvetit_no("E0001");
+//		FavoriteEventVO FavoriteEventVO1 = new FavoriteEventVO();
+//		FavoriteEventVO1.setMember_no("M000002"); 
+//		FavoriteEventVO1.setEvetit_no("E0001");
 		
 		// 刪除
-		dao.delete("M000001", "E0002");
+//		dao.delete("M000001", "E0002");
 	
 		// 查詢某會員全部
-		List<FavoriteEventVO> list = dao.findByMember("M000001");
-		for (FavoriteEventVO aFavoriteEventVO : list) {
-			System.out.println(aFavoriteEventVO.getMember_no());
-			System.out.println(aFavoriteEventVO.getEvetit_no());
-			System.out.println("------------------------------");		
-		}
+//		List<FavoriteEventVO> list = dao.findByMember("M000001");
+//		for (FavoriteEventVO aFavoriteEventVO : list) {
+//			System.out.println(aFavoriteEventVO.getMember_no());
+//			System.out.println(aFavoriteEventVO.getEvetit_no());
+//			System.out.println("------------------------------");		
+//		}
 		
 		// 新增:由會員編號與活動主題編號
-		dao.insertbyNo("M000002", "E0003");
+//		dao.insertbyNo("M000002", "E0003");
+		
+		// 查一個
+		System.out.println(dao.getOneFavoriteEvent("M000002", "E0003"));
+		System.out.println(dao.getOneFavoriteEvent("M000001", "E0001"));
 	}
 }

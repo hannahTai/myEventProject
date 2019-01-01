@@ -30,7 +30,7 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 			+ "VALUES ('ES'||LPAD(to_char(TICAREA_SEQ.NEXTVAL), 8, '0'), ?, ?, ?, ?, ?, ?)";
 	
 	private static final String UPDATE_STMT = 
-			"UPDATE seating_area set ticarea_color=?, ticarea_name=?, tictotalnumber=?, ticbookednumber=? "
+			"UPDATE seating_area set ticarea_color=?, ticarea_name=?, tictotalnumber=? "
 			+ "WHERE ticarea_no=?";
 			
 	private static final String DELETE_STMT = 
@@ -117,8 +117,7 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 			pstmt.setString(1, seatingareaVO.getTicarea_color());
 			pstmt.setString(2, seatingareaVO.getTicarea_name());
 			pstmt.setInt(3, seatingareaVO.getTictotalnumber());
-			pstmt.setInt(4, seatingareaVO.getTicbookednumber());
-			pstmt.setString(5, seatingareaVO.getTicarea_no());
+			pstmt.setString(4, seatingareaVO.getTicarea_no());
 
 			pstmt.executeUpdate();
 			

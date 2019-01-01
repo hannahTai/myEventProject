@@ -10,13 +10,13 @@ public interface EventDAO_interface {
 	
 	public String insert(EventVO eventVO);
     public void update(EventVO eventVO);
-    public void delete(String eve_no);
+    public void delete(String eve_no, String evetit_no, Integer evetit_sessions);
     public EventVO findByPrimaryKey(String eve_no);
     public List<EventVO> getAll();
     
     public void update_withoutSeatmap(EventVO eventVO);
     
     public Set<TicketTypeVO> getTicketTypesByEvent(String eve_no);
-	public String insert(String evetit_no);
+	public String insert(String evetit_no, Integer evetit_sessions);
 
 }

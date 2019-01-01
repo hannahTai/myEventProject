@@ -55,6 +55,9 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 			+ "FROM seating_area where tictype_no=? ORDER BY ticarea_no";
 	
 	
+	private static final String DELETE_SeatingAreas_ByTicketType_STMT = 
+			"DELETE FROM seating_area WHERE tictype_no=?";
+	
 	
 	
 	@Override
@@ -153,22 +156,37 @@ public class TicketTypeDAO implements TicketTypeDAO_interface{
 	}
 
 	@Override
-	public void delete(String ticketTypeVO) {
+	public void delete(String tictype_no) {
 		
 		Connection con = null;
 		PreparedStatement pstmt = null;	
 		
 		try {
 			con = ds.getConnection();
-			pstmt = con.prepareStatement(DELETE_STMT);
-
-			pstmt.setString(1, ticketTypeVO);
-
+			
+			con.setAutoCommit(false);
+			
+			pstmt = con.prepareStatement(DELETE_SeatingAreas_ByTicketType_STMT);
+			pstmt.setString(1, tictype_no);
 			pstmt.executeUpdate();
 			
-			System.out.println("----------Deleted----------");
+			pstmt = con.prepareStatement(DELETE_STMT);
+			pstmt.setString(1, tictype_no);
+			pstmt.executeUpdate();
+			
+			con.commit();
+			con.setAutoCommit(true);
+			
+			System.out.println("----------Deleted seatingArea, ticketType----------");
 
 		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. " + excep.getMessage());
+				}
+			}
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
 			if (pstmt != null) {

@@ -19,7 +19,7 @@
 	<div class="container">	
 		<a href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp">活動管理</a><br>	
 		
-		<a href="<%=request.getContextPath()%>/backend/VENUE/listAllVenue.jsp">場地管理</a><br>	
+		<a href="<%=request.getContextPath()%>/backend/venue/listAllVenue.jsp">場地管理</a><br>	
 		
 		<a href="<%=request.getContextPath()%>/backend/">廣告管理</a><br>	
 	</div>
@@ -31,6 +31,7 @@
 	<script>
 	$(document).ready(function() {
 		localStorage.removeItem("DataTables_eventTitleListTable");
+		localStorage.removeItem("DataTables_venueListTable");
 	});
 	</script>
 

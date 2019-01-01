@@ -45,6 +45,9 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 			+ "FROM seating_area where tictype_no=? ORDER BY ticarea_no";
 
 	
+	private static final String DELETE_SeatingAreas_ByTicketType_STMT = 
+			"DELETE FROM seating_area WHERE tictype_no=?";
+	
 	
 	
 	@Override
@@ -149,7 +152,7 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 	}
 
 	@Override
-	public void delete(String ticketTypeVO) {
+	public void delete(String tictype_no) {
 		
 		Connection con = null;
 		PreparedStatement pstmt = null;	
@@ -157,17 +160,32 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 		try {
 			Class.forName(DRIVER);
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
-			pstmt = con.prepareStatement(DELETE_STMT);
-
-			pstmt.setString(1, ticketTypeVO);
-
+			
+			con.setAutoCommit(false);
+			
+			pstmt = con.prepareStatement(DELETE_SeatingAreas_ByTicketType_STMT);
+			pstmt.setString(1, tictype_no);
 			pstmt.executeUpdate();
 			
-			System.out.println("----------Deleted----------");
+			pstmt = con.prepareStatement(DELETE_STMT);
+			pstmt.setString(1, tictype_no);
+			pstmt.executeUpdate();
+			
+			con.commit();
+			con.setAutoCommit(true);
+			
+			System.out.println("----------Deleted seatingArea, ticketType----------");
 
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
 		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. " + excep.getMessage());
+				}
+			}
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
 			if (pstmt != null) {
@@ -404,7 +422,7 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 		
 		
 		// 刪除
-//		dao.delete("ET000013");
+		dao.delete("ET000005");
 //		System.out.println("------------------------------");
 		
 		
@@ -433,17 +451,17 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 		
 		
 		// 用票種查票區
-		Set<SeatingAreaVO> set = dao.getSeatingAreasByTicketType("ET000001");
-		for(SeatingAreaVO aSeatingareaVO :set) {
-			System.out.println(aSeatingareaVO.getTicarea_no());
-			System.out.println(aSeatingareaVO.getEve_no());
-			System.out.println(aSeatingareaVO.getTictype_no());
-			System.out.println(aSeatingareaVO.getTicarea_color());
-			System.out.println(aSeatingareaVO.getTicarea_name());
-			System.out.println(aSeatingareaVO.getTictotalnumber());
-			System.out.println(aSeatingareaVO.getTicbookednumber());
-			System.out.println("------------------------------");
-		}
+//		Set<SeatingAreaVO> set = dao.getSeatingAreasByTicketType("ET000001");
+//		for(SeatingAreaVO aSeatingareaVO :set) {
+//			System.out.println(aSeatingareaVO.getTicarea_no());
+//			System.out.println(aSeatingareaVO.getEve_no());
+//			System.out.println(aSeatingareaVO.getTictype_no());
+//			System.out.println(aSeatingareaVO.getTicarea_color());
+//			System.out.println(aSeatingareaVO.getTicarea_name());
+//			System.out.println(aSeatingareaVO.getTictotalnumber());
+//			System.out.println(aSeatingareaVO.getTicbookednumber());
+//			System.out.println("------------------------------");
+//		}
 		
 		
 		

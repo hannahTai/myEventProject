@@ -20,7 +20,7 @@ public class SeatingAreaJDBCDAO implements SeatingAreaDAO_interface{
 			+ "VALUES ('ES'||LPAD(to_char(TICAREA_SEQ.NEXTVAL), 8, '0'), ?, ?, ?, ?, ?, ?)";
 	
 	private static final String UPDATE_STMT = 
-			"UPDATE seating_area set ticarea_color=?, ticarea_name=?, tictotalnumber=?, ticbookednumber=? "
+			"UPDATE seating_area set ticarea_color=?, ticarea_name=?, tictotalnumber=? "
 			+ "WHERE ticarea_no=?";
 			
 	private static final String DELETE_STMT = 
@@ -111,8 +111,7 @@ public class SeatingAreaJDBCDAO implements SeatingAreaDAO_interface{
 			pstmt.setString(1, seatingareaVO.getTicarea_color());
 			pstmt.setString(2, seatingareaVO.getTicarea_name());
 			pstmt.setInt(3, seatingareaVO.getTictotalnumber());
-			pstmt.setInt(4, seatingareaVO.getTicbookednumber());
-			pstmt.setString(5, seatingareaVO.getTicarea_no());
+			pstmt.setString(4, seatingareaVO.getTicarea_no());
 
 			pstmt.executeUpdate();
 			
@@ -330,13 +329,12 @@ public class SeatingAreaJDBCDAO implements SeatingAreaDAO_interface{
 		
 		
 		// 修改	
-//		SeatingAreaVO seatingareaVO2 = new SeatingAreaVO();
-//		seatingareaVO2.setTicarea_no("ES00000010");
-//		seatingareaVO2.setTicarea_color("#EEEEEE");
-//		seatingareaVO2.setTicarea_name("搖滾搖滾區");
-//		seatingareaVO2.setTictotalnumber(new Integer(250));
-//		seatingareaVO2.setTicbookednumber(new Integer(200));
-//		dao.update(seatingareaVO2);
+		SeatingAreaVO seatingareaVO2 = new SeatingAreaVO();
+		seatingareaVO2.setTicarea_no("ES00000001");
+		seatingareaVO2.setTicarea_color("#EEEEEE");
+		seatingareaVO2.setTicarea_name("搖滾搖滾區");
+		seatingareaVO2.setTictotalnumber(new Integer(250));
+		dao.update(seatingareaVO2);
 		
 		
 		

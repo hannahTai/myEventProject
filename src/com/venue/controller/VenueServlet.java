@@ -4,8 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -43,24 +45,25 @@ public class VenueServlet extends HttpServlet {
 		
 		
 		
-		if (action.indexOf("getOneVenue_For_Display") != -1) {
+		if ("getOneVenue_For_Display".equals(action)) {
 
-			List<String> venueErrorMsgs = new LinkedList<String>();
+			String requestURL = request.getParameter("requestURL");
+
+			Map<String, String> venueErrorMsgs = new LinkedHashMap<String, String>();
 			request.setAttribute("venueErrorMsgs", venueErrorMsgs);
 
 			try {
 				/****************************** 1.接收請求參數 **************************************************/
-				String venue_no = action.substring(24);
-				System.out.println(venue_no);
+				String venue_no = request.getParameter("venue_no");
 
 				/****************************** 2.開始查詢資料 **************************************************/
 				VenueService venueService = new VenueService();
 				VenueVO venueVO = venueService.getOneVenue(venue_no);
 				if (venueVO == null) {
-					venueErrorMsgs.add("查無資料");
+					venueErrorMsgs.put("venue_no", "查無資料");
 				}
 				if (!venueErrorMsgs.isEmpty()) {
-					RequestDispatcher failureView = request.getRequestDispatcher("/backend/venue/listAllVenue.jsp");
+					RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
 					failureView.forward(request, response);
 					return;
 				}
@@ -72,11 +75,10 @@ public class VenueServlet extends HttpServlet {
 
 				/****************************** 其他可能的錯誤處理 ******************************/
 			} catch (Exception e) {
-				venueErrorMsgs.add("無法取得資料 : " + e.getMessage());
-				RequestDispatcher failureView = request.getRequestDispatcher("/backend/venue/listAllVenue.jsp");
+				venueErrorMsgs.put("Exception", "無法取得資料 : " + e.getMessage());
+				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
 				failureView.forward(request, response);
 			}
-			return;
 		}
 		
 		
@@ -85,40 +87,40 @@ public class VenueServlet extends HttpServlet {
 		
 		
 		
-		else if (action.indexOf("getOneVenue_For_Update") != -1) {
+		else if ("getOneVenue_For_Update".equals(action)) {
 
-			List<String> venueErrorMsgs = new LinkedList<String>();
+			String requestURL = request.getParameter("requestURL");
+
+			Map<String, String> venueErrorMsgs = new LinkedHashMap<String, String>();
 			request.setAttribute("venueErrorMsgs", venueErrorMsgs);
 
 			try {
 				/****************************** 1.接收請求參數 **************************************************/
-				String venue_no = action.substring(23);
-				System.out.println(venue_no);
+				String venue_no = request.getParameter("venue_no");
 
 				/****************************** 2.開始查詢資料 **************************************************/
 				VenueService venueService = new VenueService();
 				VenueVO venueVO = venueService.getOneVenue(venue_no);
 				if (venueVO == null) {
-					venueErrorMsgs.add("查無資料");
+					venueErrorMsgs.put("venue_no", "查無資料");
 				}
 				if (!venueErrorMsgs.isEmpty()) {
-					RequestDispatcher failureView = request.getRequestDispatcher("/backend/venue/updateVenue.jsp");
+					RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
 					failureView.forward(request, response);
 					return;
 				}
 
-				/******************************* 3.查詢完成,準備轉交 **************************************************/
+				/****************************** 3.查詢完成,準備轉交 **************************************************/
 				request.setAttribute("venueVO", venueVO);
 				RequestDispatcher successView = request.getRequestDispatcher("/backend/venue/updateVenue.jsp");
 				successView.forward(request, response);
 
-				/****************************** 其他可能的錯誤處理 **************************************************/
+				/****************************** 其他可能的錯誤處理 ******************************/
 			} catch (Exception e) {
-				venueErrorMsgs.add("無法取得資料 : " + e.getMessage());
-				RequestDispatcher failureView = request.getRequestDispatcher("/backend/venue/listAllVenue.jsp");
+				venueErrorMsgs.put("Exception", "無法取得資料 : " + e.getMessage());
+				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
 				failureView.forward(request, response);
 			}
-			return;
 		}
 
 		

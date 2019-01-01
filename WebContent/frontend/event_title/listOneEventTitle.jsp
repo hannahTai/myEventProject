@@ -5,13 +5,8 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.event_title.model.*"%>
 <%@ page import="com.event_title.controller.*"%>
-
-<%
-	// --------------------尚未處理:::把活動主題加入最愛--------------------
-	// just for add&delete FavoriteEvent Test
-	String member_no = "member_no";
-	// --------------------尚未處理:::把活動主題加入最愛--------------------
-%>
+<%@ page import="com.event.model.*"%>
+<%@ page import="com.event.controller.*"%>
 
 <%
 	String evetit_no = request.getParameter("evetit_no");
@@ -19,6 +14,11 @@
 	EventTitleService eventTitleService = new EventTitleService();
 	EventTitleVO aEventTitle = eventTitleService.getOneEventTitle(evetit_no);
 	pageContext.setAttribute("aEventTitle", aEventTitle); 
+%>
+
+<%		
+	Set<EventVO> set = eventTitleService.getEventsByEventTitle(evetit_no);
+	pageContext.setAttribute("listEvents_ByEventTitle", set);
 %>
 
 <!DOCTYPE html>
@@ -36,50 +36,82 @@
     	    width: 100%;
 	    }
 	    
-	    .pointer {cursor: pointer;}
+	    .glyphicon {
+	    	cursor: pointer;
+	    }
     </style>
 </head>
 
 <body>
+
+
+
+<!-- for test only ::: favorite event member -->
+<input type="hidden" name="member_no" id="member_no" value="M000013">
+<!-- for test only ::: favorite event member -->
+
+
+
     <div class="container">
         <div class="col-xs-12 col-sm-8 col-sm-offset-2">
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-9">
                     <h4 id="evetit_name">${aEventTitle.evetit_name}</h4>
+                    <input type="hidden" name="evetit_no" id="evetit_no" value="${aEventTitle.evetit_no}">
+                    <input type="hidden" name="projectName" id="projectName" value="<%=request.getContextPath() %>">
                 </div>
                 <div id="toggleFavoriteEvent" class="pointer">
 	                <div class="col-xs-12 col-sm-12 col-md-3 text-right" style="color:red;">
-	                     <h4><i class="glyphicon glyphicon-heart-empty"></i>加入最愛</h4>
+	                     <h4><i class="glyphicon glyphicon-heart-empty" id="clickFavoriteEvent">加入最愛</i></h4>
 						 <!-- // --------------------尚未處理:::把活動主題加入最愛-------------------- -->
-	                     <input type="hidden" id="favoriteEventStatus" value="inTheFavoriteEvent">
+	                     <input type="hidden" id="favoriteEventStatus" value="outTheFavoriteEvent">
 	                     <!-- // --------------------尚未處理:::把活動主題加入最愛-------------------- -->
 	                </div>
                 </div>
             </div>
             <img src="<%= request.getContextPath()%>/event_title/EventTitleGifReader?scaleSize=850&evetit_no=${aEventTitle.evetit_no}" id="poster">
-            <input type="hidden" name="evetit_no" id="evetit_no" value="${aEventTitle.evetit_no}">
             <div>
                 <input id="flip" type="button" value="查看活動場次" class="btn btn-primary">
                 <div id="panel" style="display:none;">
                     <table class="table table-hover">
                         <thead>
-                            <tr>
+                            <tr class="info">
                                 <th>日期時間</th>
                                 <th>地點</th>
                                 <th>購買狀態</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>資料</td>
-                                <td>資料</td>
-                                <td>資料</td>
-                            </tr>
-                            <tr>
-                                <td>資料</td>
-                                <td>資料</td>
-                                <td>資料</td>
-                            </tr>
+							<c:forEach var="eventVO" items="${listEvents_ByEventTitle}">
+								<tr>
+									<td>
+										<fmt:formatDate value="${eventVO.eve_startdate}" pattern="yyyy-MM-dd HH:mm"/> 至 
+										<fmt:formatDate value="${eventVO.eve_enddate}" pattern="yyyy-MM-dd HH:mm"/>
+									</td>
+									<td>
+										<jsp:useBean id="venueService" scope="page" class="com.venue.model.VenueService" />
+										<input type="hidden" name="venue_no" value="${eventVO.venue_no}">
+										<i class="glyphicon glyphicon-info-sign"> ${venueService.getOneVenue(eventVO.venue_no).venue_name}</i> 
+									</td>
+									<td>
+										<fmt:formatDate var="eve_onsaledate" value="${eventVO.eve_onsaledate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+										<fmt:formatDate var="eve_offsaledate" value="${eventVO.eve_offsaledate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+										<jsp:useBean id="today" class="java.util.Date"/>  
+										<fmt:timeZone value="Asia/Tokyo">   
+											<fmt:formatDate var="now" value="${today}" pattern="yyyy-MM-dd HH:mm:ss"/>
+										</fmt:timeZone> 
+										<c:if test="${now < eve_onsaledate}">
+											<div class="btn btn-warning">尚未開賣</div>
+										</c:if>
+										<c:if test="${now > eve_onsaledate && now < eve_offsaledate}">
+											<a href="#" target="_blank" class="btn btn-danger">售票中</a>${eventVO.eve_no}
+										</c:if>
+										<c:if test="${now > eve_offsaledate}">
+											<div class="btn btn-default">已售完</div>
+										</c:if>
+									</td>
+								</tr>
+							</c:forEach>
                         </tbody>
                     </table>
                 </div>
@@ -110,47 +142,134 @@
     <script type="text/javascript">   
     
     $(document).ready(function() {
+    	
         $("#flip").click(function() {
             $("#panel").slideToggle("fast");
         });
         
-        $("#toggleFavoriteEvent").click(function(){
-        	$(".glyphicon").toggleClass("glyphicon-heart glyphicon-heart-empty");
-        	
-        	if($("#favoriteEventStatus").val() == "inTheFavoriteEvent"){
-        		$("#favoriteEventStatus").val("outTheFavoriteEvent");
-        		console.log($("#favoriteEventStatus").val());
-        	} else {
-        		$("#favoriteEventStatus").val("inTheFavoriteEvent");
-        		console.log($("#favoriteEventStatus").val());
-        	}
-        	
+        $(".glyphicon-info-sign").click(function(e){
+        	var venue_no = $(e.target).parent().children("input").val();
+        	console.log(venue_no);
+          	// get the venue data and show on the modal with google map QAQ
         });
         
+        $("#toggleFavoriteEvent").click(function(){
+        	// checkFavoriteEventData
+        	var member_no = $("#member_no").val();
+        	if(member_no.trim().length != 7){
+        		window.alert("請先登入");
+        		return;
+        	}
+        	var evetit_no = $("#evetit_no").val();
+        	if(evetit_no.trim().length != 5){
+        		window.alert("找不到活動主題");
+        		return;
+        	}
+        	// deleteFavoriteEvent
+        	if($("#favoriteEventStatus").val() == "inTheFavoriteEvent"){        		
+        		var url = $("#projectName").val();
+                url += '/favorite_event/FavoriteEventServlet.do';
+                var data = '';
+              	data += 'member_no=';
+               	data += member_no;
+               	data += '&evetit_no=';
+               	data += evetit_no;
+               	data += '&';
+                data += 'action=deleteFavoriteEvent';
+                $.ajax({
+                    type: 'post',
+                    url: url,
+                    data: data,
+                    success: function(data) {              	
+                    	if(data.indexOf("成") != -1){
+                    		$("#clickFavoriteEvent").toggleClass("glyphicon-heart glyphicon-heart-empty");
+                    		$("#favoriteEventStatus").val("outTheFavoriteEvent");
+                    	} else {
+                    		window.alert(data);
+                    	}
+                    }
+                });	
+        	}
+        	// addFavoriteEvent
+        	if($("#favoriteEventStatus").val() == "outTheFavoriteEvent"){
+        		var url = $("#projectName").val();
+                url += '/favorite_event/FavoriteEventServlet.do';
+                var data = '';
+               	data += 'member_no=';
+               	data += member_no;
+               	data += '&evetit_no=';
+               	data += evetit_no;
+               	data += '&';
+                data += 'action=addFavoriteEvent';
+                $.ajax({
+                    type: 'post',
+                    url: url,
+                    data: data,
+                    success: function(data) {              	
+                    	if(data.indexOf("成") != -1){
+                    		$("#clickFavoriteEvent").toggleClass("glyphicon-heart glyphicon-heart-empty");
+                    		$("#favoriteEventStatus").val("inTheFavoriteEvent");
+                    	} else {
+                    		window.alert(data);
+                    	}
+                    }
+                });
+        	}
+        });
+        
+        
+        
+        
         toDataURL($("#poster").attr("src"), function(dataUrl) {
-
         	if(localStorage.getItem("eventTitleBrowsingHistory") == null){
         		var eventTitleBrowsingHistoryArray = [];
         	} else {
         		var eventTitleBrowsingHistoryJSONstr = localStorage.getItem("eventTitleBrowsingHistory");
         		var eventTitleBrowsingHistoryArray = JSON.parse(eventTitleBrowsingHistoryJSONstr);
         	}
-      	
             var evetit_name = $("#evetit_name").html();
             var evetit_no = $("#evetit_no").val();
 			var oneEventTitleBrowsingHistory = new eventTitleBrowsingHistory(evetit_no, evetit_name, dataUrl);
-
-
 			if(!isEventTitleBrowsingHistoryExist(eventTitleBrowsingHistoryArray, oneEventTitleBrowsingHistory)){
  				eventTitleBrowsingHistoryArray.push(oneEventTitleBrowsingHistory);
  			}
-
 			var eventTitleBrowsingHistoryJSONstr = JSON.stringify(eventTitleBrowsingHistoryArray);
-					
 			localStorage.setItem("eventTitleBrowsingHistory", eventTitleBrowsingHistoryJSONstr);
-					    
-        });       
+        }); 
         
+        
+        
+     	// the init favorite event state
+     	if($("#member_no").val().trim().length == 7 && $("#evetit_no").val().trim().length == 5){
+        	var member_no = $("#member_no").val();
+        	var evetit_no = $("#evetit_no").val();
+     		var url = $("#projectName").val();
+            url += '/favorite_event/FavoriteEventServlet.do';
+            var data = '';
+           	data += 'member_no=';
+           	data += member_no;
+           	data += '&evetit_no=';
+           	data += evetit_no;
+           	data += '&';
+            data += 'action=getOneFavoriteEvent_For_Display';
+            $.ajax({
+                type: 'post',
+                url: url,
+                data: data,
+                success: function(data) {   
+                	if(data.indexOf("true") != -1){
+                		$("#clickFavoriteEvent").toggleClass("glyphicon-heart glyphicon-heart-empty");
+                		$("#favoriteEventStatus").val("inTheFavoriteEvent");
+                	}
+                	else if(data.indexOf("false") != -1){
+						//do nothing if not in the record
+                	} else {
+                		window.alert(data);
+                	}
+                }
+            });
+     	}
+     	
     });
     
     
@@ -165,8 +284,6 @@
 		}		
 		return isEventTitleBrowsingHistoryExist;
 	}
-    
-    
     
     function toDataURL(url, callback) {
 		var xhr = new XMLHttpRequest();

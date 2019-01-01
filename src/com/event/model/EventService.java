@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
+import com.event_title.model.EventTitleService;
+import com.event_title.model.EventTitleVO;
 import com.ticket_type.model.TicketTypeVO;
 
 public class EventService {
@@ -39,7 +41,10 @@ public class EventService {
 	}
 	
 	public EventVO addEvent(String evetit_no) {
-		String eve_no = eventDao.insert(evetit_no);
+		EventTitleService eventTitleService = new EventTitleService();
+		EventTitleVO EventTitleVO = eventTitleService.getOneEventTitle(evetit_no);
+		Integer evetit_sessions = EventTitleVO.getEvetit_sessions();
+		String eve_no = eventDao.insert(evetit_no, evetit_sessions);
 		EventVO eventVO = getOneEvent(eve_no);
 		return eventVO;
 	}
@@ -71,8 +76,11 @@ public class EventService {
 		return eventVO;
 	}
 
-	public void deleteEvent(String eve_no) {
-		eventDao.delete(eve_no);
+	public void deleteEvent(String eve_no, String evetit_no) {
+		EventTitleService eventTitleService = new EventTitleService();
+		EventTitleVO EventTitleVO = eventTitleService.getOneEventTitle(evetit_no);
+		Integer evetit_sessions = EventTitleVO.getEvetit_sessions();
+		eventDao.delete(eve_no, evetit_no, evetit_sessions);
 	}
 
 	public EventVO getOneEvent(String eve_no) {

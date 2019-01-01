@@ -322,7 +322,7 @@ public class EventServlet extends HttpServlet {
 			Map<String, String> eventErrorMsgs = new LinkedHashMap<String, String>();
 			request.setAttribute("eventErrorMsgs", eventErrorMsgs);
 
-			try {
+//			try {
 				/****************************** 1.接收請求參數 **************************************************/
 				String evetit_no = request.getParameter("evetit_no");					
 				
@@ -336,11 +336,11 @@ public class EventServlet extends HttpServlet {
 				successView.forward(request, response);
 
 				/****************************** 其他可能的錯誤處理 **************************************************/
-			} catch (Exception e) {
-				eventErrorMsgs.put("Exception", "修改資料失敗 : " + e.getMessage());
-				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
-				failureView.forward(request, response);
-			}
+//			} catch (Exception e) {
+//				eventErrorMsgs.put("Exception", "修改資料失敗 : " + e.getMessage());
+//				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
+//				failureView.forward(request, response);
+//			}
 
 		} 
 		
@@ -364,10 +364,11 @@ public class EventServlet extends HttpServlet {
 			try {
 				/****************************** 1.接收請求參數 **************************************************/
 				String eve_no = request.getParameter("eve_no");
+				String evetit_no = request.getParameter("evetit_no");
 			
 				/****************************** 2.開始刪除資料 **************************************************/
 				EventService eventService = new EventService();
-				eventService.deleteEvent(eve_no);
+				eventService.deleteEvent(eve_no, evetit_no);
 
 				/****************************** 3.刪除完成,準備轉交 **************************************************/
 				RequestDispatcher successView = request.getRequestDispatcher(requestURL);

@@ -30,6 +30,26 @@
 			display: inline-block;
 			border-radius: 2px;
  		}
+        .glyphicon {
+            cursor: pointer; 
+        }
+        input:read-only { 
+            background-color: #eee;
+            opacity: 0.8;
+        }
+        .error{
+        	border-color: rgb(255,0,0);
+        }
+        .navbar-fixed-bottom {
+	        left: 80%;
+	        border-radius: 5px;
+	        background-color: #D3D3D3;
+	        opacity: 0.8;
+	    }
+ 	    .warning:read-write { 
+ 	    	background-color: rgba(255,0,0,.3); 
+ 	    	color: black;
+ 	    } 
     </style>
 </head>
 
@@ -37,6 +57,7 @@
 
 		<div class="container">
 			<span class="text-danger">${eventErrorMsgs.Exception}</span>
+			<input type="hidden" id="projectName" name="projectName" value="<%=request.getContextPath() %>" readonly>
 		</div>
 
 
@@ -171,37 +192,139 @@
 							<c:forEach var="ticketTypeVO" items="${eventService.getTicketTypesByEvent(eventVO.eve_no)}">
 						         <div class="panel-group">
 						            <div class="panel panel-info">
-						                <div class="panel-heading" data-toggle="collapse" aria-expanded="false" href="#${ticketTypeVO.tictype_no}">
+						                <div class="panel-heading">
 						                    <div class="panel-title">
-						                    	<div class="colorarea" style="background-color:${ticketTypeVO.tictype_color};"></div>
-												${ticketTypeVO.tictype_name}&nbsp;&nbsp;
-												票價 : ${ticketTypeVO.tictype_price}
-						                    </div>
+						                    	<!-- --------------------票種位置::頭-------------------- -->
+												<span>
+													<input type="hidden" name="tictype_no" value="${ticketTypeVO.tictype_no}" readonly>
+													票種色 : <input type="color" name="tictype_color" value="${ticketTypeVO.tictype_color}" readonly>&nbsp;&nbsp;&nbsp;
+													票種名 : <input type="text" class="warning" name="tictype_name" value="${ticketTypeVO.tictype_name}" size="10" readonly>&nbsp;&nbsp;&nbsp;
+													票價 : <input type="text" class="warning" name="tictype_price" value="${ticketTypeVO.tictype_price}" size="10" readonly>元
+												</span>
+												<!-- --------------------票種位置::尾-------------------- -->
+												<div style="display: flex; justify-content: flex-end; margin-top:10px">
+						                            <i class="glyphicon glyphicon-pencil">編輯&nbsp;</i>
+						                            <i class="glyphicon glyphicon-ok updateTicketType" style="display:none;">儲存&nbsp;</i>
+						                            <i class="glyphicon glyphicon-trash deleteTicketType">刪除&nbsp;</i>
+						                            <i class="glyphicon glyphicon-th-list" data-toggle="collapse" aria-expanded="false" href="#${ticketTypeVO.tictype_no}">收合</i>
+						                        </div>
+						                    </div> 
 						                </div>
 						                <div id="${ticketTypeVO.tictype_no}" class="panel-collapse collapse in">
 						                    <div class="panel-body">
 						                    	<jsp:useBean id="ticketTypeService" scope="page" class="com.ticket_type.model.TicketTypeService" />
 						                    	<c:forEach var="SeatingAreaVO" items="${ticketTypeService.getSeatingAreasByTicketType(ticketTypeVO.tictype_no)}"> 
-						                    		<div style="border-bottom: 1px dotted #31708f;">
-						                    			<div class="colorarea" style="background-color:${SeatingAreaVO.ticarea_color};"></div>			                           
-						                           		${SeatingAreaVO.ticarea_name},&nbsp;&nbsp;
-														總張數 : ${SeatingAreaVO.tictotalnumber}
+						                    		<div style="border-bottom: 1px dotted #31708f; margin-bottom:5px;">
+														<!-- --------------------票區位置::頭-------------------- -->
+                            							<span>
+                            								 <input type="hidden" name="ticarea_no" value="${SeatingAreaVO.ticarea_no}" readonly>
+													                                票區色 : <input type="color" name="ticarea_color" value="${SeatingAreaVO.ticarea_color}" readonly>&nbsp;&nbsp;&nbsp;
+													                                票區名 : <input type="text" class="warning" name="ticarea_name" value="${SeatingAreaVO.ticarea_name}" size="10" readonly>&nbsp;&nbsp;&nbsp;
+													                                張數 : <input type="text" class="warning" name="tictotalnumber" value="${SeatingAreaVO.tictotalnumber}" size="10" readonly>張
+													    </span>
+							                            <!-- --------------------票區位置::尾-------------------- -->
+							                            <div style="display:flex; justify-content:flex-end; margin-bottom:10px; margin-top:10px;">
+							                                <i class="glyphicon glyphicon-pencil">編輯&nbsp;</i>
+							                                <i class="glyphicon glyphicon-ok updateSeatingArea" style="display:none;">儲存&nbsp;</i>
+							                                <i class="glyphicon glyphicon-trash deleteSeatingArea">刪除</i>
+							                            </div>
 						                            </div>
 						                   		</c:forEach>
+						                   		<button type="button" class="btn btn-basic btn-sm" style="margin-top:20px;padding:0px;">
+								                    	<i class="glyphicon glyphicon-plus addSeatingArea">新增票區</i>
+								            	</button>
 						                    </div>
 						                </div>
 						            </div>
 						        </div>
-							</c:forEach> 
+							</c:forEach>
+							<div>
+								<button type="button" class="btn btn-basic btn-sm" style="margin-top:20px;padding:0px;">
+						            <i class="glyphicon glyphicon-plus" id="addTicketType">新增票種</i>
+						        </button>
+					        </div> 
 						</div>         
 	                </div>
 	            </div> 
 	  			<span class="form-group">
 	  				<input type="hidden" name="requestURL" value="<%=request.getServletPath()%>">
 					<button type="submit" class="btn btn-success" name="action" value="updateEvent">儲存</button>
+					<a class="btn btn-danger" href="<%=request.getContextPath()%>/event/EventServlet.do?action=deleteEvent&evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}&requestURL=/backend/event_title/listAllEventTitleRelatives.jsp">捨棄</a>
+					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}">下次再輸入</a>
 				</span>			
 			</form>
         </div>
+        
+        
+        
+        
+        
+        
+<!-- --------------------=====----- ///secretTicketArea/// -----=====-------------------- -->        
+<div style="border-bottom: 1px dotted #31708f; margin-bottom:5px; display:none;" id="secretSeatingtArea">
+	<!-- --------------------票區位置::頭-------------------- -->
+	<span>
+	   <input type="hidden" name="ticarea_no" value="">
+	          票區色 : <input type="color" name="ticarea_color" value="#3399ff">&nbsp;&nbsp;&nbsp;
+	          票區名 : <input type="text" class="warning" name="ticarea_name" value="" size="10">&nbsp;&nbsp;&nbsp;
+	          張數 : <input type="text" class="warning" name="tictotalnumber" value="" size="10">張
+	</span>
+	<!-- --------------------票區位置::尾-------------------- -->
+	<div style="display:flex; justify-content:flex-end; margin-bottom:10px; margin-top:10px;">
+	    <i class="glyphicon glyphicon-pencil" style="display:none;">編輯&nbsp;</i>
+	    <i class="glyphicon glyphicon-ok updateSeatingArea">儲存&nbsp;</i>
+	    <i class="glyphicon glyphicon-trash deleteSeatingArea">刪除</i>
+	</div>
+</div>
+
+
+
+<!-- --------------------=====----- ///secretTicketType/// -----=====-------------------- -->  
+
+<div class="panel-group" id="secretTicketType" style="display:none;">
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<div class="panel-title">
+				<!-- --------------------票種位置::頭-------------------- -->
+				<span>
+					<input type="hidden" name="tictype_no" value="">
+					票種色 : <input type="color" name="tictype_color" value="#3399ff">&nbsp;&nbsp;&nbsp;
+					票種名 : <input type="text" class="warning" name="tictype_name" value="" size="10">&nbsp;&nbsp;&nbsp;
+					票價 : <input type="text" class="warning" name="tictype_price" value="" size="10">元
+				</span>
+				<!-- --------------------票種位置::尾-------------------- -->
+				<div style="display:flex; justify-content:flex-end; margin-top:10px">
+					<i class="glyphicon glyphicon-pencil" style="display:none;">編輯&nbsp;</i>
+					<i class="glyphicon glyphicon-ok updateTicketType">儲存&nbsp;</i>
+					<i class="glyphicon glyphicon-trash deleteTicketType">刪除&nbsp;</i>
+					<i class="glyphicon glyphicon-th-list" data-toggle="collapse" aria-expanded="false" href="#init">收合</i>
+				</div>
+			</div> 
+		</div>
+		<div id="init" class="panel-collapse collapse in">
+			<div class="panel-body">
+				<button type="button" class="btn btn-basic btn-sm" style="margin-top:20px;padding:0px;">
+					<i class="glyphicon glyphicon-plus addSeatingArea">新增票區</i>
+				</button>
+			</div>
+		</div>
+	</div>
+	<br>
+</div>
+        
+ 
+ 
+<!-- --------------------=====----- ///ajaxBack/// -----=====-------------------- -->    
+<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation" style="display:none" id="ajaxMsgsNavbar">
+	<div id="ajaxMsgs" style="margin:5px;"></div>
+</nav>
+
+
+
+    
+        
+        
+        
 
     <!-- Basic -->
     <script src="https://code.jquery.com/jquery.js"></script>
@@ -281,6 +404,284 @@
         	onShow: function(){
         		this.setOptions({maxDate: $("#eve_startdate").val() ? $("#eve_startdate").val() : false})}
         });
+        
+        
+        
+        
+        
+        
+        
+        // -----dynamic input: ticketType and ticketArea---------------------------------------------
+        $(".glyphicon-pencil").click(function(e){
+            $(e.target).hide();
+            $(e.target).next().show();
+            $(e.target).parent().prev().children("input").each(function(){
+                $(this).prop("readonly", false);
+            });
+        });       
+        
+        
+        
+        
+        
+        $(".updateTicketType").click(function(e){
+            var url = $("#projectName").val();
+            url += '/ticket_type/TicketTypeServlet.do';
+            var data = '';
+            var tictype_name = $(e.target).parent().prev().children("input[name=tictype_name]");
+            if(tictype_name.val().trim().length == 0){
+            	tictype_name.addClass("error");
+            	tictype_name.attr("placeholder", "請輸入 !");
+            	return;
+            }           
+            tictype_name.removeClass("error");
+            var tictype_price = $(e.target).parent().prev().children("input[name=tictype_price]");
+            if(tictype_price.val().trim().length == 0 || isNaN(tictype_price.val())){
+            	tictype_price.addClass("error");
+            	tictype_price.val("請輸入正確格式 !");
+            	tictype_price.select();
+            	return;
+            }   		
+            tictype_price.removeClass("error");
+            $(e.target).parent().prev().children("input").each(function(){
+            	data += $(this).attr("name") ;
+            	data += '=';
+            	data += $(this).val();
+            	data += '&';
+            });
+            data += 'action=updateTicketType';
+            $.ajax({
+                type: 'post',
+                url: url,
+                data: data,
+                success: function(data) {
+                	$("#ajaxMsgs").html(data);
+                	$("#ajaxMsgsNavbar").show().delay(5000).fadeOut();
+                	if(data.indexOf("成") != -1){
+                		$(e.target).parent().prev().children("input").each(function(){
+                            $(this).prop("readonly", true);
+                        });
+                        $(e.target).hide();
+                        $(e.target).prev().show();
+                	}
+                }
+            });
+        });
+
+
+        
+        
+        
+        $(".updateSeatingArea").click(function(e){
+            var url = $("#projectName").val();
+            url += '/seating_area/SeatingAreaServlet.do';
+            var data = '';
+            var ticarea_name = $(e.target).parent().prev().children("input[name=ticarea_name]");
+            if(ticarea_name.val().trim().length == 0){
+            	ticarea_name.addClass("error");
+            	ticarea_name.attr("placeholder", "請輸入 !");
+            	return;
+            }           
+            ticarea_name.removeClass("error");
+            var tictotalnumber = $(e.target).parent().prev().children("input[name=tictotalnumber]");
+            if(tictotalnumber.val().trim().length == 0 || isNaN(tictotalnumber.val())){
+            	tictotalnumber.addClass("error");
+            	tictotalnumber.val("請輸入正確格式 !");
+            	tictotalnumber.select();
+            	return;
+            }   		
+            tictotalnumber.removeClass("error");
+            $(e.target).parent().prev().children("input").each(function(){
+            	data += $(this).attr("name") ;
+            	data += '=';
+            	data += $(this).val();
+            	data += '&';
+            });
+            data += 'action=updateSeatingArea';
+            $.ajax({
+                type: 'post',
+                url: url,
+                data: data,
+                success: function(data) {
+                	$("#ajaxMsgs").html(data);
+                	$("#ajaxMsgsNavbar").show().delay(5000).fadeOut();               	
+                	if(data.indexOf("成") != -1){
+                        $(e.target).parent().prev().children("input").each(function(){
+                            $(this).prop("readonly", true);
+                        });                        
+                        $(e.target).hide();
+                        $(e.target).prev().show();
+                	}
+                }
+            });
+        });
+        
+
+        
+        
+
+        $(".deleteTicketType").click(function(e){
+            var url = $("#projectName").val();
+            url += '/ticket_type/TicketTypeServlet.do';
+            var data = '';
+            $(e.target).parent().prev().children("input").each(function(){
+            	data += $(this).attr("name") ;
+            	data += '=';
+            	data += $(this).val();
+            	data += '&';
+            });
+            data += 'action=deleteTicketType';
+            $.ajax({
+                type: 'post',
+                url: url,
+                data: data,
+                success: function(data) {
+                	$("#ajaxMsgs").html(data);
+                	$("#ajaxMsgsNavbar").show().delay(5000).fadeOut();
+                	if(data.indexOf("成") != -1){
+                        $(e.target).parents(".panel-group").remove();
+                	}
+                }
+            });
+        });
+        
+        
+        
+        
+        
+        $(".deleteSeatingArea").click(function(e){
+        	var url = $("#projectName").val();
+            url += '/seating_area/SeatingAreaServlet.do';
+            var data = '';
+            $(e.target).parent().prev().children("input").each(function(){
+            	data += $(this).attr("name") ;
+            	data += '=';
+            	data += $(this).val();
+            	data += '&';
+            });
+            data += 'action=deleteSeatingArea';
+            $.ajax({
+                type: 'post',
+                url: url,
+                data: data,
+                success: function(data) {
+                	$("#ajaxMsgs").html(data);
+                	$("#ajaxMsgsNavbar").show().delay(5000).fadeOut();               	
+                	if(data.indexOf("成") != -1){
+                		$(e.target).parent().parent().remove();
+                	}
+                }
+            });
+        });
+        
+        
+
+        
+        
+        $(".glyphicon-th-list").click(function(e){
+            $(e.target).toggleClass("glyphicon-minus glyphicon-th-list");
+        });
+        
+        
+        
+        
+        
+        $("#addTicketType").click(function(e){
+        	var url = $("#projectName").val();
+            url += '/ticket_type/TicketTypeServlet.do';
+            var data = '';
+           	data += 'eve_no' ;
+           	data += '=';
+           	data += $("#eve_no").val();
+           	data += '&';
+            data += 'action=addTicketType';
+            $.ajax({
+                type: 'post',
+                url: url,
+                data: data,
+                success: function(data) {
+                	if(data.indexOf("失") != -1){
+                		$("#ajaxMsgs").html(data);
+                    	$("#ajaxMsgsNavbar").show().delay(5000).fadeOut();                		
+                	} else {
+                    	$("#ajaxMsgs").html("  ### 票種新增成功 ");
+                    	$("#ajaxMsgsNavbar").show().delay(5000).fadeOut();
+                    	
+                    	var ticketTypeVo = JSON.parse(data);
+                    	var tictype_no = ticketTypeVo.tictype_no;
+                    	var tictype_color = ticketTypeVo.tictype_color;
+                    	var tictype_name = ticketTypeVo.tictype_name;
+                    	var tictype_price = ticketTypeVo.tictype_price;       
+             
+                    	var clonedTicketType = $("#secretTicketType").clone(true, true);
+                    	clonedTicketType.attr("id", "shareFix" + tictype_no);
+                    	clonedTicketType.css("display", "inline");
+                    	clonedTicketType.find(".glyphicon-th-list").attr("href", "#"+tictype_no);
+                    	clonedTicketType.find(".panel-collapse").attr("id", tictype_no);
+                        
+                    	clonedTicketType.find("input[name=tictype_no]").val(tictype_no);
+                    	clonedTicketType.find("input[name=tictype_name]").val(tictype_name);
+                    	clonedTicketType.find("input[name=tictype_color]").val(tictype_color);
+                    	clonedTicketType.find("input[name=tictype_price]").val(tictype_price);                       
+                        $(e.target).parent().before(clonedTicketType);
+                	}
+                }
+            });       	
+        });
+
+        
+        
+        
+        
+        $(".addSeatingArea").click(function(e){
+        	
+        	var url = $("#projectName").val();
+            url += '/seating_area/SeatingAreaServlet.do';
+            var data = '';
+           	data += 'eve_no' ;
+           	data += '=';
+           	data += $("#eve_no").val();
+           	data += '&';       	
+           	data += 'tictype_no' ;
+           	data += '=';
+           	data += $(e.target).parent().parent().parent().attr("id");
+           	data += '&';           	
+            data += 'action=addSeatingArea';
+           
+            $.ajax({
+                type: 'post',
+                url: url,
+                data: data,
+                success: function(data) {
+                	if(data.indexOf("失") != -1){
+                		$("#ajaxMsgs").html(data);
+                    	$("#ajaxMsgsNavbar").show().delay(5000).fadeOut();                
+                    	console.log(data);
+                	} else {
+                    	$("#ajaxMsgs").html("  ### 票區新增成功 ");
+                    	$("#ajaxMsgsNavbar").show().delay(5000).fadeOut();
+                    	var seatingAreaVo = JSON.parse(data);
+                    	var ticarea_no = seatingAreaVo.ticarea_no;
+                    	var ticarea_color = seatingAreaVo.ticarea_color;
+                    	var ticarea_name = seatingAreaVo.ticarea_name;
+                    	var tictotalnumber = seatingAreaVo.tictotalnumber;               
+                        var clonedSeatingtArea = $("#secretSeatingtArea").clone(true, true);
+                        clonedSeatingtArea.attr("id", "shareFix" + ticarea_no);
+                        clonedSeatingtArea.css("display", "block");
+                        clonedSeatingtArea.find("input[name=ticarea_no]").val(ticarea_no);
+                        clonedSeatingtArea.find("input[name=ticarea_color]").val(ticarea_color);
+                        clonedSeatingtArea.find("input[name=ticarea_name]").val(ticarea_name);
+                        clonedSeatingtArea.find("input[name=tictotalnumber]").val(tictotalnumber);
+                        $(e.target).parent().before(clonedSeatingtArea);
+                	}
+                }
+            });       	
+        });
+
+
+        
+        
+        
     });
     
     
