@@ -33,8 +33,9 @@
 
 
 	<div class="container">
-		<span class="text-danger">${venueErrorMsgs.venue_no}</span>
+		
 		<span class="text-danger">${venueErrorMsgs.Exception}</span>
+		
 	</div>
 
 
@@ -47,28 +48,24 @@
 	                <ul class="nav nav-tabs" style="margin-bottom:10px;">
 	                	<li class="active"><a href="#googleMapTab" data-toggle="tab">場地位置</a></li>
 	                    <li><a href="#infoTab" data-toggle="tab">交通資訊</a></li>
-	                    <li><a href="#picTab" data-toggle="tab">位置圖</a></li>
+	                    <li><a href="#picTab" data-toggle="tab">位置圖<span class="text-danger">${venueErrorMsgs.venue_locationPic}</span></a></li>
 	                </ul>
 	                <!-- 標籤面板：內容區 -->
 	                <div class="tab-content">
 	                	
 	                	<div class="tab-pane active" id="googleMapTab">
-	           				<div class="form-group">
-				                <label for="venue_no">場地編號</label>
-				                <input type="text" name="venue_no" id="venue_no" class="form-control" value="${venueVO.venue_no}" readonly>
-				            </div>
-				            
+
 				            <div class="form-group">
 				                <label for="venue_name">場地名稱</label>
 				                <span class="text-danger">${venueErrorMsgs.venue_name}</span>
-				                <input type="text" name="venue_name" id="venue_name" class="form-control" value="${venueVO.venue_name}" placeholder="請輸入場地名稱">
+				                <input type="text" name="venue_name" id="venue_name" class="form-control" value="${param.venue_name}" placeholder="請輸入場地名稱">
 				                <button type="button" class="btn btn-primary" id="searchAddress" style="float:right;">點我搜尋</button>
 				            </div>
 				            
 				            <div class="form-group">
 				                <label for="address">地址</label>
 				                <span class="text-danger">${venueErrorMsgs.address}</span>
-				                <input type="text" name="address" id="address" class="form-control" value="${venueVO.address}">
+				                <input type="text" name="address" id="address" class="form-control" value="${param.address}">
 				            </div>
 				                        
 				            <div class="row">
@@ -76,14 +73,14 @@
 				                    <div class="form-group">
 				                        <label for="latitude">緯度</label>
 				                        <span class="text-danger">${venueErrorMsgs.latitude}</span>
-				                        <input type="text" id="latitude" name="latitude" class="form-control" value="${venueVO.latitude}" readonly>
+				                        <input type="text" id="latitude" name="latitude" class="form-control" value="${param.latitude}" readonly>
 				                    </div>
 				                </div>
 				                <div class="col-xs-12 col-sm-6">
 				                    <div class="form-group">
 				                        <label for="longitude">經度</label>
 				                        <span class="text-danger">${venueErrorMsgs.longitude}</span>
-				                        <input type="text" id="longitude" name="longitude" class="form-control" value="${venueVO.longitude}" readonly> 
+				                        <input type="text" id="longitude" name="longitude" class="form-control" value="${param.longitude}" readonly> 
 				                    </div>
 				                </div>
 				            </div>
@@ -92,7 +89,7 @@
 	                    
 	                    <div class="tab-pane" id="infoTab">
 							<textarea name="venue_info" id="infoEditor">
-		                		${venueVO.venue_info} 
+		                		${param.venue_info} 
 		               		</textarea>
 	                    </div>
 	                    
@@ -101,12 +98,12 @@
 								<label for="venue_locationPic">場地位置圖</label>
 								<input type="file" id="venue_locationPic" name="venue_locationPic" class="form-control" accept="image/*" style="margin-bottom:10px;">
 								<input type="hidden" id="venue_locationPic_status" name="venue_locationPic_status" value="${(venue_locationPic_status == 'alreadyUpload') ? 'alreadyUpload' : 'noUpload'}">
-								<c:if test="${venue_locationPic_status != 'alreadyUpload'}">
-				                	<img src="<%= request.getContextPath()%>/venue/VenueGifReader?scaleSize=1000&venue_no=${venueVO.venue_no}" id="venue_locationPic_preview">
-				                </c:if>
-								<c:if test="${venue_locationPic_status == 'alreadyUpload'}">
+<%-- 								<c:if test="${venue_locationPic_status != 'alreadyUpload'}"> --%>
+<%-- 				                	<img src="<%= request.getContextPath()%>/venue/VenueGifReader?scaleSize=1000&venue_no=${venueVO.venue_no}" id="venue_locationPic_preview"> --%>
+<%-- 				                </c:if> --%>
+<%-- 								<c:if test="${venue_locationPic_status == 'alreadyUpload'}"> --%>
 				                	<img src="${venue_locationPic_path}" id="venue_locationPic_preview">
-				                </c:if>
+<%-- 				                </c:if> --%>
 							</div>      
 	                    </div>
 	                </div>
@@ -116,7 +113,7 @@
 			<div class="col-xs-12 col-sm-12" style="margin-top:15px;">	            	
 	  			<span class="form-group">
 	  				<input type="hidden" name="requestURL" value="<%=request.getServletPath()%>">
-					<button type="submit" class="btn btn-success" name="action" value="updateVenue">儲存</button>
+					<button type="submit" class="btn btn-success" name="action" value="addVenue">新增</button>
 					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/venue/listAllVenue.jsp?venue_no=${venueVO.venue_no}">回場地總攬</a>
 				</span>	
 			</div>
@@ -154,7 +151,16 @@
     	
     	var latitude = $("#latitude").val();
     	var longitude = $("#longitude").val();
-    	var contentString = $("#venue_name").val() + "<br>" + $("#address").val();
+    	var venue_name = $("#venue_name").val();
+    	var address = $("#address").val();
+    	var contentString = venue_name + address;
+    	
+    	if(latitude.length == 0 && longitude.length == 0){
+    		latitude = '24.9679966';
+        	longitude = '121.19220289999998';
+        	contentString = '';
+    	}    	
+    	
 		var latlngObj = new latlng(latitude, longitude);
         
         var toGoogleMapWebsiteLink = "<a href='https://www.google.com/maps/search/?api=1&query=" + latitude + "," + longitude + "' target='_blank'>" + contentString + "</a>";
@@ -165,8 +171,10 @@
         var map = new google.maps.Map(document.getElementById('map'), { zoom: 14, center: latlngObj });
         var marker = new google.maps.Marker({ position: latlngObj, map: map });
 
-        infowindow.open(map, marker);
-        
+        if(contentString.length != 0){
+        	infowindow.open(map, marker);
+        }
+ 
         var geocoder = new google.maps.Geocoder();
         document.getElementById('searchAddress').addEventListener('click', function() {
             geocodeAddress(geocoder, map);

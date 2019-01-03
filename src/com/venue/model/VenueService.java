@@ -20,7 +20,8 @@ public class VenueService {
 		venueVO.setLongitude(longitude);
 		venueVO.setVenue_info(venue_info);
 		venueVO.setVenue_locationPic(venue_locationPic);		
-		venueDAO.insert(venueVO);
+		String venue_no = venueDAO.insert(venueVO);
+		venueVO.setVenue_no(venue_no);
 		return venueVO;
 	}
 	
@@ -33,8 +34,14 @@ public class VenueService {
 		venueVO.setLatitude(latitude);
 		venueVO.setLongitude(longitude);
 		venueVO.setVenue_info(venue_info);
-		venueVO.setVenue_locationPic(venue_locationPic);	
-		venueDAO.update(venueVO);
+		venueVO.setVenue_locationPic(venue_locationPic);
+		
+		if(venue_locationPic == null || venue_locationPic.length == 0) {
+			venueDAO.update_withoutLocationPic(venueVO);
+		} else {
+			venueDAO.update(venueVO);
+		}
+	
 		return venueVO;
 	}
 

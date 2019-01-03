@@ -18,7 +18,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-<title>瀏覽所有場地</title>
+<title>場地管理</title>
 <!-- Basic -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
 <!-- dataTables -->
@@ -49,7 +49,7 @@
 					<th>編號</th>
 					<th>場地名稱</th>
 					<th>地址</th>
-					<th></th>
+					<th>動作</th>
 				</tr>
 			</thead>
 			<tbody>

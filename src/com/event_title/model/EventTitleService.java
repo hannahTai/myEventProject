@@ -1,9 +1,12 @@
 package com.event_title.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.advertisement.model.AdvertisementService;
+import com.advertisement.model.AdvertisementVO;
 import com.event.model.EventVO;
 
 public class EventTitleService {
@@ -105,5 +108,13 @@ public class EventTitleService {
 	public Set<EventVO> getEventsByEventTitle(String evetit_no) {
 		return eventTitleDao.getEventsByEventTitle(evetit_no);
 	}
+	
+	
+	public List<EventTitleVO> getNotInTheAdvertisement() {
+		List<EventTitleVO> eventTitleList = eventTitleDao.getNotInTheAdvertisement();
+		System.out.println(eventTitleList);
+		return eventTitleList;
+	}
+	
 
 }

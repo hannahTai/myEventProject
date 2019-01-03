@@ -26,4 +26,7 @@ public interface EventTitleDAO_interface {
      
      
      public Set<EventVO> getEventsByEventTitle(String evetit_no);
+     
+     
+     public List<EventTitleVO> getNotInTheAdvertisement();
 }

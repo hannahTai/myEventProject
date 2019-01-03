@@ -250,7 +250,7 @@
 	  				<input type="hidden" name="requestURL" value="<%=request.getServletPath()%>">
 					<button type="submit" class="btn btn-success" name="action" value="updateEvent">儲存</button>
 					<a class="btn btn-danger" href="<%=request.getContextPath()%>/event/EventServlet.do?action=deleteEvent&evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}&requestURL=/backend/event_title/listAllEventTitleRelatives.jsp">捨棄</a>
-					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}">下次再輸入</a>
+					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}">下次再說</a>
 				</span>			
 			</form>
         </div>

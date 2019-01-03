@@ -43,15 +43,22 @@ public class VenueDAO implements VenueDAO_interface {
 	private static final String GET_ONE_STMT = "SELECT venue_no, venue_name,address,latitude,longitude,venue_info,venue_locationPic FROM VENUE WHERE venue_no = ?";
 
 	private static final String GET_ALL_STMT = "SELECT VENUE_NO,VENUE_NAME,ADDRESS,LATITUDE,LONGITUDE,VENUE_INFO,VENUE_LOCATIONPIC FROM VENUE";
+	
+	private static final String UPDATE_STMT_withoutLocationPic = "UPDATE VENUE SET VENUE_NAME=?,ADDRESS=?,LATITUDE=?,LONGITUDE=?,VENUE_INFO=? WHERE VENUE_NO=?";
+
 
 	@Override
-	public void insert(VenueVO venueVO) {
+	public String insert(VenueVO venueVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String venue_no = null;
 
 		try {
 			con = ds.getConnection();
-			pstmt = con.prepareStatement(INSERT_STMT);
+			
+			String[] cols = { "venue_no" };
+			pstmt = con.prepareStatement(INSERT_STMT, cols);
 
 			pstmt.setString(1, venueVO.getVenue_name());
 			pstmt.setString(2, venueVO.getAddress());
@@ -61,12 +68,24 @@ public class VenueDAO implements VenueDAO_interface {
 			pstmt.setBytes(6, venueVO.getVenue_locationPic());
 
 			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				venue_no = rs.getString(1);
+			}
 
 			System.out.println("----------Inserted----------");
 
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
 			if (pstmt != null) {
 				try {
 					pstmt.close();
@@ -82,7 +101,7 @@ public class VenueDAO implements VenueDAO_interface {
 				}
 			}
 		}
-
+		return venue_no;
 	}
 
 	@Override
@@ -310,5 +329,47 @@ public class VenueDAO implements VenueDAO_interface {
 			}
 		}
 		return list;
+	}
+	
+	
+	@Override
+	public void update_withoutLocationPic(VenueVO venueVO) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(UPDATE_STMT_withoutLocationPic);
+
+			pstmt.setString(1, venueVO.getVenue_name());
+			pstmt.setString(2, venueVO.getAddress());
+			pstmt.setDouble(3, venueVO.getLatitude());
+			pstmt.setDouble(4, venueVO.getLongitude());
+			pstmt.setCharacterStream(5, new StringReader(venueVO.getVenue_info()));
+			pstmt.setString(6, venueVO.getVenue_no());
+
+			pstmt.executeUpdate();
+
+			System.out.println("----------update_withoutLocationPic done----------");
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
 	}
 }

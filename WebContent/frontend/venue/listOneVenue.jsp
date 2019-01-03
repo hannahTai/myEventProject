@@ -4,6 +4,14 @@
 
 <%@ page import="com.venue.model.*"%>
 
+<%
+	String venue_no = request.getParameter("venue_no");
+
+	VenueService venueService = new VenueService();
+	VenueVO venueVO = venueService.getOneVenue(venue_no);
+	pageContext.setAttribute("venueVO", venueVO); 
+%>
+
 <!DOCTYPE html>
 <html>
 
@@ -31,15 +39,15 @@
 <body>
 
 
-
-	<div class="container">
-		<span class="text-danger">${venueErrorMsgs.venue_no}</span>
-		<span class="text-danger">${venueErrorMsgs.Exception}</span>
-	</div>
-
-
-
-    	<div class="container">
+    <div class="container">
+    	<div class="col-xs-12 col-sm-8 col-sm-offset-2">
+    	
+    		<div class="col-xs-12 col-sm-12">
+    			<h4>場地名稱 : ${venueVO.venue_name}</h4>
+    			<h4>地址 : ${venueVO.address}</h4>
+    			<input type="hidden" name="venue_name" id="venue_name" class="form-control" value="${venueVO.venue_name}" readonly>
+    			<input type="hidden" name="address" id="address" class="form-control" value="${venueVO.address}" readonly>
+    		</div>
     	
             <div class="col-xs-12 col-sm-12">    
 				<div class="tabbable">
@@ -51,37 +59,9 @@
 	                </ul>
 	                <!-- 標籤面板：內容區 -->
 	                <div class="tab-content">
-	                	
 	                	<div class="tab-pane active" id="googleMapTab">
-	           				<div class="form-group">
-				                <label for="venue_name">場地編號</label>
-				                <input type="text" name="venue_no" id="venue_no" class="form-control" value="${venueVO.venue_no}" readonly>
-				            </div>
-				            
-				            <div class="form-group">
-				                <label for="venue_name">場地名稱</label>
-				                <input type="text" name="venue_name" id="venue_name" class="form-control" value="${venueVO.venue_name}" readonly>
-				            </div>
-				            
-				            <div class="form-group">
-				                <label for="address">地址</label>
-				                <input type="text" name="address" id="address" class="form-control" value="${venueVO.address}" readonly>
-				            </div>
-				                        
-				            <div class="row">
-				                <div class="col-xs-12 col-sm-6">
-				                    <div class="form-group">
-				                        <label for="latitude">緯度</label>
-				                        <input type="text" id="latitude" name="latitude" class="form-control" value="${venueVO.latitude}" readonly>
-				                    </div>
-				                </div>
-				                <div class="col-xs-12 col-sm-6">
-				                    <div class="form-group">
-				                        <label for="longitude">經度</label>
-				                        <input type="text" id="longitude" name="longitude" class="form-control" value="${venueVO.longitude}" readonly> 
-				                    </div>
-				                </div>
-				            </div>
+				            <input type="hidden" id="latitude" name="latitude" class="form-control" value="${venueVO.latitude}" readonly>
+							<input type="hidden" id="longitude" name="longitude" class="form-control" value="${venueVO.longitude}" readonly> 
 				            <div id="map"></div>     
 	                    </div>
 	                    
@@ -97,20 +77,8 @@
 	                </div>
 	            </div>
             </div>
-  
-			<div class="col-xs-12 col-sm-12" style="margin-top:15px;">	            	
-				<span class="form-group">
-					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/venue/listAllVenue.jsp?venue_no=${venueVO.venue_no}">回到場地總覽</a>
-				</span>
-				<form method="post" action="<%=request.getContextPath()%>/venue/VenueServlet.do" class="actionForm">								
-					<input type="hidden" name="venue_no"    value="${venueVO.venue_no}">
-					<input type="hidden" name="requestURL"	value="<%=request.getServletPath()%>">
-					<input type="hidden" name="action"	    value="getOneVenue_For_Update">
-					<input type="submit" value="修改" class="btn btn-warning"> 							
-				</form>	
-			</div>
-                      
         </div>
+	</div>
 
     <!-- Basic -->
     <script src="https://code.jquery.com/jquery.js"></script>

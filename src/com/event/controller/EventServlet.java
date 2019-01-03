@@ -288,13 +288,13 @@ public class EventServlet extends HttpServlet {
 				eventService.updateEvent(eve_no, venue_no, eve_sessionname, eve_seatmap,
 						eve_startdate, eve_enddate, eve_onsaledate, eve_offsaledate,
 						ticlimit, fullrefundenddate, eve_status);
+				
+				request.getSession().removeAttribute("eve_seatmap_path");
 
 				/****************************** 3.修改完成,準備轉交 ***************************************************/
 				request.setAttribute("eventVO", eventVO);
 				RequestDispatcher successView = request.getRequestDispatcher("/backend/event/listOneEvent.jsp");
 				successView.forward(request, response);
-				
-				request.getSession().removeAttribute("eve_seatmap_path");
 
 				/****************************** 其他可能的錯誤處理 **************************************************/
 			} catch (Exception e) {
@@ -322,7 +322,7 @@ public class EventServlet extends HttpServlet {
 			Map<String, String> eventErrorMsgs = new LinkedHashMap<String, String>();
 			request.setAttribute("eventErrorMsgs", eventErrorMsgs);
 
-//			try {
+			try {
 				/****************************** 1.接收請求參數 **************************************************/
 				String evetit_no = request.getParameter("evetit_no");					
 				
@@ -336,11 +336,11 @@ public class EventServlet extends HttpServlet {
 				successView.forward(request, response);
 
 				/****************************** 其他可能的錯誤處理 **************************************************/
-//			} catch (Exception e) {
-//				eventErrorMsgs.put("Exception", "修改資料失敗 : " + e.getMessage());
-//				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
-//				failureView.forward(request, response);
-//			}
+			} catch (Exception e) {
+				eventErrorMsgs.put("Exception", "修改資料失敗 : " + e.getMessage());
+				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
+				failureView.forward(request, response);
+			}
 
 		} 
 		

@@ -59,7 +59,7 @@ public class EventTitleServlet extends HttpServlet {
 		
 
 		
-		// 請求來源 : backend -> listAllEventTitleRelatives.jsp
+		// 請求來源 : backend -> listAllEventTitleRelatives.jsp / listAllAdvertisement.jsp
 		if ("getOneEventTitle_For_Display".equals(action)) {
 			
 			String requestURL = request.getParameter("requestURL");

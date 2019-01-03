@@ -63,9 +63,7 @@
                 <div id="toggleFavoriteEvent" class="pointer">
 	                <div class="col-xs-12 col-sm-12 col-md-3 text-right" style="color:red;">
 	                     <h4><i class="glyphicon glyphicon-heart-empty" id="clickFavoriteEvent">加入最愛</i></h4>
-						 <!-- // --------------------尚未處理:::把活動主題加入最愛-------------------- -->
 	                     <input type="hidden" id="favoriteEventStatus" value="outTheFavoriteEvent">
-	                     <!-- // --------------------尚未處理:::把活動主題加入最愛-------------------- -->
 	                </div>
                 </div>
             </div>
@@ -83,6 +81,7 @@
                         </thead>
                         <tbody>
 							<c:forEach var="eventVO" items="${listEvents_ByEventTitle}">
+
 								<tr>
 									<td>
 										<fmt:formatDate value="${eventVO.eve_startdate}" pattern="yyyy-MM-dd HH:mm"/> 至 
@@ -91,7 +90,9 @@
 									<td>
 										<jsp:useBean id="venueService" scope="page" class="com.venue.model.VenueService" />
 										<input type="hidden" name="venue_no" value="${eventVO.venue_no}">
-										<i class="glyphicon glyphicon-info-sign"> ${venueService.getOneVenue(eventVO.venue_no).venue_name}</i> 
+										<a href="<%=request.getContextPath() %>/frontend/venue/listOneVenue.jsp?venue_no=${eventVO.venue_no}" target="_blank">
+											<i class="glyphicon glyphicon-info-sign"> ${venueService.getOneVenue(eventVO.venue_no).venue_name}</i> 
+										</a>
 									</td>
 									<td>
 										<fmt:formatDate var="eve_onsaledate" value="${eventVO.eve_onsaledate}" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -136,6 +137,16 @@
             </div>
         </div>
     </div>
+ 
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <!-- Basic -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -145,12 +156,6 @@
     	
         $("#flip").click(function() {
             $("#panel").slideToggle("fast");
-        });
-        
-        $(".glyphicon-info-sign").click(function(e){
-        	var venue_no = $(e.target).parent().children("input").val();
-        	console.log(venue_no);
-          	// get the venue data and show on the modal with google map QAQ
         });
         
         $("#toggleFavoriteEvent").click(function(){
@@ -216,7 +221,6 @@
                 });
         	}
         });
-        
         
         
         

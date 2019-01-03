@@ -34,15 +34,22 @@ public class VenueJDBCDAO implements VenueDAO_interface {
 
 	private static final String GET_ALL_STMT = "SELECT VENUE_NO,VENUE_NAME,ADDRESS,LATITUDE,LONGITUDE,VENUE_INFO,VENUE_LOCATIONPIC FROM VENUE";
 
+	
+	private static final String UPDATE_STMT_withoutLocationPic = "UPDATE VENUE SET VENUE_NAME=?,ADDRESS=?,LATITUDE=?,LONGITUDE=?,VENUE_INFO=? WHERE VENUE_NO=?";
+	
 	@Override
-	public void insert(VenueVO venueVO) {
+	public String insert(VenueVO venueVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String venue_no = null;
 
 		try {
 			Class.forName(DRIVER);
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
-			pstmt = con.prepareStatement(INSERT_STMT);
+			
+			String[] cols = { "venue_no" };
+			pstmt = con.prepareStatement(INSERT_STMT, cols);
 
 			pstmt.setString(1, venueVO.getVenue_name());
 			pstmt.setString(2, venueVO.getAddress());
@@ -52,6 +59,11 @@ public class VenueJDBCDAO implements VenueDAO_interface {
 			pstmt.setBytes(6, venueVO.getVenue_locationPic());
 
 			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				venue_no = rs.getString(1);
+			}
 
 			System.out.println("----------Inserted----------");
 
@@ -60,6 +72,13 @@ public class VenueJDBCDAO implements VenueDAO_interface {
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
 			if (pstmt != null) {
 				try {
 					pstmt.close();
@@ -75,7 +94,7 @@ public class VenueJDBCDAO implements VenueDAO_interface {
 				}
 			}
 		}
-
+		return venue_no;
 	}
 
 	@Override
@@ -316,52 +335,97 @@ public class VenueJDBCDAO implements VenueDAO_interface {
 		}
 		return list;
 	}
+	
+	@Override
+	public void update_withoutLocationPic(VenueVO venueVO) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(UPDATE_STMT_withoutLocationPic);
+
+			pstmt.setString(1, venueVO.getVenue_name());
+			pstmt.setString(2, venueVO.getAddress());
+			pstmt.setDouble(3, venueVO.getLatitude());
+			pstmt.setDouble(4, venueVO.getLongitude());
+			pstmt.setCharacterStream(5, new StringReader(venueVO.getVenue_info()));
+			pstmt.setString(6, venueVO.getVenue_no());
+
+			pstmt.executeUpdate();
+
+			System.out.println("----------update_withoutLocationPic done----------");
+
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+	}
+	
+	
 
 	public static void main(String[] args) {
 
 		VenueJDBCDAO dao = new VenueJDBCDAO();
 
 		// 新增
-//		FileInputStream fis1 = null;
-//		ByteArrayOutputStream baos1 = null;	
-//		try {
-//			VenueVO VenueVO1 = new VenueVO();
-//			
-//			VenueVO1.setVenue_name("A"); 
-//			VenueVO1.setAddress("This is address");
-//			VenueVO1.setLatitude(10.5666666);
-//			VenueVO1.setLongitude(134.555555);
-//			VenueVO1.setVenue_info("This is venue_info");
-//			
-//			fis1 = new FileInputStream("writeImgJDBC/tomcat.jpg");		  //B	
-//			baos1 = new ByteArrayOutputStream();			
-//			int i;
-//			while ((i = fis1.read()) != -1)
-//				baos1.write(i);			
-//			VenueVO1.setVenue_locationPic(baos1.toByteArray());
-//			
-//			dao.insert(VenueVO1);
-//			
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} finally {
-//			if (baos1 != null) {
-//				try {
-//					baos1.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//			if (fis1 != null) {
-//				try {
-//					fis1.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
+		FileInputStream fis1 = null;
+		ByteArrayOutputStream baos1 = null;	
+		try {
+			VenueVO VenueVO1 = new VenueVO();
+			
+			VenueVO1.setVenue_name("AAAAAAAAAAAAAAAA"); 
+			VenueVO1.setAddress("This is address");
+			VenueVO1.setLatitude(10.5666666);
+			VenueVO1.setLongitude(134.555555);
+			VenueVO1.setVenue_info("This is venue_info");
+			
+			fis1 = new FileInputStream("writeImgJDBC/tomcat.jpg");		  //B	
+			baos1 = new ByteArrayOutputStream();			
+			int i;
+			while ((i = fis1.read()) != -1)
+				baos1.write(i);			
+			VenueVO1.setVenue_locationPic(baos1.toByteArray());
+			
+			System.out.println(dao.insert(VenueVO1));
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (baos1 != null) {
+				try {
+					baos1.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (fis1 != null) {
+				try {
+					fis1.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		
 		
@@ -438,26 +502,37 @@ public class VenueJDBCDAO implements VenueDAO_interface {
 		
 		
 		// 查詢全部
-		List<VenueVO> list = dao.getAll();
-		for (VenueVO aVenueVO : list) {
-			System.out.println(aVenueVO.getVenue_no());
-			System.out.println(aVenueVO.getVenue_name());
-			System.out.println(aVenueVO.getAddress());
-			System.out.println(aVenueVO.getLatitude());
-			System.out.println(aVenueVO.getLongitude());
-			System.out.println(aVenueVO.getVenue_info());
-																								//B
-			try (PrintStream ps = new PrintStream(new FileOutputStream("readImgJDBC/venueTest.jpg"), true)){
-				if(aVenueVO.getVenue_locationPic() == null) {
-					
-				} else {
-					ps.write(aVenueVO.getVenue_locationPic());
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
-			System.out.println("------------------------------");
-		}
+//		List<VenueVO> list = dao.getAll();
+//		for (VenueVO aVenueVO : list) {
+//			System.out.println(aVenueVO.getVenue_no());
+//			System.out.println(aVenueVO.getVenue_name());
+//			System.out.println(aVenueVO.getAddress());
+//			System.out.println(aVenueVO.getLatitude());
+//			System.out.println(aVenueVO.getLongitude());
+//			System.out.println(aVenueVO.getVenue_info());
+//																								//B
+//			try (PrintStream ps = new PrintStream(new FileOutputStream("readImgJDBC/venueTest.jpg"), true)){
+//				if(aVenueVO.getVenue_locationPic() == null) {
+//					
+//				} else {
+//					ps.write(aVenueVO.getVenue_locationPic());
+//				}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}	
+//			System.out.println("------------------------------");
+//		}
+		
+		
+		//修改_無圖
+//		VenueVO VenueVO4 = new VenueVO();
+//		VenueVO4.setVenue_no("V001"); 
+//		VenueVO4.setVenue_name("CCC"); 
+//		VenueVO4.setAddress("This is address2");
+//		VenueVO4.setLatitude(10.5666666);
+//		VenueVO4.setLongitude(134.555555);
+//		VenueVO4.setVenue_info("This is venue_info");
+//		dao.update_withoutLocationPic(VenueVO4);	
 		
 	}
 
