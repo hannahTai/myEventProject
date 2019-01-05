@@ -122,6 +122,38 @@ public class SeatingAreaServlet extends HttpServlet {
 			
 		}
 		
+		
+		
+		
+		
+		// 請求來源 : backend -> updateEvent.jsp
+		if ("copySeatingArea".equals(action)) {
+			
+			try {
+				/****************************** 1.接收請求參數 - 輸入格式的錯誤處理 **************************************************/				
+				String eve_no = request.getParameter("eve_no");
+				String tictype_no = request.getParameter("tictype_no");
+				String ticarea_color = request.getParameter("ticarea_color");
+				String ticarea_name = request.getParameter("ticarea_name");
+				Integer tictotalnumber = new Integer(request.getParameter("tictotalnumber"));
+				
+				/****************************** 2.開始刪除資料 **************************************************/
+				SeatingAreaService ticketAreaService = new SeatingAreaService();
+				SeatingAreaVO seatingAreaVO = ticketAreaService.addSeatingArea(eve_no, tictype_no, ticarea_color, ticarea_name, tictotalnumber);
+				
+				Gson gson = new Gson();				
+				String seatingAreaVOjsonStr = gson.toJson(seatingAreaVO);
+				
+				/****************************** 3.刪除完成,準備轉交 ***************************************************/
+				out.println(seatingAreaVOjsonStr);
+
+				/****************************** 其他可能的錯誤處理 **************************************************/
+			} catch (Exception e) {
+				out.println("  ###" + " 新增失敗 : " +  e.getMessage());
+			}
+			
+		}
+		
 	}
 
 }

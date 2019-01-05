@@ -26,6 +26,7 @@ import javax.servlet.http.Part;
 import com.event.model.EventVO;
 import com.event_title.model.EventTitleService;
 import com.event_title.model.EventTitleVO;
+import com.google.gson.Gson;
 
 
 
@@ -47,6 +48,7 @@ public class EventTitleServlet extends HttpServlet {
 		// 基本款
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
 
 		String action = request.getParameter("action");
 
@@ -589,6 +591,38 @@ public class EventTitleServlet extends HttpServlet {
 				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
 				failureView.forward(request, response);
 			}
+		}
+
+		
+		
+		
+		
+		
+		
+		
+
+		
+		// 請求來源 : backend -> updateEvent.jsp
+		if ("listEvents_ByEventTitle_forCopyChoose".equals(action)) {
+			
+			try {				
+				/****************************** 1.將輸入資料轉為Map **************************************************/ 
+				String evetit_no = request.getParameter("evetit_no");
+				 
+				/****************************** 2.開始複合查詢 **************************************************/
+				EventTitleService eventTitleService = new EventTitleService();
+				Set<EventVO> list  = eventTitleService.getEventsByEventTitle(evetit_no);
+				
+				/****************************** 3.查詢完成,準備轉交 **************************************************/
+				Gson gson = new Gson();				
+				String eventVOListStr = gson.toJson(list);
+				out.println(eventVOListStr);
+				
+				/***************************其他可能的錯誤處理**********************************/
+			} catch (Exception e) {
+				out.println("  ### " + " 查詢失敗 : " +  e.getMessage());
+			}
+			
 		}
 		
 	}

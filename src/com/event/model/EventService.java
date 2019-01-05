@@ -94,4 +94,23 @@ public class EventService {
 	public Set<TicketTypeVO> getTicketTypesByEvent(String eve_no) {
 		return eventDao.getTicketTypesByEvent(eve_no);
 	}
+	
+	
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	public EventVO copyEvent(String eve_no, String eve_no_forCopy) {
+
+		EventVO eventVO_forCopy = eventDao.findByPrimaryKey(eve_no_forCopy);		
+		updateEvent(eve_no, eventVO_forCopy.getVenue_no(), eventVO_forCopy.getEve_sessionname(), eventVO_forCopy.getEve_seatmap(),
+				eventVO_forCopy.getEve_startdate(), eventVO_forCopy.getEve_enddate(), eventVO_forCopy.getEve_onsaledate(), eventVO_forCopy.getEve_offsaledate(),
+				eventVO_forCopy.getTiclimit(), eventVO_forCopy.getFullrefundenddate(), "normal");	
+		
+		return eventDao.findByPrimaryKey(eve_no);
+	}
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	
+	
+	
+	
+	
 }

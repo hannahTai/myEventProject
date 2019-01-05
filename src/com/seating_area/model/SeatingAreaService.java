@@ -11,14 +11,14 @@ public class SeatingAreaService {
 	}
 
 	public SeatingAreaVO addSeatingArea(String eve_no, String tictype_no,
-			String ticarea_color, String ticarea_name, Integer tictotalnumber, Integer ticbookednumber) {
+			String ticarea_color, String ticarea_name, Integer tictotalnumber) {
 		SeatingAreaVO seatingAreaVO = new SeatingAreaVO();		
 		seatingAreaVO.setEve_no(eve_no);
 		seatingAreaVO.setTictype_no(tictype_no);					
 		seatingAreaVO.setTicarea_color(ticarea_color);
 		seatingAreaVO.setTicarea_name(ticarea_name);		
 		seatingAreaVO.setTictotalnumber(tictotalnumber);	
-		seatingAreaVO.setTicbookednumber(ticbookednumber);	
+		seatingAreaVO.setTicbookednumber(new Integer(0));	
 		String ticarea_no = seatingAreaDAO.insert(seatingAreaVO);
 		seatingAreaVO.setTicarea_no(ticarea_no);	
 		return seatingAreaVO;

@@ -153,6 +153,7 @@
     	var longitude = $("#longitude").val();
     	var venue_name = $("#venue_name").val();
     	var address = $("#address").val();
+    	var encodeURIaddress = encodeURIComponent(address);
     	var contentString = venue_name + address;
     	
     	if(latitude.length == 0 && longitude.length == 0){
@@ -163,7 +164,7 @@
     	
 		var latlngObj = new latlng(latitude, longitude);
         
-        var toGoogleMapWebsiteLink = "<a href='https://www.google.com/maps/search/?api=1&query=" + latitude + "," + longitude + "' target='_blank'>" + contentString + "</a>";
+        var toGoogleMapWebsiteLink = "<a href='https://www.google.com/maps/search/?api=1&query=" + encodeURIaddress + "' target='_blank'>" + contentString + "</a>";
         var infowindow = new google.maps.InfoWindow({
             content: toGoogleMapWebsiteLink
         });
@@ -201,6 +202,7 @@
                 var lat = results[0].geometry.location.lat();
                 var lng = results[0].geometry.location.lng();
                 var formatted_address = results[0].formatted_address;
+            	var encodeURIaddress = encodeURIComponent(formatted_address);
                 
             	$("#latitude").val(lat);
             	$("#longitude").val(lng);
@@ -212,7 +214,7 @@
                 });
 
                 var contentString = $("#venue_name").val() + "<br>" + formatted_address;
-                var toGoogleMapWebsiteLink = "<a href='https://www.google.com/maps/search/?api=1&query=" + lat + "," + lng + "' target='_blank'>" + contentString + "</a>";
+                var toGoogleMapWebsiteLink = "<a href='https://www.google.com/maps/search/?api=1&query=" + encodeURIaddress + "' target='_blank'>" + contentString + "</a>";
                 var infowindow = new google.maps.InfoWindow({
                     content: toGoogleMapWebsiteLink
                 });

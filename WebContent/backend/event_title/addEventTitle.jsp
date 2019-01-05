@@ -189,11 +189,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- ckEditor JS -->
     <script src="<%=request.getContextPath()%>/vendor/ckeditor_full/ckeditor.js"></script>
-    <script src="<%=request.getContextPath()%>/backend/event_title/js/eventTitleCKEditor.js"></script>
     <!-- datetimepicker -->
     <script src="<%=request.getContextPath()%>/vendor/datetimepicker/jquery.js"></script>
     <script src="<%=request.getContextPath()%>/vendor/datetimepicker/jquery.datetimepicker.full.js"></script>
     <!-- JavaScript in File -->
+    <script src="<%=request.getContextPath()%>/backend/event_title/js/eventTitleCKEditor.js"></script>
     <script src="<%=request.getContextPath()%>/backend/event_title/js/addEventTitle.js"></script>
     <!-- JavaScript in HTML -->
     <script type="text/javascript">

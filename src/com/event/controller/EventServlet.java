@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
@@ -38,6 +39,7 @@ public class EventServlet extends HttpServlet {
 		// 基本款
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
 
 		String action = request.getParameter("action");
 
@@ -380,7 +382,48 @@ public class EventServlet extends HttpServlet {
 				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
 				failureView.forward(request, response);
 			}
+		} 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// 請求來源 : back-end -> updateEvent.jsp
+		else if ("copyEvent".equals(action)) {
+
+			String requestURL = request.getParameter("requestURL");
+
+			Map<String, String> eventErrorMsgs = new LinkedHashMap<String, String>();
+			request.setAttribute("eventErrorMsgs", eventErrorMsgs);
+
+			try {
+				/****************************** 1.接收請求參數 **************************************************/
+				String eve_no = request.getParameter("eve_no"); //本人
+				String eve_no_forCopy = request.getParameter("eve_no_forCopy"); //要套用的複製
+			
+				/****************************** 2.開始複製資料 **************************************************/
+				EventService eventService = new EventService();
+				EventVO eventVO = eventService.copyEvent(eve_no, eve_no_forCopy);
+
+				/****************************** 3.複製完成,準備轉交 **************************************************/
+				request.setAttribute("eventVO", eventVO);
+				RequestDispatcher successView = request.getRequestDispatcher(requestURL);
+				successView.forward(request, response);
+
+				/****************************** 其他可能的錯誤處理 **************************************************/
+			} catch (Exception e) {
+				eventErrorMsgs.put("Exception", "無法複製資料 : " + e.getMessage());
+				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
+				failureView.forward(request, response);
+			}
 		}
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 		
 		

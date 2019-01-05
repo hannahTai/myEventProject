@@ -124,14 +124,17 @@
     	
     	var latitude = $("#latitude").val();
     	var longitude = $("#longitude").val();
-    	var contentString = $("#venue_name").val() + "<br>" + $("#address").val();
+    	var address = $("#address").val();
+    	var encodeURIaddress = encodeURIComponent(address);
+    	
+    	var contentString = $("#venue_name").val() + "<br>" + address;
 		var latlngObj = new latlng(latitude, longitude);
         
-        var toGoogleMapWebsiteLink = "<a href='https://www.google.com/maps/search/?api=1&query=" + latitude + "," + longitude + "' target='_blank'>" + contentString + "</a>";
+        var toGoogleMapWebsiteLink = "<a href='https://www.google.com/maps/search/?api=1&query=" + encodeURIaddress + "' target='_blank'>" + contentString + "</a>";
         var infowindow = new google.maps.InfoWindow({
             content: toGoogleMapWebsiteLink
         });
-
+        
         var map = new google.maps.Map(document.getElementById('map'), { zoom: 14, center: latlngObj });
         var marker = new google.maps.Marker({ position: latlngObj, map: map });
 

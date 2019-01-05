@@ -62,7 +62,7 @@
                 </div>
                 <div id="toggleFavoriteEvent" class="pointer">
 	                <div class="col-xs-12 col-sm-12 col-md-3 text-right" style="color:red;">
-	                     <h4><i class="glyphicon glyphicon-heart-empty" id="clickFavoriteEvent">加入最愛</i></h4>
+	                     <h4><i class="glyphicon glyphicon-heart-empty " id="clickFavoriteEvent">加入最愛</i></h4>
 	                     <input type="hidden" id="favoriteEventStatus" value="outTheFavoriteEvent">
 	                </div>
                 </div>
@@ -189,6 +189,7 @@
                     	if(data.indexOf("成") != -1){
                     		$("#clickFavoriteEvent").toggleClass("glyphicon-heart glyphicon-heart-empty");
                     		$("#favoriteEventStatus").val("outTheFavoriteEvent");
+                    		$("#clickFavoriteEvent").html("加入最愛");
                     	} else {
                     		window.alert(data);
                     	}
@@ -214,6 +215,7 @@
                     	if(data.indexOf("成") != -1){
                     		$("#clickFavoriteEvent").toggleClass("glyphicon-heart glyphicon-heart-empty");
                     		$("#favoriteEventStatus").val("inTheFavoriteEvent");
+                    		$("#clickFavoriteEvent").html("取消最愛");
                     	} else {
                     		window.alert(data);
                     	}
@@ -264,6 +266,7 @@
                 	if(data.indexOf("true") != -1){
                 		$("#clickFavoriteEvent").toggleClass("glyphicon-heart glyphicon-heart-empty");
                 		$("#favoriteEventStatus").val("inTheFavoriteEvent");
+                		$("#clickFavoriteEvent").html("取消最愛");
                 	}
                 	else if(data.indexOf("false") != -1){
 						//do nothing if not in the record
