@@ -98,11 +98,12 @@
 							<input type="hidden" name="eve_no" id="eve_no" value="${eventVO.eve_no}">
 							<input type="hidden" name="action" value="copyEvent">
 							<input type="hidden" name="requestURL"	value="<%=request.getServletPath()%>">
-							<button type="button" class="btn btn-success" id="copyEvent" style="float:right;">套用</button>
+							<button type="button" class="btn btn-success" id="copyEvent" style="float:right;">快速套用</button>
 						</span>	
 					</div>
 				</div>
             </form>
+            <br>
 		</div>
 
 
@@ -146,7 +147,7 @@
 	                        <label for="eve_startdate">活動開始日期時間</label>
 	                        <span class="text-danger">${eventErrorMsgs.eve_startdate}</span>
 	                        <input type="text" id="eve_startdate" name="eve_startdate" class="form-control" 
-	                        value="<fmt:formatDate value="${eventVO.eve_startdate}" pattern="yyyy-MM-dd HH:mm:ss"/>">
+	                        value="<fmt:formatDate value="${eventVO.eve_startdate}" pattern="yyyy-MM-dd HH:mm"/>">
 	                    </div>
 	                </div>
 	                <div class="col-xs-12 col-sm-6">
@@ -156,7 +157,7 @@
 	                        <span class="text-danger">${eventErrorMsgs.eve_enddate_BiggerThanToday}</span>
 	                        <span class="text-danger">${eventErrorMsgs.eve_enddate_BiggerThanEveStartdate}</span>
 	                        <input type="text" id="eve_enddate" name="eve_enddate" class="form-control" 
-	                        value="<fmt:formatDate value="${eventVO.eve_enddate}" pattern="yyyy-MM-dd HH:mm:ss"/>"> 
+	                        value="<fmt:formatDate value="${eventVO.eve_enddate}" pattern="yyyy-MM-dd HH:mm"/>"> 
 	                    </div>
 	                </div>
 	            </div>           
@@ -167,7 +168,7 @@
 	                         <label for="eve_onsaledate">售票開始日期時間</label>
 	                         <span class="text-danger">${eventErrorMsgs.eve_onsaledate}</span>
 	                         <input type="text" id="eve_onsaledate" name="eve_onsaledate" class="form-control" 
-	                         value="<fmt:formatDate value="${eventVO.eve_onsaledate}" pattern="yyyy-MM-dd HH:mm:ss"/>">
+	                         value="<fmt:formatDate value="${eventVO.eve_onsaledate}" pattern="yyyy-MM-dd HH:mm"/>">
 	                     </div>
 	                </div>
 	                <div class="col-xs-12 col-sm-6">
@@ -177,7 +178,7 @@
 	                         <span class="text-danger">${eventErrorMsgs.eve_offsaledate_BiggerThanToday}</span>
 	                         <span class="text-danger">${eventErrorMsgs.eve_offsaledate_BiggerThanEve_onsaledate}</span>
 	                         <input type="text" id="eve_offsaledate" name="eve_offsaledate" class="form-control"
-	                         value="<fmt:formatDate value="${eventVO.eve_offsaledate}" pattern="yyyy-MM-dd HH:mm:ss"/>">
+	                         value="<fmt:formatDate value="${eventVO.eve_offsaledate}" pattern="yyyy-MM-dd HH:mm"/>">
 	                     </div>
 	                </div>
 	            </div>
@@ -209,7 +210,7 @@
 	                         <span class="text-danger">${eventErrorMsgs.fullrefundenddate_BiggerThanToday}</span>
 	                         <span class="text-danger">${eventErrorMsgs.fullrefundenddate_BiggerThanEve_startdate}</span>
 	                         <input type="text" id="fullrefundenddate" name="fullrefundenddate" class="form-control"
-	                         value="<fmt:formatDate value="${eventVO.fullrefundenddate}" pattern="yyyy-MM-dd HH:mm:ss"/>" readonly>
+	                         value="<fmt:formatDate value="${eventVO.fullrefundenddate}" pattern="yyyy-MM-dd HH:mm"/>" readonly>
 	                     </div>
 	                </div>
 	            </div>     
@@ -409,7 +410,7 @@
         $.datetimepicker.setLocale('zh');
 
         $("#eve_startdate").datetimepicker({
-        	format: 'Y-m-d H:i:s',
+        	format: 'Y-m-d H:i',
         	minDate: 0,
         	step: 30,
         	timepicker: true,
@@ -419,7 +420,7 @@
         		this.setOptions({maxDate: $("#eve_enddate").val() ? $("#eve_enddate").val() : false})}
         });
         $("#eve_enddate").datetimepicker({
-        	format: 'Y-m-d H:i:s',
+        	format: 'Y-m-d H:i',
         	step: 30,
         	timepicker: true,
             changeMonth: true,
@@ -429,7 +430,7 @@
         });
         
         $("#eve_onsaledate").datetimepicker({
-        	format: 'Y-m-d H:i:s',
+        	format: 'Y-m-d H:i',
         	minDate: 0,
         	step: 30,
         	timepicker: true,
@@ -439,7 +440,7 @@
         		this.setOptions({maxDate: $("#eve_offsaledate").val() ? $("#eve_offsaledate").val() : false})}
         });
         $("#eve_offsaledate").datetimepicker({
-        	format: 'Y-m-d H:i:s',
+        	format: 'Y-m-d H:i',
         	step: 30,
         	timepicker: true,
             changeMonth: true,
@@ -448,7 +449,7 @@
         		this.setOptions({minDate: $("#eve_onsaledate").val() ? $("#eve_onsaledate").val() : false})}
         });
         $("#fullrefundenddate").datetimepicker({
-        	format: 'Y-m-d H:i:s',
+        	format: 'Y-m-d H:i',
         	minDate: 0,
         	step: 30,
         	timepicker: true,
@@ -785,8 +786,6 @@
         
         
         $("#copyEvent").click(function(e){
-        	console.log("you clicked the copyEvent");
-        	console.log($("#selectedEvent_forCopyChoose").val());
         	if($("#selectedEvent_forCopyChoose").val() == null){
         		window.alert("請選擇欲套用的活動場次");
         		return;
@@ -799,9 +798,88 @@
         
         
         $(".copyTicketType").click(function(e){
-        	console.log("you clicked the copyTicketType");
-        	console.log(e.target);
-        	console.log($(e.target).parents(".panel-group"));
+        	var tictype_no_forCopy = $(e.target).parents(".panel-heading").children().find("input[name=tictype_no]").val()
+        	console.log(tictype_no_forCopy);
+        	
+           	var url = $("#projectName").val();
+            url += '/ticket_type/TicketTypeServlet.do';
+            var data = '';
+           	data += 'tictype_no_forCopy' ;
+           	data += '=';
+           	data += tictype_no_forCopy;
+           	data += '&';
+            data += 'action=copyTicketType';
+            console.log(data);
+            
+            $.ajax({
+                type: 'post',
+                url: url,
+                data: data,
+                success: function(data) {
+                	if(data.indexOf("失") != -1){
+                		$("#ajaxMsgs").html(data);
+                    	$("#ajaxMsgsNavbar").show().delay(5000).fadeOut();                		
+                	} else {
+                    	$("#ajaxMsgs").html("  ### 票種複製新增成功 ");
+                    	$("#ajaxMsgsNavbar").show().delay(5000).fadeOut();	
+                    	console.log(data);
+                    	var objs = JSON.parse(data);
+                    	var tictype_no = objs[0].tictype_no;
+                    	var tictype_color = objs[0].tictype_color;
+                    	var tictype_name = objs[0].tictype_name;
+                    	var tictype_price = objs[0].tictype_price;     
+                    	console.log(tictype_no);
+                    	console.log(tictype_color);
+                    	console.log(tictype_name);
+                    	console.log(tictype_price);
+                    	
+                    	var clonedTicketType = $("#secretTicketType").clone(true, true);
+                    	clonedTicketType.attr("id", "shareFix" + tictype_no);
+                    	clonedTicketType.css("display", "inline");
+                    	clonedTicketType.find(".glyphicon-th-list").attr("href", "#"+tictype_no);
+                    	clonedTicketType.find(".panel-collapse").attr("id", tictype_no);        
+                    	clonedTicketType.find("input[name=tictype_no]").val(tictype_no);
+                    	clonedTicketType.find("input[name=tictype_name]").val(tictype_name);
+                    	clonedTicketType.find("input[name=tictype_color]").val(tictype_color);
+                    	clonedTicketType.find("input[name=tictype_price]").val(tictype_price);                       
+                        $("#addTicketType").parent().before(clonedTicketType);
+                        
+                        
+						for(var i = 1; i < objs.length; i++){
+	                    	var ticarea_no = objs[i].ticarea_no;
+	                    	var ticarea_color = objs[i].ticarea_color;
+	                    	var ticarea_name = objs[i].ticarea_name;
+	                    	var tictotalnumber = objs[i].tictotalnumber;               
+	                        var clonedSeatingtArea = $("#secretSeatingtArea").clone(true, true);
+	                        clonedSeatingtArea.attr("id", "shareFix" + ticarea_no);
+	                        clonedSeatingtArea.css("display", "block");
+	                        clonedSeatingtArea.find("input[name=ticarea_no]").val(ticarea_no);
+	                        clonedSeatingtArea.find("input[name=ticarea_color]").val(ticarea_color);
+	                        clonedSeatingtArea.find("input[name=ticarea_name]").val(ticarea_name);
+	                        clonedSeatingtArea.find("input[name=tictotalnumber]").val(tictotalnumber);
+							console.log($("#shareFix" + tictype_no).children().find("button").before(clonedSeatingtArea));
+						}
+
+                        
+                        //-------------------------------------------------------------------------------------------
+                        
+                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        
+						//-------------------------------------------------------------------------------------------
+                	}
+                }
+            });       	
+        
         });
         
         

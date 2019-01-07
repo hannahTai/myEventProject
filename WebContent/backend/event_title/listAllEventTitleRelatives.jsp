@@ -99,12 +99,13 @@
 									<td>${eventTitleVO.promotionranking}</td>
 									<td>
 										<div>
-											<form method="post" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do" class="actionForm">								
-											    <input type="hidden" name="evetit_no"         value="${eventTitleVO.evetit_no}">
-											    <input type="hidden" name="requestURL"	      value="<%=request.getServletPath()%>">
-											    <input type="hidden" name="action"	          value="listEvents_ByEventTitle">
-											    <input type="submit" value="查看" class="btn btn-basic btn-sm" onclick="reloadEvent(this)"> 							
-											</form>
+											<a href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventTitleVO.evetit_no}" class="btn btn-default btn-sm">查看</a>
+<%-- 											<form method="post" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do" class="actionForm">								 --%>
+<%-- 											    <input type="hidden" name="evetit_no"         value="${eventTitleVO.evetit_no}"> --%>
+<%-- 											    <input type="hidden" name="requestURL"	      value="<%=request.getServletPath()%>"> --%>
+<!-- 											    <input type="hidden" name="action"	          value="listEvents_ByEventTitle"> -->
+<!-- 											    <input type="submit" value="查看" class="btn btn-basic btn-sm" onclick="reloadEvent(this)"> 							 -->
+<!-- 											</form> -->
 											<form method="post" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do" class="actionForm" target="_blank">								
 											    <input type="hidden" name="evetit_no"         value="${eventTitleVO.evetit_no}">
 											    <input type="hidden" name="requestURL"	      value="<%=request.getServletPath()%>">

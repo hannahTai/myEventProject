@@ -155,13 +155,13 @@ public class EventServlet extends HttpServlet {
 				java.sql.Timestamp today = new java.sql.Timestamp(System.currentTimeMillis());
 				java.sql.Timestamp eve_startdate = null;
 				try {
-					eve_startdate = java.sql.Timestamp.valueOf(request.getParameter("eve_startdate"));					
+					eve_startdate = java.sql.Timestamp.valueOf(request.getParameter("eve_startdate")+":00");					
 				} catch (IllegalArgumentException e) {
 					eventErrorMsgs.put("eve_startdate", "請輸入活動開始日期時間");
 				}
 				java.sql.Timestamp eve_enddate = null;
 				try {
-					eve_enddate = java.sql.Timestamp.valueOf(request.getParameter("eve_enddate"));
+					eve_enddate = java.sql.Timestamp.valueOf(request.getParameter("eve_enddate")+":00");
 					if (today.compareTo(eve_enddate) > 0) {
 						eventErrorMsgs.put("eve_enddate_BiggerThanToday", "不得早於現在");
 					} 				
@@ -176,13 +176,13 @@ public class EventServlet extends HttpServlet {
 						
 				java.sql.Timestamp eve_onsaledate = null;
 				try {
-					eve_onsaledate = java.sql.Timestamp.valueOf(request.getParameter("eve_onsaledate"));
+					eve_onsaledate = java.sql.Timestamp.valueOf(request.getParameter("eve_onsaledate")+":00");
 				} catch (IllegalArgumentException e) {
 					eventErrorMsgs.put("eve_onsaledate", "請輸入開始售票日期時間");
 				}
 				java.sql.Timestamp eve_offsaledate = null;
 				try {
-					eve_offsaledate = java.sql.Timestamp.valueOf(request.getParameter("eve_offsaledate"));
+					eve_offsaledate = java.sql.Timestamp.valueOf(request.getParameter("eve_offsaledate")+":00");
 					if (today.compareTo(eve_offsaledate) > 0) {
 						eventErrorMsgs.put("eve_offsaledate_BiggerThanToday", "不得早於現在");
 					} 				
@@ -200,7 +200,7 @@ public class EventServlet extends HttpServlet {
 				
 				java.sql.Timestamp fullrefundenddate = null;
 				try {
-					fullrefundenddate = java.sql.Timestamp.valueOf(request.getParameter("fullrefundenddate"));
+					fullrefundenddate = java.sql.Timestamp.valueOf(request.getParameter("fullrefundenddate")+":00");
 					if (today.compareTo(fullrefundenddate) > 0) {
 						eventErrorMsgs.put("fullrefundenddate_BiggerThanToday", "不得早於現在");
 					} 				
@@ -316,7 +316,7 @@ public class EventServlet extends HttpServlet {
 		
 		
 		
-		// 請求來源 : backend -> listAllEventTitleRelatives.jsp
+		// 請求來源 : backend -> listAllEventTitleRelatives.jsp / listOneEvent.jsp
 		else if ("addEvent".equals(action)) {
 
 			String requestURL = request.getParameter("requestURL");
@@ -392,7 +392,8 @@ public class EventServlet extends HttpServlet {
 		
 		
 		
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+		
 		// 請求來源 : back-end -> updateEvent.jsp
 		else if ("copyEvent".equals(action)) {
 
@@ -408,7 +409,7 @@ public class EventServlet extends HttpServlet {
 			
 				/****************************** 2.開始複製資料 **************************************************/
 				EventService eventService = new EventService();
-				EventVO eventVO = eventService.copyEvent(eve_no, eve_no_forCopy);
+				EventVO eventVO = eventService.copyEvent_withTicketTypeAndSeatingArea(eve_no, eve_no_forCopy);
 
 				/****************************** 3.複製完成,準備轉交 **************************************************/
 				request.setAttribute("eventVO", eventVO);
@@ -422,7 +423,7 @@ public class EventServlet extends HttpServlet {
 				failureView.forward(request, response);
 			}
 		}
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 
 		

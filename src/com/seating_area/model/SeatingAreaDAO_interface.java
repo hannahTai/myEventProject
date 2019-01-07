@@ -9,4 +9,7 @@ public interface SeatingAreaDAO_interface {
     public SeatingAreaVO findByPrimaryKey(String ticarea_no);
     public List<SeatingAreaVO> getAll();
     
+    
+    public void insertFromTicketType(SeatingAreaVO seatingareaVO , java.sql.Connection con);
+    
 }

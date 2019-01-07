@@ -564,34 +564,32 @@ public class EventTitleServlet extends HttpServlet {
 		
 
 		// 請求來源 : backend -> listAllEventTitleRelatives.jsp
-		if ("listEvents_ByEventTitle".equals(action)) {
-			
-			String requestURL = request.getParameter("requestURL");
-			
-			Map<String, String> eventTitleErrorMsgs = new LinkedHashMap<String, String>();
-			request.setAttribute("eventTitleErrorMsgs", eventTitleErrorMsgs);
-
-			try {
-				/****************************** 1.接收請求參數 **************************************************/
-				String evetit_no = request.getParameter("evetit_no");
-
-				/****************************** 2.開始查詢資料 **************************************************/
-//				EventTitleService eventTitleService = new EventTitleService();
-//				Set<EventVO> set = eventTitleService.getEventsByEventTitle(evetit_no);
-
-				/****************************** 3.查詢完成,準備轉交 **************************************************/
-//				request.setAttribute("listEvents_ByEventTitle", set);
-
-				RequestDispatcher successView = request.getRequestDispatcher(requestURL);
-				successView.forward(request, response);
-
-				/****************************** 其他可能的錯誤處理 **************************************************/
-			} catch (Exception e) {
-				eventTitleErrorMsgs.put("Exception", "無法取得資料 : " + e.getMessage());
-				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
-				failureView.forward(request, response);
-			}
-		}
+//		if ("listEvents_ByEventTitle".equals(action)) {
+//			
+//			String requestURL = request.getParameter("requestURL");
+//			
+//			Map<String, String> eventTitleErrorMsgs = new LinkedHashMap<String, String>();
+//			request.setAttribute("eventTitleErrorMsgs", eventTitleErrorMsgs);
+//
+//			try {
+//				/****************************** 1.接收請求參數 **************************************************/
+//				String evetit_no = request.getParameter("evetit_no");
+//
+//				/****************************** 2.開始查詢資料 **************************************************/
+//
+//
+//				/****************************** 3.查詢完成,準備轉交 **************************************************/
+//
+//				RequestDispatcher successView = request.getRequestDispatcher(requestURL);
+//				successView.forward(request, response);
+//
+//				/****************************** 其他可能的錯誤處理 **************************************************/
+//			} catch (Exception e) {
+//				eventTitleErrorMsgs.put("Exception", "無法取得資料 : " + e.getMessage());
+//				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
+//				failureView.forward(request, response);
+//			}
+//		}
 
 		
 		

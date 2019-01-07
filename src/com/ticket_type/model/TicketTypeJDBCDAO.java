@@ -10,6 +10,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.event.model.EventJDBCDAO;
+import com.seating_area.model.SeatingAreaJDBCDAO;
 import com.seating_area.model.SeatingAreaVO;
 
 public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
@@ -109,6 +111,8 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 		return tictype_no;
 	}
 
+	
+	
 	@Override
 	public void update(TicketTypeVO ticketTypeVO) {
 		
@@ -151,6 +155,8 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 		}		
 	}
 
+	
+	
 	@Override
 	public void delete(String tictype_no) {
 		
@@ -206,6 +212,8 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 		
 	}
 
+	
+	
 	@Override
 	public TicketTypeVO findByPrimaryKey(String tictype_no) {
 		
@@ -265,6 +273,8 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 		return ticketTypeVO;
 	}
 
+	
+	
 	@Override
 	public List<TicketTypeVO> getAll() {
 		
@@ -324,6 +334,8 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 		return list;
 	}
 	
+	
+	
 	public Set<SeatingAreaVO> getSeatingAreasByTicketType(String tictype_no){
 		Set<SeatingAreaVO> set = new LinkedHashSet<>();
 		SeatingAreaVO seatingAreaVO = null;
@@ -382,14 +394,233 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 			}
 		}
 		return set;
-		
-		
-		
 	}
 	
 	
-
 	
+	@Override
+	public void insertWithSeatingArea(TicketTypeVO ticketTypeVO, List<SeatingAreaVO> SeatingAreaList) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;
+		String tictype_no = null;
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			
+			con.setAutoCommit(false);
+			
+			String[] cols = { "tictype_no" };
+			pstmt = con.prepareStatement(INSERT_STMT, cols);
+
+			pstmt.setString(1, ticketTypeVO.getEve_no()); 
+			pstmt.setString(2, ticketTypeVO.getTictype_color());
+			pstmt.setString(3, ticketTypeVO.getTictype_name());
+			pstmt.setInt(4, ticketTypeVO.getTictype_price());				
+		
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				tictype_no = rs.getString(1);
+			}
+			
+			SeatingAreaJDBCDAO dao = new SeatingAreaJDBCDAO();
+			for(SeatingAreaVO aSeatingAreaVO : SeatingAreaList) {
+				aSeatingAreaVO.setTictype_no(tictype_no);
+				dao.insertFromTicketType(aSeatingAreaVO, con);
+			}
+			
+			con.commit();
+			con.setAutoCommit(true);
+			
+			System.out.println("----------insertWithSeatingArea : " + tictype_no + "----------");
+
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					System.err.print("Transaction is being rolled back from ---TicketType---");
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. " + excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+	}
+	
+	
+	
+	@Override
+	public String copyInsertWithSeatingArea(String tictype_no_forCopy) {
+
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;
+		String tictype_no = null;
+		
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			
+			con.setAutoCommit(false);
+			
+			// 新增複製票種
+			TicketTypeVO ticketTypeVO = findByPrimaryKey(tictype_no_forCopy);
+			String[] cols = { "tictype_no" };
+			pstmt = con.prepareStatement(INSERT_STMT, cols);
+			pstmt.setString(1, ticketTypeVO.getEve_no()); 
+			pstmt.setString(2, ticketTypeVO.getTictype_color());
+			pstmt.setString(3, ticketTypeVO.getTictype_name());
+			pstmt.setInt(4, ticketTypeVO.getTictype_price());					
+			pstmt.executeUpdate();
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				tictype_no = rs.getString(1);
+			}
+						
+			// 新增複製票種
+			Set<SeatingAreaVO> seatingAreaVoSet = getSeatingAreasByTicketType(tictype_no_forCopy);
+			SeatingAreaJDBCDAO seatingAreaDAO = new SeatingAreaJDBCDAO();
+			for(SeatingAreaVO aSeatingAreaVO : seatingAreaVoSet) {
+				aSeatingAreaVO.setTictype_no(tictype_no);
+				seatingAreaDAO.insertFromTicketType(aSeatingAreaVO, con);
+			}
+			
+			con.commit();
+			con.setAutoCommit(true);
+			
+			System.out.println("----------copyInsertWithSeatingArea----------");
+
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					System.err.print("Transaction is being rolled back from ---TicketType---");
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. " + excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return tictype_no;
+	}
+	
+	
+	
+	@Override
+	public void copyInsertFromEvent(TicketTypeVO ticketTypeVO, Set<SeatingAreaVO> seatingAreaVoSet_forCopy, Connection con) {
+				
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;
+		String tictype_no = null;
+		
+		try {
+			
+			String[] cols = { "tictype_no" };
+			pstmt = con.prepareStatement(INSERT_STMT, cols);
+
+			pstmt.setString(1, ticketTypeVO.getEve_no()); 
+			pstmt.setString(2, ticketTypeVO.getTictype_color());
+			pstmt.setString(3, ticketTypeVO.getTictype_name());
+			pstmt.setInt(4, ticketTypeVO.getTictype_price());				
+		
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				tictype_no = rs.getString(1);
+			}
+			
+			SeatingAreaJDBCDAO seatingAreaJDBCDAO = new SeatingAreaJDBCDAO();
+			for(SeatingAreaVO aSeatingAreaVO : seatingAreaVoSet_forCopy) {
+				aSeatingAreaVO.setTicarea_no(null);
+				aSeatingAreaVO.setTictype_no(tictype_no);
+				aSeatingAreaVO.setEve_no(ticketTypeVO.getEve_no());
+				seatingAreaJDBCDAO.insertFromTicketType(aSeatingAreaVO, con);
+			}
+			
+			System.out.println("----------copyInsertFromEvent----------");
+
+		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					System.err.print("Transaction is being rolled back from ---TicketType---");
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. " + excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+		}
+	}
+	
+
 	
 	
 	
@@ -422,7 +653,7 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 		
 		
 		// 刪除
-		dao.delete("ET000005");
+//		dao.delete("ET000005");
 //		System.out.println("------------------------------");
 		
 		
@@ -462,6 +693,37 @@ public class TicketTypeJDBCDAO implements TicketTypeDAO_interface{
 //			System.out.println(aSeatingareaVO.getTicbookednumber());
 //			System.out.println("------------------------------");
 //		}
+		
+		
+//		// 新增(含SeatingArea)				
+//		TicketTypeVO ticketTypeVO4 = new TicketTypeVO();
+//		ticketTypeVO4.setEve_no("EV00005"); 
+//		ticketTypeVO4.setTictype_color("#EE7700"); 			
+//		ticketTypeVO4.setTictype_name("搖滾xxyy區");					
+//		ticketTypeVO4.setTictype_price(new Integer(1500));									
+//		
+//		List<SeatingAreaVO> seatingAreaVOList = new ArrayList<>();
+//		SeatingAreaVO seatingareaVO4 = new SeatingAreaVO();	
+//		seatingareaVO4.setEve_no("EV00005");
+//		seatingareaVO4.setTicarea_color("#EE7700");
+//		seatingareaVO4.setTicarea_name("搖滾xxx區");
+//		seatingareaVO4.setTictotalnumber(new Integer(200));
+//		seatingareaVO4.setTicbookednumber(new Integer(5));
+//		seatingAreaVOList.add(seatingareaVO4);
+//		
+//		SeatingAreaVO seatingareaVO41 = new SeatingAreaVO();	
+//		seatingareaVO41.setEve_no("EV00005");
+//		seatingareaVO41.setTicarea_color("#EE7700");
+//		seatingareaVO41.setTicarea_name("搖滾yyy區");
+//		seatingareaVO41.setTictotalnumber(new Integer(200));
+//		seatingareaVO41.setTicbookednumber(new Integer(5));
+//		seatingAreaVOList.add(seatingareaVO41);
+//		
+//		dao.insertWithSeatingArea(ticketTypeVO4, seatingAreaVOList);
+		
+		
+		// 複製(含SeatingArea)						
+		dao.copyInsertWithSeatingArea("ET000001");
 		
 		
 		

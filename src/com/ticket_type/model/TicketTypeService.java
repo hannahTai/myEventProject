@@ -61,4 +61,8 @@ public class TicketTypeService {
 		return ticketTypeDAO.getSeatingAreasByTicketType(tictype_no);
 	}
 	
+	public String copyInsertWithSeatingArea(String tictype_no_forCopy) {
+		return ticketTypeDAO.copyInsertWithSeatingArea(tictype_no_forCopy);
+	}
+	
 }

@@ -2,6 +2,9 @@ package com.ticket_type.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.seating_area.model.SeatingAreaService;
+import com.seating_area.model.SeatingAreaVO;
 import com.ticket_type.model.TicketTypeService;
 import com.ticket_type.model.TicketTypeVO;
 
@@ -118,6 +123,44 @@ public class TicketTypeServlet extends HttpServlet {
 			}
 			
 		}
+		
+		
+		
+		
+		
+		// 請求來源 : backend -> updateEvent.jsp
+		if ("copyTicketType".equals(action)) {
+			
+			try {
+				/****************************** 1.接收請求參數 - 輸入格式的錯誤處理 **************************************************/				
+				String tictype_no_forCopy = request.getParameter("tictype_no_forCopy");
+				 
+				/****************************** 2.開始修改資料 **************************************************/
+				TicketTypeService ticketTypeService = new TicketTypeService();
+				String tictype_no = ticketTypeService.copyInsertWithSeatingArea(tictype_no_forCopy);
+				List<Object> list = new ArrayList<>();
+				TicketTypeVO ticketTypeVO = ticketTypeService.getOneTicketType(tictype_no);
+				list.add(ticketTypeVO);
+				Set<SeatingAreaVO> seatingAreaVoSet = ticketTypeService.getSeatingAreasByTicketType(tictype_no);
+				for(SeatingAreaVO aSeatingAreaVO : seatingAreaVoSet) {
+					list.add(aSeatingAreaVO);
+				}
+				
+				
+				Gson gson = new Gson();				
+				String listStr = gson.toJson(list);
+				System.out.println(listStr);
+				
+				/****************************** 3.修改完成,準備轉交 ***************************************************/
+				out.println(listStr);
+				
+				/****************************** 其他可能的錯誤處理 **************************************************/
+			} catch (Exception e) {
+				out.println("  ###" + " 複製失敗 : " +  e.getMessage());
+			}
+			
+		}
+		
 	}
 
 }

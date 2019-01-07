@@ -175,6 +175,9 @@
 			    <input type="hidden" name="action"	          value="getOneEvent_For_Update">
 			    <input type="submit" value="修改" class="btn btn-warning"> 							
 			</form>	
+			<span class="form-group">
+				<a class="btn btn-primary" href="<%=request.getContextPath()%>/event/EventServlet.do?action=addEvent&evetit_no=${eventVO.evetit_no}">繼續新增活動場次</a>
+			</span>
         </div>
 
     <!-- Basic -->

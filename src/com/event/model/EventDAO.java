@@ -21,6 +21,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import com.seating_area.model.SeatingAreaJDBCDAO;
+import com.seating_area.model.SeatingAreaVO;
+import com.ticket_type.model.TicketTypeJDBCDAO;
 import com.ticket_type.model.TicketTypeVO;
 
 public class EventDAO implements EventDAO_interface{
@@ -90,6 +93,11 @@ public class EventDAO implements EventDAO_interface{
 			+ "WHERE evetit_no=?";
 	
 	
+	private static final String GET_SeatingArea_ByEvent_STMT = 
+			"SELECT ticarea_no, eve_no, tictype_no, ticarea_color, ticarea_name, tictotalnumber, ticbookednumber "
+			+ "FROM seating_area WHERE eve_no=?";
+	
+	
 	
 	@Override
 	public String insert(EventVO eventVO) {
@@ -155,6 +163,8 @@ public class EventDAO implements EventDAO_interface{
 		return eve_no;
 	}
 
+	
+	
 	@Override
 	public void update(EventVO eventVO) {
 		
@@ -201,6 +211,8 @@ public class EventDAO implements EventDAO_interface{
 		}
 	}
 
+	
+	
 	@Override
 	public void delete(String eve_no, String evetit_no, Integer evetit_sessions) {
 		
@@ -263,6 +275,8 @@ public class EventDAO implements EventDAO_interface{
 		}
 	}
 
+	
+	
 	@Override
 	public EventVO findByPrimaryKey(String eve_no) {
 		
@@ -326,6 +340,8 @@ public class EventDAO implements EventDAO_interface{
 		return eventVO;
 	}
 
+	
+	
 	@Override
 	public List<EventVO> getAll() {
 		
@@ -389,6 +405,7 @@ public class EventDAO implements EventDAO_interface{
 	}
 	
 	
+	
 	@Override
 	public Set<TicketTypeVO> getTicketTypesByEvent(String eve_no){
 		Set<TicketTypeVO> set = new LinkedHashSet<>();
@@ -446,6 +463,7 @@ public class EventDAO implements EventDAO_interface{
 	};
 
 	
+	
 	@Override
 	public void update_withoutSeatmap(EventVO eventVO) {
 		
@@ -490,6 +508,8 @@ public class EventDAO implements EventDAO_interface{
 			}
 		}
 	}
+	
+	
 	
 	@Override
 	public String insert(String evetit_no, Integer evetit_sessions) {
@@ -559,6 +579,155 @@ public class EventDAO implements EventDAO_interface{
 		}
 		return eve_no;
 	}
+	
+	
+	
+	@Override
+	public Set<SeatingAreaVO> getSeatingAreasByEvent(String eve_no){
+		Set<SeatingAreaVO> set = new LinkedHashSet<>();
+		SeatingAreaVO seatingareaVO = null;
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;		
+		
+		try {
+			
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_SeatingArea_ByEvent_STMT);
+			pstmt.setString(1, eve_no);
+					
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				seatingareaVO = new SeatingAreaVO();
+				seatingareaVO.setTicarea_no(rs.getString("ticarea_no"));
+				seatingareaVO.setEve_no(rs.getString("eve_no"));
+				seatingareaVO.setTictype_no(rs.getString("tictype_no"));
+				seatingareaVO.setTicarea_color(rs.getString("ticarea_color"));
+				seatingareaVO.setTicarea_name(rs.getString("ticarea_name"));
+				seatingareaVO.setTictotalnumber(rs.getInt("tictotalnumber"));
+				seatingareaVO.setTicbookednumber(rs.getInt("ticbookednumber"));
+				set.add(seatingareaVO);
+			}
+			
+			System.out.println("----------getSeatingAreasByEvent finished----------");
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return set;
+	}
+	
+	
+	
+	@Override
+	public EventVO copyEvent_withTicketTypeAndSeatingArea(String eve_no, String eve_no_forCopy) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;	
+		EventVO eventVO = null;	
+		try {
+			con = ds.getConnection();			
+			
+			con.setAutoCommit(false);
+
+			// 修改複製場次
+			pstmt = con.prepareStatement(UPDATE_STMT);			
+			eventVO = findByPrimaryKey(eve_no_forCopy);			
+			eventVO.setEve_no(eve_no);
+			pstmt.setString(1, eventVO.getVenue_no());			
+			pstmt.setString(2, eventVO.getEve_sessionname());		
+			pstmt.setBytes(3, eventVO.getEve_seatmap());	
+			pstmt.setTimestamp(4, eventVO.getEve_startdate());							
+			pstmt.setTimestamp(5, eventVO.getEve_enddate());		
+			pstmt.setTimestamp(6, eventVO.getEve_onsaledate()); 				
+			pstmt.setTimestamp(7, eventVO.getEve_offsaledate());			
+			pstmt.setInt(8, eventVO.getTiclimit());			
+			pstmt.setTimestamp(9, eventVO.getFullrefundenddate());
+			pstmt.setString(10, eventVO.getEve_status());
+			pstmt.setString(11, eventVO.getEve_no()); 
+			pstmt.executeUpdate();
+			eventVO = findByPrimaryKey(eve_no);
+			
+			// 刪除原票種票區
+			TicketTypeJDBCDAO ticketTypeDAO = new TicketTypeJDBCDAO();
+			SeatingAreaJDBCDAO seatingAreaDAO = new SeatingAreaJDBCDAO();
+			
+			Set<SeatingAreaVO> seatingAreaVOSet = getSeatingAreasByEvent(eve_no);
+			for(SeatingAreaVO aSeatingAreaVO : seatingAreaVOSet) {
+				seatingAreaDAO.delete(aSeatingAreaVO.getTicarea_no());
+			}			
+			Set<TicketTypeVO> ticketTypeVoSet = getTicketTypesByEvent(eve_no);
+			for(TicketTypeVO aTicketTypeVO : ticketTypeVoSet) {
+				ticketTypeDAO.delete(aTicketTypeVO.getTictype_no());
+			}			
+			
+			// 新增複製票種
+			Set<TicketTypeVO> ticketTypeVoSet_forCopy = getTicketTypesByEvent(eve_no_forCopy);
+			for(TicketTypeVO aTicketTypeVO : ticketTypeVoSet_forCopy) {
+				Set<SeatingAreaVO> seatingAreaVoSet_forCopy = ticketTypeDAO.getSeatingAreasByTicketType(aTicketTypeVO.getTictype_no());
+				aTicketTypeVO.setTictype_no(null);
+				aTicketTypeVO.setEve_no(eve_no);				
+				ticketTypeDAO.copyInsertFromEvent(aTicketTypeVO, seatingAreaVoSet_forCopy, con);
+			}
+			
+			con.commit();
+			con.setAutoCommit(true);
+			
+			System.out.println("----------copyEvent_withTicketTypeAndSeatingArea----------");
+
+		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					System.err.print("Transaction is being rolled back from ---Event---");
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. " + excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return eventVO;
+	}
+	
 	
 	
 }

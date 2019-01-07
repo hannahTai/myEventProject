@@ -1,5 +1,6 @@
 package com.ticket_type.model;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Set;
 
@@ -14,5 +15,9 @@ public interface TicketTypeDAO_interface {
     public List<TicketTypeVO> getAll();
     
     public Set<SeatingAreaVO> getSeatingAreasByTicketType(String tictype_no);
+    public void insertWithSeatingArea(TicketTypeVO ticketTypeVO, List<SeatingAreaVO> SeatingAreaList);
+    public String copyInsertWithSeatingArea(String tictype_no_forCopy) ;
+    
+    public void copyInsertFromEvent(TicketTypeVO ticketTypeVO, Set<SeatingAreaVO> seatingAreaVoSet_forCopy, Connection con);
     
 }

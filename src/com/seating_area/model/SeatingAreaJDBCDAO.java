@@ -300,7 +300,63 @@ public class SeatingAreaJDBCDAO implements SeatingAreaDAO_interface{
 		return list;
 	}
 	
+
 	
+    @Override
+	public void insertFromTicketType(SeatingAreaVO seatingareaVO , Connection con) {
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String ticarea_no = null;
+
+		try {
+			
+			String[] cols = { "ticarea_no" };
+			pstmt = con.prepareStatement(INSERT_STMT, cols);
+			
+			pstmt.setString(1, seatingareaVO.getEve_no());
+			pstmt.setString(2, seatingareaVO.getTictype_no());
+			pstmt.setString(3, seatingareaVO.getTicarea_color());
+			pstmt.setString(4, seatingareaVO.getTicarea_name());
+			pstmt.setInt(5, seatingareaVO.getTictotalnumber());
+			pstmt.setInt(6, seatingareaVO.getTicbookednumber());
+
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				ticarea_no = rs.getString(1);
+			}
+			
+			System.out.println("----------insertFromTicketType : " + ticarea_no + "----------");
+
+		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					System.err.print("Transaction is being rolled back from ---SeatingArea---");
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. " + excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+		}	
+	}
 	
 	
 
