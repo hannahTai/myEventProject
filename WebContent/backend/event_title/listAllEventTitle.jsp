@@ -33,9 +33,18 @@
 	.actionForm{
 		display: inline;
 	}
+	body{
+		font-family:微軟正黑體!important;
+	}
 </style>
 
 <body>
+
+
+
+	<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+
+
 
 	<div class="container">
 		<span class="text-danger">${eventTitleErrorMsgs.evetit_no}</span>
@@ -43,10 +52,10 @@
 	</div>
 
 	<div class="container">
-		<a href="<%=request.getContextPath()%>/backend/event_title/addEventTitle.jsp" class="btn btn-primary">新增活動主題</a>
+		<a href="<%=request.getContextPath()%>/backend/event_title/addEventTitle.jsp" class="btn btn-primary" style="margin-bottom:10px;">新增活動主題</a>
 	</div>
 		
-	<div class="container">				
+	<div class="container" style="margin-bottom:30px;">				
 		<table id="eventTitleListTable" class="display" style="width: 100%">
 			<thead>
 				<tr>
@@ -66,17 +75,7 @@
 					<tr class="${(eventTitleVO.evetit_no==param.evetit_no) ? 'selected':''}">													
 						<td>${eventTitleVO.evetit_no}</td>
 						<td>
-							${(eventTitleVO.eveclass_no == "A") ? '演唱會' : '' }
-							${(eventTitleVO.eveclass_no == "B") ? '音樂會' : '' }
-							${(eventTitleVO.eveclass_no == "C") ? '音樂劇' : '' }
-							${(eventTitleVO.eveclass_no == "D") ? '戲劇' : '' }
-							${(eventTitleVO.eveclass_no == "E") ? '舞蹈' : '' }
-							${(eventTitleVO.eveclass_no == "F") ? '展覽' : '' }
-							${(eventTitleVO.eveclass_no == "G") ? '親子' : '' }
-							${(eventTitleVO.eveclass_no == "H") ? '講座' : '' }
-							${(eventTitleVO.eveclass_no == "I") ? '運動' : '' }
-							${(eventTitleVO.eveclass_no == "J") ? '其他' : '' }
-							<%-- ${eventClassificationService.getOneEventClassification(eventTitleVO.eveclass_no).eveclass_name} --%>
+							${eventClassificationService.getOneEventClassification(eventTitleVO.eveclass_no).eveclass_name}
                         </td>
 						<td>${eventTitleVO.evetit_name}</td>
 						<td>${eventTitleVO.evetit_sessions}</td>

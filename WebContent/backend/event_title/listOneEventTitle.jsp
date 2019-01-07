@@ -15,17 +15,28 @@
     <!-- Basic -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
-        .container img {
+        .evetit_poster_area {
      	   width: 100%;
     	}
     	.actionForm{
 			display: inline;
 		}
+		body{
+			font-family:微軟正黑體!important;
+		}
     </style>
 </head>
 
 <body>
-    	<div class="container">
+
+
+
+		<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+
+
+
+
+    	<div class="container" style="margin-bottom:30px;">
 	            
             <div class="form-group">
                 <label for="evetit_no">活動主題編號</label>
@@ -127,53 +138,13 @@
                 </div>
             </div>
                      
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-9">
-                    <h4>${eventTitleVO.evetit_name}</h4>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-3 text-right">	            	
-            		<span class="form-group">
-						<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventTitleVO.evetit_no}">回到活動總覽</a>
-					</span>
-					<form method="post" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do" class="actionForm">								
-					    <input type="hidden" name="evetit_no"   value="${eventTitleVO.evetit_no}">
-					    <input type="hidden" name="requestURL"	value="<%=request.getServletPath()%>">
-					    <input type="hidden" name="action"	    value="getOneEventTitle_For_Update">
-					    <input type="submit" value="修改" class="btn btn-warning"> 							
-					</form>	
-                </div>
-            </div>
+
+			<h3>${eventTitleVO.evetit_name}</h3>
+
              
-            <img src="<%= request.getContextPath()%>/event_title/EventTitleGifReader?scaleSize=850&evetit_no=${eventTitleVO.evetit_no}">
+            <img src="<%= request.getContextPath()%>/event_title/EventTitleGifReader?scaleSize=850&evetit_no=${eventTitleVO.evetit_no}" class="evetit_poster_area">
             
-            <div>
-                <input id="flip" type="button" value="查看活動場次" class="btn btn-primary"></input>
-                <div id="panel" style="display:none;">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>日期時間</th>
-                                <th>地點</th>
-                                <th>購買狀態</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>資料</td>
-                                <td>資料</td>
-                                <td>資料</td>
-                            </tr>
-                            <tr>
-                                <td>資料</td>
-                                <td>資料</td>
-                                <td>資料</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="tabbable">
+            <div class="tabbable" style="margin-top:15px;">
                 <!-- 標籤面板：標籤區 -->
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#infoTab" data-toggle="tab">活動介紹</a></li>
@@ -191,6 +162,18 @@
                     <div class="tab-pane" id="refundrulesTab">${eventTitleVO.refundrules}</div>
                 </div>
             </div>
+            
+
+
+			<form method="post" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do" class="actionForm">								
+			    <input type="hidden" name="evetit_no"   value="${eventTitleVO.evetit_no}">
+			    <input type="hidden" name="requestURL"	value="<%=request.getServletPath()%>">
+			    <input type="hidden" name="action"	    value="getOneEventTitle_For_Update">
+			    <input type="submit" value="修改" class="btn btn-warning"> 							
+			</form>
+			<span class="form-group">
+				<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventTitleVO.evetit_no}">回活動總覽</a>
+			</span>	
             
         </div>
 

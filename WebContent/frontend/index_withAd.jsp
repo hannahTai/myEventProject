@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 
+
 <%@ page import="java.util.*"%>
 <%@ page import="com.advertisement.model.*"%>
 <% 
@@ -16,7 +17,6 @@
 	List<AdvertisementVO> advertisementList = advertisementService.getLaunched();
 	pageContext.setAttribute("advertisementList", advertisementList); 
 %>
-
 
 
 
@@ -439,8 +439,7 @@
 		<!-- Owl Stylesheets -->
     	<script src="<%=request.getContextPath()%>/vendor/OwlCarousel2-2.3.4/docs/assets/owlcarousel/owl.carousel.js"></script>
     	<script>
-		    $(document).ready(function() {
-		    	
+		    $(document).ready(function() {	    	
 		        localStorage.removeItem("searchStatus");
 		        $('#eventAdvertiseModal').modal('show');
 		        

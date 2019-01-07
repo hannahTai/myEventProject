@@ -21,7 +21,7 @@
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/vendor/datetimepicker/jquery.datetimepicker.css" />
     
     <style>
-        .container img { 
+        .eve_seatmap_area img { 
       	   width: 100%; 
     	} 
     	.actionForm{ 
@@ -43,7 +43,7 @@
         .error{
         	border-color: rgb(255,0,0);
         }
-        .navbar-fixed-bottom {
+        #ajaxMsgsNavbar {
 	        left: 80%;
 	        border-radius: 5px;
 	        background-color: #D3D3D3;
@@ -53,10 +53,19 @@
  	    	background-color: rgba(255,0,0,.3); 
  	    	color: black;
  	    } 
+ 	    body{
+			font-family:微軟正黑體!important;
+		}
     </style>
 </head>
 
 <body>
+
+
+
+		<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+		
+
 
 		<div class="container">
 			<span class="text-danger">${eventErrorMsgs.Exception}</span>
@@ -110,7 +119,7 @@
 
 
 
-    	<div class="container">
+    	<div class="container" style="margin-bottom:30px;">
 			<form method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/event/EventServlet.do">
 			
 		        <div class="form-group">
@@ -217,7 +226,7 @@
 	
 				<div class="row">
 	                <div class="col-xs-12 col-sm-6">
-	                	<div class="form-group">
+	                	<div class="form-group eve_seatmap_area">
 							<label for="eve_seatmap">座位圖</label>
 							<span class="text-danger">${eventErrorMsgs.eve_seatmap}</span>
 							<input type="file" id="eve_seatmap" name="eve_seatmap" class="form-control" accept="image/*">	               
@@ -297,9 +306,9 @@
 	            </div> 
 	  			<span class="form-group">
 	  				<input type="hidden" name="requestURL" value="<%=request.getServletPath()%>">
-					<button type="submit" class="btn btn-success" name="action" value="updateEvent">儲存</button>
-					<a class="btn btn-danger" href="<%=request.getContextPath()%>/event/EventServlet.do?action=deleteEvent&evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}&requestURL=/backend/event_title/listAllEventTitleRelatives.jsp">捨棄</a>
-					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}">下次再說</a>
+					<button type="submit" class="btn btn-success" name="action" value="updateEvent" style="margin-top:15px;">儲存</button>
+					<a class="btn btn-danger" href="<%=request.getContextPath()%>/event/EventServlet.do?action=deleteEvent&evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}&requestURL=/backend/event_title/listAllEventTitleRelatives.jsp" style="margin-top:15px;">刪除</a>
+					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp" style="margin-top:15px;">回活動總覽</a>
 				</span>			
 			</form>
         </div>
@@ -859,23 +868,6 @@
 	                        clonedSeatingtArea.find("input[name=tictotalnumber]").val(tictotalnumber);
 							console.log($("#shareFix" + tictype_no).children().find("button").before(clonedSeatingtArea));
 						}
-
-                        
-                        //-------------------------------------------------------------------------------------------
-                        
-                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //把新增票區放進去QAQ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        
-						//-------------------------------------------------------------------------------------------
                 	}
                 }
             });       	

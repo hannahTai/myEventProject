@@ -26,12 +26,21 @@
 </head>
 
 <style>
-.actionForm{
-	display: inline;
-}
+	.actionForm{
+		display: inline;
+	}
+	body{
+		font-family:微軟正黑體!important;
+	}
 </style>
 
 <body>
+
+
+
+	<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+
+
 
 	<div class="container">
 		<span class="text-danger">${venueErrorMsgs.venue_no}</span>
@@ -42,7 +51,7 @@
 		<a href="<%=request.getContextPath()%>/backend/venue/addVenue.jsp" class="btn btn-primary" style="margin-bottom:10px;">新增場地</a>	
 	</div>
 
-	<div class="container">		
+	<div class="container" style="margin-bottom:30px;">		
 		<table id="venueListTable" class="display" style="width:100%;">
 			<thead>
 				<tr>
@@ -59,14 +68,14 @@
 						<td>${venueVO.venue_name}</td>
 						<td>${venueVO.address}</td>
 						<td>						
-							<form method="post" action="<%=request.getContextPath()%>/venue/VenueServlet.do" class="actionForm">
+							<form method="post" action="<%=request.getContextPath()%>/venue/VenueServlet.do" class="actionForm" target="_blank">
 								<input type="hidden" name="venue_no"         value="${venueVO.venue_no}">
 			    		 		<input type="hidden" name="requestURL"       value="<%=request.getServletPath()%>">
 			    		 		<input type="hidden" name="return_venue_no"  value="${param.venue_no}">
 			    		 		<input type="hidden" name="action"           value="getOneVenue_For_Display">
 								<input type="submit" value="瀏覽" class="btn btn-info btn-sm"> 	
 							</form>	
-							<form method="post" action="<%=request.getContextPath()%>/venue/VenueServlet.do" class="actionForm">
+							<form method="post" action="<%=request.getContextPath()%>/venue/VenueServlet.do" class="actionForm" target="_blank">
 								<input type="hidden" name="venue_no"         value="${venueVO.venue_no}">
 			    		 		<input type="hidden" name="requestURL"       value="<%=request.getServletPath()%>">
 			    		 		<input type="hidden" name="return_venue_no"  value="${param.venue_no}">
@@ -79,6 +88,8 @@
 			</tbody>
 		</table>		
 	</div>
+	
+	
 	
 	<!-- Basic -->
 	<script src="https://code.jquery.com/jquery.js"></script>

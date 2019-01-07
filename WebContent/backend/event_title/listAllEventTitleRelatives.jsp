@@ -26,11 +26,16 @@
 	.actionForm{
 		display: inline;
 	}
+	body{
+		font-family:微軟正黑體!important;
+	}
 </style>
 
 <body>
 
 
+
+	<jsp:include page="/backend/navbar_back-end.html" flush="true" />
 
 
 
@@ -148,7 +153,7 @@
 	pageContext.setAttribute("listEvents_ByEventTitle", set);
 %>
 
-	<div class="container">	
+	<div class="container" style="margin-bottom:30px;">	
 		<div class="panel-group">
 			<div class="panel panel-info">
 				<div class="panel-heading" data-toggle="collapse" href="#toggleEvent" aria-expanded="false">

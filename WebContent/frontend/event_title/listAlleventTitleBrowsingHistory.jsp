@@ -15,18 +15,16 @@
     <link rel="stylesheet" href="<%=request.getContextPath()%>/vendor/OwlCarousel2-2.3.4/docs/assets/owlcarousel/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="<%=request.getContextPath()%>/vendor/OwlCarousel2-2.3.4/docs/assets/owlcarousel/assets/owl.theme.default.min.css">
 </head>
-
-
-
 <body>
+
+
 
 	<div class="container">
 		<div class="panel panel-info">
 			<div class="panel-heading">
 			    <span class="panel-title">活動瀏覽紀錄</span>
-			    <small><a href="" id="cleanEventTitleBrowsingHistory">清除</a></small>
-			</div>
-			
+			    <a href="" id="cleanEventTitleBrowsingHistory" style="float:right;">清除</a>
+			</div>			
 			<div class="panel-body">
 				<div class="owl-carousel owl-theme eventTitleBrowsingHistoryOwlArea"></div>
 			</div>

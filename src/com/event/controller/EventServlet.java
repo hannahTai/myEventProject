@@ -406,10 +406,22 @@ public class EventServlet extends HttpServlet {
 				/****************************** 1.接收請求參數 **************************************************/
 				String eve_no = request.getParameter("eve_no"); //本人
 				String eve_no_forCopy = request.getParameter("eve_no_forCopy"); //要套用的複製
+				System.out.println(eve_no);
+				System.out.println(eve_no_forCopy);
 			
 				/****************************** 2.開始複製資料 **************************************************/
 				EventService eventService = new EventService();
 				EventVO eventVO = eventService.copyEvent_withTicketTypeAndSeatingArea(eve_no, eve_no_forCopy);
+				System.out.println(eventVO.getEve_no());
+				System.out.println(eventVO.getEvetit_no());
+				System.out.println(eventVO.getVenue_no());
+				System.out.println(eventVO.getEve_sessionname());
+//				System.out.println(eventVO);
+//				System.out.println(eventVO);
+//				System.out.println(eventVO);
+//				System.out.println(eventVO);
+//				System.out.println(eventVO);
+//				System.out.println(eventVO);
 
 				/****************************** 3.複製完成,準備轉交 **************************************************/
 				request.setAttribute("eventVO", eventVO);

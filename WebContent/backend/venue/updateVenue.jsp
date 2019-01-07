@@ -25,10 +25,18 @@
 	        margin-top: 15px;
 	        border-radius: 25px;
       	}
+      	body{
+			font-family:微軟正黑體!important;
+		}
     </style>
 </head>
 
 <body>
+
+
+
+	<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+
 
 
 
@@ -39,7 +47,7 @@
 
 
 
-	<div class="container">
+	<div class="container" style="margin-bottom:30px;">
 		<form method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/venue/VenueServlet.do">
             <div class="col-xs-12 col-sm-12">    
 				<div class="tabbable">
@@ -117,7 +125,7 @@
 	  			<span class="form-group">
 	  				<input type="hidden" name="requestURL" value="<%=request.getServletPath()%>">
 					<button type="submit" class="btn btn-success" name="action" value="updateVenue">儲存</button>
-					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/venue/listAllVenue.jsp?venue_no=${venueVO.venue_no}">回場地總攬</a>
+					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/venue/listAllVenue.jsp?venue_no=${venueVO.venue_no}">回場地總覽</a>
 				</span>	
 			</div>
 		</form>               

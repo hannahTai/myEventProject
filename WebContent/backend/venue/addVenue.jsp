@@ -11,7 +11,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>${venueVO.venue_name}</title>
+    <title>新增場地</title>
     <!-- Basic -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
@@ -25,6 +25,9 @@
 	        margin-top: 15px;
 	        border-radius: 25px;
       	}
+      	body{
+			font-family:微軟正黑體!important;
+		}
     </style>
 </head>
 
@@ -32,15 +35,17 @@
 
 
 
-	<div class="container">
-		
-		<span class="text-danger">${venueErrorMsgs.Exception}</span>
-		
+	<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+
+
+
+	<div class="container">		
+		<span class="text-danger">${venueErrorMsgs.Exception}</span>		
 	</div>
 
 
 
-	<div class="container">
+	<div class="container" style="margin-bottom:30px;">
 		<form method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/venue/VenueServlet.do">
             <div class="col-xs-12 col-sm-12">    
 				<div class="tabbable">
@@ -98,12 +103,7 @@
 								<label for="venue_locationPic">場地位置圖</label>
 								<input type="file" id="venue_locationPic" name="venue_locationPic" class="form-control" accept="image/*" style="margin-bottom:10px;">
 								<input type="hidden" id="venue_locationPic_status" name="venue_locationPic_status" value="${(venue_locationPic_status == 'alreadyUpload') ? 'alreadyUpload' : 'noUpload'}">
-<%-- 								<c:if test="${venue_locationPic_status != 'alreadyUpload'}"> --%>
-<%-- 				                	<img src="<%= request.getContextPath()%>/venue/VenueGifReader?scaleSize=1000&venue_no=${venueVO.venue_no}" id="venue_locationPic_preview"> --%>
-<%-- 				                </c:if> --%>
-<%-- 								<c:if test="${venue_locationPic_status == 'alreadyUpload'}"> --%>
-				                	<img src="${venue_locationPic_path}" id="venue_locationPic_preview">
-<%-- 				                </c:if> --%>
+				                <img src="${venue_locationPic_path}" id="venue_locationPic_preview">
 							</div>      
 	                    </div>
 	                </div>
@@ -114,17 +114,17 @@
 	  			<span class="form-group">
 	  				<input type="hidden" name="requestURL" value="<%=request.getServletPath()%>">
 					<button type="submit" class="btn btn-success" name="action" value="addVenue">新增</button>
-					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/venue/listAllVenue.jsp?venue_no=${venueVO.venue_no}">回場地總攬</a>
+					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/venue/listAllVenue.jsp?venue_no=${venueVO.venue_no}">回場地總覽</a>
 				</span>	
 			</div>
 		</form>               
 	</div>
 
+
+
     <!-- Basic -->
     <script src="https://code.jquery.com/jquery.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-	
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>	
 	<!-- ckEditor JS -->
     <script src="<%=request.getContextPath()%>/vendor/ckeditor_full/ckeditor.js"></script>
     <script src="<%=request.getContextPath()%>/backend/venue/js/venueCKEditor.js"></script>
@@ -239,8 +239,7 @@
 	</script>
 
 	<!-- Google Map -->
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5W5_78W5LzdktsSjTuDPJuUYDY3Qjy9U&callback=initMap"></script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5W5_78W5LzdktsSjTuDPJuUYDY3Qjy9U&callback=initMap"></script>	
 	
 </body>
-
 </html>

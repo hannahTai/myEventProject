@@ -15,7 +15,7 @@
     <!-- Basic -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <style>
-        .container img { 
+        .eve_seatmap_area img { 
       	   width: 100%; 
     	} 
     	.actionForm{ 
@@ -27,11 +27,21 @@
 			display: inline-block;
 			border-radius: 2px;
  		}
+ 		body{
+			font-family:微軟正黑體!important;
+		}
     </style>
 </head>
 
 <body>
-    	<div class="container">
+
+
+
+		<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+
+
+
+    	<div class="container" style="margin-bottom:30px;">
 	            
 	        <div class="form-group">
                 <label for="evetit_no">主題</label>
@@ -127,7 +137,7 @@
 
 			<div class="row">
                 <div class="col-xs-12 col-sm-6">
-                	<div class="form-group">
+                	<div class="form-group eve_seatmap_area">
 						<label>座位圖</label>
                     	<img src="<%= request.getContextPath()%>/event/EventGifReader?scaleSize=850&eve_no=${eventVO.eve_no}">
                 	</div>
@@ -166,9 +176,6 @@
 					</div>                    
                 </div>
             </div> 
-          	<span class="form-group">
-				<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}">回到活動總覽</a>
-			</span>
 			<form method="post" action="<%=request.getContextPath()%>/event/EventServlet.do" class="actionForm">								
 			    <input type="hidden" name="eve_no"            value="${eventVO.eve_no}">
 			    <input type="hidden" name="requestURL"	      value="<%=request.getServletPath()%>">
@@ -176,7 +183,10 @@
 			    <input type="submit" value="修改" class="btn btn-warning"> 							
 			</form>	
 			<span class="form-group">
-				<a class="btn btn-primary" href="<%=request.getContextPath()%>/event/EventServlet.do?action=addEvent&evetit_no=${eventVO.evetit_no}">繼續新增活動場次</a>
+				<a class="btn btn-primary" href="<%=request.getContextPath()%>/event/EventServlet.do?action=addEvent&evetit_no=${eventVO.evetit_no}">繼續新增</a>
+			</span>
+			<span class="form-group">
+				<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}">回活動總覽</a>
 			</span>
         </div>
 

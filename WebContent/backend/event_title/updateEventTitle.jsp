@@ -18,19 +18,29 @@
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/vendor/datetimepicker/jquery.datetimepicker.css" />
     
     <style>
-        .container img {
-        width: 100%;
-    }
+        .evetit_poster_area img {
+	        width: 100%;
+	    }
+    	body{
+			font-family:微軟正黑體!important;
+		}
     </style>
 </head>
 
 <body>
-		
+
+
+
+		<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+
+
+
+
 		<div class="container">
 			<span class="text-danger">${eventTitleErrorMsgs.Exception}</span>
 		</div>
 		
-    	<div class="container">    	
+    	<div class="container" style="margin-bottom:30px;">    	
 	        <form method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do"> 	            
 	            <div class="form-group">
 	                <label for="evetit_no">活動主題編號</label>
@@ -141,7 +151,7 @@
 	                </div>
 	            </div>
 	            
-				<div class="form-group">
+				<div class="form-group evetit_poster_area">
 					<label for="evetit_poster">主海報</label>
 					<span class="text-danger">${eventTitleErrorMsgs.evetit_poster}</span>
 					<input type="file" id="evetit_poster" name="evetit_poster" class="form-control" accept="image/*">
@@ -194,10 +204,13 @@
 	                </div>
 	            </div>
 				<span class="form-group">
-					<button type="submit" class="btn btn-success" name="action" value="updateEventTitle">儲存</button>
+					<button type="submit" class="btn btn-success" name="action" value="updateEventTitle" style="margin-top:15px;">儲存</button>
+					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp" style="margin-top:15px;">回活動總覽</a>
 				</span>
 			</form>
         </div>
+
+
 
     <!-- Basic -->
     <script src="https://code.jquery.com/jquery.js"></script>

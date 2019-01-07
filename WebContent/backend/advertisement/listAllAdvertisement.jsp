@@ -34,12 +34,21 @@
 </head>
 
 <style>
-.actionForm{
-	display: inline;
-}
+	.actionForm{
+		display: inline;
+	}
+	body{
+		font-family:微軟正黑體!important;
+	}
 </style>
 
 <body>
+	
+	
+	
+	<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+	
+	
 	
 	<div class="container">
 		<input type="hidden" id="projectName" name="projectName" value="<%=request.getContextPath() %>">
@@ -48,10 +57,10 @@
 	</div>
 	
 	<div class="container">
-		<button class="btn btn-primary" id="wantToAddAdvertisement" data-toggle="modal" data-target="#addAdvertisementModal" style="margin-bottom:5px;">新增廣告</button>
+		<button class="btn btn-primary" id="wantToAddAdvertisement" data-toggle="modal" data-target="#addAdvertisementModal" style="margin-bottom:10px;">新增廣告</button>
 	</div>
 
-	<div class="container">		
+	<div class="container" style="margin-bottom:30px;">		
 		<table id="advertisementListTable" class="display" style="width:100%;">
 			<thead>
 				<tr>
@@ -184,15 +193,10 @@
 		</div>
 	</div>	
 </div>
+
 	
 	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	<!-- Basic -->
 	<script src="https://code.jquery.com/jquery.js"></script>

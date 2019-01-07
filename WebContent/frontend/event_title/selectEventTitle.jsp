@@ -7,7 +7,6 @@
 
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,22 +16,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- datetimepicker -->
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/vendor/datetimepicker/jquery.datetimepicker.css" />
+	<style>
+		.checkboxCusStyle {
+			padding: 3px;
+		    border: 1px solid transparent;
+		    border-radius: 4px;
+		    color: #31708f;
+		    background-color: #d9edf7;
+		    border-color: #bce8f1;
+		    width: 80px;
+		    text-align: center;
+		}
+		
+		body{
+			font-family:微軟正黑體!important;
+		}
+	</style>
 </head>
-
-<style>
-	.checkboxCusStyle {
-		padding: 3px;
-	    border: 1px solid transparent;
-	    border-radius: 4px;
-	    color: #31708f;
-	    background-color: #d9edf7;
-	    border-color: #bce8f1;
-	    width: 80px;
-	    text-align: center;
-	}
-</style>
-
 <body>
+
+
+
+	<jsp:include page="/frontend/navbar_front-end.html" flush="true" />
+
+
+
 
 	<div class="container">
 		<span class="text-danger">${eventTitleErrorMsgs.Exception}</span>
@@ -82,6 +90,14 @@
     
     <jsp:include page="/frontend/event_title/listEventTitle_ByCompositeQuery.jsp" flush="true" />
     
+	<div class="container" style="margin-bottom:30px;"></div>
+	
+	
+
+	<jsp:include page="/frontend/footer_front-end.html" flush="true" />
+
+
+    
     <!-- Basic -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -91,13 +107,9 @@
     <!-- JavaScript in File -->
     <script src="<%=request.getContextPath()%>/frontend/event_title/js/selectEventTitle.js"></script>
     <script> 
-    
-    
 	
     $(document).ready(function() {
-
-    	
-    	
+   	
         var searchStatusBack = JSON.parse(localStorage.getItem('searchStatus'));
         if(searchStatusBack != null){
             $("#evetit_name").val(searchStatusBack.evetit_name);
@@ -115,8 +127,6 @@
             $("#I").prop("checked", searchStatusBack.I);
             $("#J").prop("checked", searchStatusBack.J);
         }
-    	
-    
 
         $("#search").click(function() {
         	var searchStatus = new Object(); 
@@ -138,13 +148,9 @@
             var searchStatusJSON = JSON.stringify(searchStatus);
             localStorage.setItem("searchStatus", searchStatusJSON);
         });
-
-        
         
     });    
 	</script>
     
-    
 </body>
-
 </html>

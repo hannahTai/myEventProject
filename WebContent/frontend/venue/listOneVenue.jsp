@@ -14,7 +14,6 @@
 
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -25,71 +24,73 @@
     <style>
     	.actionForm{
 			display: inline;
-		}
-		
+		}		
 		#map {
 	        height: 500px;
 	        width: 100%;
 	        margin-top: 15px;
 	        border-radius: 25px;
       	}
+      	body{
+			font-family:微軟正黑體!important;
+		}
     </style>
 </head>
 
 <body>
 
 
-    <div class="container">
-    	<div class="col-xs-12 col-sm-8 col-sm-offset-2">
-    	
-    		<div class="col-xs-12 col-sm-12">
-    			<h4>場地名稱 : ${venueVO.venue_name}</h4>
-    			<h4>地址 : ${venueVO.address}</h4>
-    			<input type="hidden" name="venue_name" id="venue_name" class="form-control" value="${venueVO.venue_name}" readonly>
-    			<input type="hidden" name="address" id="address" class="form-control" value="${venueVO.address}" readonly>
-    		</div>
-    	
-            <div class="col-xs-12 col-sm-12">    
-				<div class="tabbable">
-	                <!-- 標籤面板：標籤區 -->
-	                <ul class="nav nav-tabs" style="margin-bottom:10px;">
-	                	<li class="active"><a href="#googleMapTab" data-toggle="tab">場地位置</a></li>
-	                    <li><a href="#infoTab" data-toggle="tab">交通資訊</a></li>
-	                    <li><a href="#picTab" data-toggle="tab">位置圖</a></li>
-	                </ul>
-	                <!-- 標籤面板：內容區 -->
-	                <div class="tab-content">
-	                	<div class="tab-pane active" id="googleMapTab">
-				            <input type="hidden" id="latitude" name="latitude" class="form-control" value="${venueVO.latitude}" readonly>
-							<input type="hidden" id="longitude" name="longitude" class="form-control" value="${venueVO.longitude}" readonly> 
-				            <div id="map"></div>     
-	                    </div>
-	                    
-	                    <div class="tab-pane" id="infoTab">
-							${venueVO.venue_info} 
-	                    </div>
-	                    
-	                    <div class="tab-pane" id="picTab">
-	                    	<div class="form-group" style="margin-bottom:10px;">
-	           					<img src="<%= request.getContextPath()%>/venue/VenueGifReader?scaleSize=800&venue_no=${venueVO.venue_no}">      
-	                   		</div>
-	                    </div>
-	                </div>
-	            </div>
+
+	<jsp:include page="/frontend/navbar_front-end.html" flush="true" />
+
+
+
+    <div class="container" style="margin-bottom:30px;">   	
+   		<div class="col-xs-12 col-sm-12">
+   			<h4><i class="glyphicon glyphicon-hand-right"></i> 場地名稱 : ${venueVO.venue_name}</h4>
+   			<h4><i class="glyphicon glyphicon-hand-right"></i> 場地地址 : ${venueVO.address}</h4>
+   			<input type="hidden" name="venue_name" id="venue_name" class="form-control" value="${venueVO.venue_name}" readonly>
+   			<input type="hidden" name="address" id="address" class="form-control" value="${venueVO.address}" readonly>
+   		</div>   	
+		<div class="col-xs-12 col-sm-12">    
+			<div class="tabbable">
+                <!-- 標籤面板：標籤區 -->
+                <ul class="nav nav-tabs" style="margin-bottom:10px;">
+                	<li class="active"><a href="#googleMapTab" data-toggle="tab">場地位置</a></li>
+                    <li><a href="#infoTab" data-toggle="tab">交通資訊</a></li>
+                    <li><a href="#picTab" data-toggle="tab">位置圖</a></li>
+                </ul>
+                <!-- 標籤面板：內容區 -->
+                <div class="tab-content">
+                	<div class="tab-pane active" id="googleMapTab">
+			            <input type="hidden" id="latitude" name="latitude" class="form-control" value="${venueVO.latitude}" readonly>
+						<input type="hidden" id="longitude" name="longitude" class="form-control" value="${venueVO.longitude}" readonly> 
+			            <div id="map"></div>     
+                    </div>                 
+                    <div class="tab-pane" id="infoTab">
+						${venueVO.venue_info} 
+                    </div>                   
+                    <div class="tab-pane" id="picTab">
+                    	<div class="form-group" style="margin-bottom:10px;">
+           					<img src="<%= request.getContextPath()%>/venue/VenueGifReader?scaleSize=800&venue_no=${venueVO.venue_no}">      
+                   		</div>
+                    </div>
+                </div>
             </div>
-        </div>
+		</div>
 	</div>
+
+
+
+	<jsp:include page="/frontend/footer_front-end.html" flush="true" />
+
+
 
     <!-- Basic -->
     <script src="https://code.jquery.com/jquery.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    
-	<!-- Google Map -->
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5W5_78W5LzdktsSjTuDPJuUYDY3Qjy9U&callback=initMap"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>	
     <script>
-    function initMap() {
-    	
+    function initMap() {    	
     	var latitude = $("#latitude").val();
     	var longitude = $("#longitude").val();
     	var address = $("#address").val();
@@ -114,8 +115,9 @@
     	this.lat = parseFloat(lat);
     	this.lng = parseFloat(lng);
     }
-
 	</script>
+	<!-- Google Map -->
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5W5_78W5LzdktsSjTuDPJuUYDY3Qjy9U&callback=initMap"></script>
 </body>
 
 </html>

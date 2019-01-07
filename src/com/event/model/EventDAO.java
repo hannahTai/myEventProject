@@ -669,8 +669,7 @@ public class EventDAO implements EventDAO_interface{
 			pstmt.setTimestamp(9, eventVO.getFullrefundenddate());
 			pstmt.setString(10, eventVO.getEve_status());
 			pstmt.setString(11, eventVO.getEve_no()); 
-			pstmt.executeUpdate();
-			eventVO = findByPrimaryKey(eve_no);
+			pstmt.executeUpdate();			
 			
 			// 刪除原票種票區
 			TicketTypeJDBCDAO ticketTypeDAO = new TicketTypeJDBCDAO();
@@ -692,10 +691,12 @@ public class EventDAO implements EventDAO_interface{
 				aTicketTypeVO.setTictype_no(null);
 				aTicketTypeVO.setEve_no(eve_no);				
 				ticketTypeDAO.copyInsertFromEvent(aTicketTypeVO, seatingAreaVoSet_forCopy, con);
-			}
-			
+			}			
+		
 			con.commit();
 			con.setAutoCommit(true);
+			
+			eventVO = findByPrimaryKey(eve_no);
 			
 			System.out.println("----------copyEvent_withTicketTypeAndSeatingArea----------");
 
