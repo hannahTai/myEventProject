@@ -162,9 +162,9 @@ public class EventServlet extends HttpServlet {
 				java.sql.Timestamp eve_enddate = null;
 				try {
 					eve_enddate = java.sql.Timestamp.valueOf(request.getParameter("eve_enddate")+":00");
-					if (today.compareTo(eve_enddate) > 0) {
-						eventErrorMsgs.put("eve_enddate_BiggerThanToday", "不得早於現在");
-					} 				
+//					if (today.compareTo(eve_enddate) > 0) {
+//						eventErrorMsgs.put("eve_enddate_BiggerThanToday", "不得早於現在");
+//					} 				
 					if (eve_startdate.compareTo(eve_enddate) > 0) {
 						eventErrorMsgs.put("eve_enddate_BiggerThanEveStartdate", "不得早於活動開始日期時間");
 					} 
@@ -183,9 +183,9 @@ public class EventServlet extends HttpServlet {
 				java.sql.Timestamp eve_offsaledate = null;
 				try {
 					eve_offsaledate = java.sql.Timestamp.valueOf(request.getParameter("eve_offsaledate")+":00");
-					if (today.compareTo(eve_offsaledate) > 0) {
-						eventErrorMsgs.put("eve_offsaledate_BiggerThanToday", "不得早於現在");
-					} 				
+//					if (today.compareTo(eve_offsaledate) > 0) {
+//						eventErrorMsgs.put("eve_offsaledate_BiggerThanToday", "不得早於現在");
+//					} 				
 					if (eve_onsaledate.compareTo(eve_offsaledate) > 0) {
 						eventErrorMsgs.put("eve_offsaledate_BiggerThanEve_onsaledate", "不得早於售票開始日期時間");
 					} 
@@ -201,9 +201,9 @@ public class EventServlet extends HttpServlet {
 				java.sql.Timestamp fullrefundenddate = null;
 				try {
 					fullrefundenddate = java.sql.Timestamp.valueOf(request.getParameter("fullrefundenddate")+":00");
-					if (today.compareTo(fullrefundenddate) > 0) {
-						eventErrorMsgs.put("fullrefundenddate_BiggerThanToday", "不得早於現在");
-					} 				
+//					if (today.compareTo(fullrefundenddate) > 0) {
+//						eventErrorMsgs.put("fullrefundenddate_BiggerThanToday", "不得早於現在");
+//					} 				
 					if (eve_startdate.compareTo(fullrefundenddate) < 0) {
 						eventErrorMsgs.put("fullrefundenddate_BiggerThanEve_startdate", "不得晚於活動開始日期時間");
 					} 

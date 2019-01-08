@@ -183,9 +183,9 @@ public class EventTitleServlet extends HttpServlet {
 				java.sql.Date evetit_enddate = null;
 				try {
 					evetit_enddate = java.sql.Date.valueOf(request.getParameter("evetit_enddate").trim());
-					if (today.compareTo(evetit_enddate) > 0) {
-						eventTitleErrorMsgs.put("evetit_enddate_BiggerThanToday", "結束日期不得早於今天");
-					} 				
+//					if (today.compareTo(evetit_enddate) > 0) {
+//						eventTitleErrorMsgs.put("evetit_enddate_BiggerThanToday", "結束日期不得早於今天");
+//					} 				
 					if (evetit_startdate.compareTo(evetit_enddate) > 0) {
 						eventTitleErrorMsgs.put("evetit_enddate_BiggerThanEvetitStartdate", "結束日期不得早於開始日期");
 					} 
@@ -204,9 +204,9 @@ public class EventTitleServlet extends HttpServlet {
 				java.sql.Date offdate = null;
 				try {
 					offdate = java.sql.Date.valueOf(request.getParameter("offdate").trim());
-					if (today.compareTo(offdate) > 0) {
-						eventTitleErrorMsgs.put("offdate_BiggerThanToday", "下架日期不得早於今天");
-					} 				
+//					if (today.compareTo(offdate) > 0) {
+//						eventTitleErrorMsgs.put("offdate_BiggerThanToday", "下架日期不得早於今天");
+//					} 				
 					if (launchdate.compareTo(offdate) > 0) {
 						eventTitleErrorMsgs.put("offdate_BiggerThanLaunchdate", "下架日期不得早於上架日期");
 					} 
@@ -360,9 +360,9 @@ public class EventTitleServlet extends HttpServlet {
 				java.sql.Date evetit_enddate = null;
 				try {
 					evetit_enddate = java.sql.Date.valueOf(request.getParameter("evetit_enddate").trim());
-					if (today.compareTo(evetit_enddate) > 0) {
-						eventTitleErrorMsgs.put("evetit_enddate_BiggerThanToday", "結束日期不得早於今天");
-					} 				
+//					if (today.compareTo(evetit_enddate) > 0) {
+//						eventTitleErrorMsgs.put("evetit_enddate_BiggerThanToday", "結束日期不得早於今天");
+//					} 				
 					if (evetit_startdate.compareTo(evetit_enddate) > 0) {
 						eventTitleErrorMsgs.put("evetit_enddate_BiggerThanEvetitStartdate", "結束日期不得早於開始日期");
 					} 
@@ -381,9 +381,9 @@ public class EventTitleServlet extends HttpServlet {
 				java.sql.Date offdate = null;
 				try {
 					offdate = java.sql.Date.valueOf(request.getParameter("offdate").trim());
-					if (today.compareTo(offdate) > 0) {
-						eventTitleErrorMsgs.put("offdate_BiggerThanToday", "下架日期不得早於今天");
-					} 				
+//					if (today.compareTo(offdate) > 0) {
+//						eventTitleErrorMsgs.put("offdate_BiggerThanToday", "下架日期不得早於今天");
+//					} 				
 					if (launchdate.compareTo(offdate) > 0) {
 						eventTitleErrorMsgs.put("offdate_BiggerThanLaunchdate", "下架日期不得早於上架日期");
 					} 

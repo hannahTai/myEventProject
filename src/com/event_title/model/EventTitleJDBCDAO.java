@@ -74,7 +74,7 @@ public class EventTitleJDBCDAO implements EventTitleDAO_interface{
 	private static final String GET_EventTitle_NotInTheAdvertisement_STMT = 
 			"SELECT evetit_no, eveclass_no, ticrefpolicy_no, evetit_name, evetit_startdate, evetit_enddate, "
 			+ "evetit_poster, info, notices, eticpurchaserules, eticrules, refundrules, evetit_sessions, evetit_status, launchdate, offdate, promotionranking "
-			+ "from event_title where evetit_no not in (select evetit_no from advertisement) and (evetit_status = 'confirmed') ORDER BY evetit_no";
+			+ "from event_title where evetit_no not in (select evetit_no from advertisement) and (evetit_status = 'confirmed') and (CURRENT_DATE BETWEEN launchdate and offdate) ORDER BY evetit_no";
 
 	
 	

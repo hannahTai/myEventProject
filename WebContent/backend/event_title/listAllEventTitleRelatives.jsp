@@ -97,7 +97,7 @@
 									<td>
 										${(eventTitleVO.evetit_status == "confirmed") ? '確認' : '' }
 										${(eventTitleVO.evetit_status == "temporary") ? '暫存' : '' }
-										${(eventTitleVO.evetit_status == "cancel") ? '取消' : '' }
+<%-- 										${(eventTitleVO.evetit_status == "cancel") ? '取消' : '' } --%>
 									</td>
 									<td>${eventTitleVO.launchdate}</td>
 									<td>${eventTitleVO.offdate}</td>
@@ -118,13 +118,20 @@
 											    <input type="hidden" name="action"	          value="getOneEventTitle_For_Display">
 											    <input type="submit" value="瀏覽" class="btn btn-info btn-sm"> 							
 											</form>
+<%-- 											<jsp:useBean id="today" class="java.util.Date"/> --%>
+<%-- 											<fmt:formatDate var="offdate" value="${eventTitleVO.offdate}" pattern="yyyy-MM-dd HH:mm:ss"/> --%>
+<%-- 											<fmt:timeZone value="Asia/Tokyo">    --%>
+<%-- 												<fmt:formatDate var="now" value="${today}" pattern="yyyy-MM-dd HH:mm:ss"/> --%>
+<%-- 											</fmt:timeZone>  --%>
+<%-- 											<c:if test="${now < offdate}"> --%>
 											<form method="post" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do" class="actionForm" target="_blank">								
 											    <input type="hidden" name="evetit_no"         value="${eventTitleVO.evetit_no}">
 											    <input type="hidden" name="requestURL"	      value="<%=request.getServletPath()%>">
 											    <input type="hidden" name="return_evetit_no"  value="${param.evetit_no}">
 											    <input type="hidden" name="action"	          value="getOneEventTitle_For_Update">
 											    <input type="submit" value="修改" class="btn btn-warning btn-sm"> 							
-											</form>		
+											</form>	
+<%-- 											</c:if>	 --%>
 										</div>					
 									</td>
 								</tr>
@@ -188,6 +195,7 @@
 										<td><fmt:formatDate value="${eventVO.eve_onsaledate}" pattern="yyyy-MM-dd HH:mm"/></td>
 										<td><fmt:formatDate value="${eventVO.eve_offsaledate}" pattern="yyyy-MM-dd HH:mm"/></td>
 										<td>
+											${(eventVO.eve_status == "temp") ? '暫存' : '' }
 											${(eventVO.eve_status == "normal") ? '正常' : '' }
 											${(eventVO.eve_status == "cancel") ? '取消' : '' }
 										</td>

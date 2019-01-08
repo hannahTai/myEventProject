@@ -187,12 +187,10 @@
 	                    </div>
 	                </div>
 	            </div>
-	            
 				<span class="form-group">
 					<button type="submit" class="btn btn-success" name="action" value="insertEventTitle" style="margin-top:15px;">新增</button>
 					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp" style="margin-top:15px;">回活動總覽</a>
-				</span>	
-						
+				</span>			
 			</form>
         </div>
 

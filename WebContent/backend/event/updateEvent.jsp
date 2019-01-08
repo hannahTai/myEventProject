@@ -208,6 +208,7 @@
 	                     <div class="form-group">
 	                         <label>狀態</label>                             
 	                         <select class="form-control" name="eve_status">
+	                         	<option value="temp" ${(eventVO.eve_status == 'temp') ? 'selected' : '' }>暫存</option>
 	                         	<option value="normal" ${(eventVO.eve_status == 'normal') ? 'selected' : '' }>正常</option>
 	                         	<option value="cancel" ${(eventVO.eve_status == 'cancel') ? 'selected' : '' }>取消</option>
 	                         </select>     
@@ -425,6 +426,7 @@
         	timepicker: true,
             changeMonth: true,
             changeYear: true,	
+            scrollInput: false,
         	onShow: function(){
         		this.setOptions({maxDate: $("#eve_enddate").val() ? $("#eve_enddate").val() : false})}
         });
@@ -433,7 +435,8 @@
         	step: 30,
         	timepicker: true,
             changeMonth: true,
-            changeYear: true,	
+            changeYear: true,
+            scrollInput: false,
         	onShow: function(){
         		this.setOptions({minDate: $("#eve_startdate").val() ? $("#eve_startdate").val() : false})}
         });
@@ -445,6 +448,7 @@
         	timepicker: true,
             changeMonth: true,
             changeYear: true,	
+            scrollInput: false,
         	onShow: function(){
         		this.setOptions({maxDate: $("#eve_offsaledate").val() ? $("#eve_offsaledate").val() : false})}
         });
@@ -454,6 +458,7 @@
         	timepicker: true,
             changeMonth: true,
             changeYear: true,	
+            scrollInput: false,
         	onShow: function(){
         		this.setOptions({minDate: $("#eve_onsaledate").val() ? $("#eve_onsaledate").val() : false})}
         });
@@ -464,6 +469,7 @@
         	timepicker: true,
             changeMonth: true,
             changeYear: true,	
+            scrollInput: false,
         	onShow: function(){
         		this.setOptions({maxDate: $("#eve_startdate").val() ? $("#eve_startdate").val() : false})}
         });

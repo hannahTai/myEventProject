@@ -121,6 +121,7 @@
                      <div class="form-group">
                          <label>狀態</label>                             
                          <select class="form-control" name="eve_status" readonly>
+                         	<option value="temp" ${(eventVO.eve_status == 'temp') ? 'selected' : '' }>暫存</option>
                          	<option value="normal" ${(eventVO.eve_status == 'normal') ? 'selected' : '' }>正常</option>
                          	<option value="cancel" ${(eventVO.eve_status == 'cancel') ? 'selected' : '' }>取消</option>
                          </select>     

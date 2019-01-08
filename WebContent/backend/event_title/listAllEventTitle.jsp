@@ -82,7 +82,7 @@
 						<td>
 							${(eventTitleVO.evetit_status == "confirmed") ? '確認' : '' }
 							${(eventTitleVO.evetit_status == "temporary") ? '暫存' : '' }
-							${(eventTitleVO.evetit_status == "cancel") ? '取消' : '' }
+<%-- 							${(eventTitleVO.evetit_status == "cancel") ? '取消' : '' } --%>
 						</td>
 						<td>${eventTitleVO.launchdate}</td>
 						<td>${eventTitleVO.offdate}</td>

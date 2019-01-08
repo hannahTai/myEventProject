@@ -64,6 +64,16 @@
                     </a>
                 </div>
             </div>
+            <div class="col-xs-12 col-sm-4">
+                <div class="thumbnail">
+                    <a href="#" target="_blank">
+                    	<img src="<%=request.getContextPath()%>/backend/event_title/images/changeNotices.jpg">
+                    	<div class="caption">
+                        	<h4>異動通知<h4>
+                   		</div>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 

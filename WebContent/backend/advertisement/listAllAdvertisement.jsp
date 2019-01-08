@@ -80,7 +80,7 @@
 						<td>
 							<jsp:useBean id="eventTitleService2" scope="page" class="com.event_title.model.EventTitleService" />
 							<a href="<%=request.getContextPath()%>/event_title/EventTitleServlet.do?action=getOneEventTitle_For_Display&evetit_no=${advertisementVO.evetit_no}" target="_blank">
-								${eventTitleService2.getOneEventTitle(advertisementVO.evetit_no).evetit_name}
+								${eventTitleService2.getOneEventTitle(advertisementVO.evetit_no).evetit_no} : ${eventTitleService2.getOneEventTitle(advertisementVO.evetit_no).evetit_name}
 							</a>
 						</td>
 						<td>
@@ -249,7 +249,8 @@
 	        	minDate: 0,
 	        	value: new Date(),
 	            changeMonth: true,
-	            changeYear: true,	
+	            changeYear: true,
+	            scrollInput: false,
 	        	onShow: function(){
 	        		this.setOptions({maxDate: $("#ad_enddate").val() ? $("#ad_enddate").val() : false})}
 	        });
@@ -258,7 +259,8 @@
 	        	timepicker: false,
 	        	value: endDateInit,
 	            changeMonth: true,
-	            changeYear: true,	
+	            changeYear: true,
+	            scrollInput: false,
 	        	onShow: function(){
 	        		this.setOptions({minDate: $("#ad_startdate").val() ? $("#ad_startdate").val() : false})}
 	        });
@@ -348,6 +350,11 @@
 				var evetit_no = $("#addAdvertisementModal").children().find(".evetit_no").val();
 				var ad_startdate = $("#addAdvertisementModal").children().find("input[name=ad_startdate]").val();
 				var ad_enddate = $("#addAdvertisementModal").children().find("input[name=ad_enddate]").val();
+				
+				if(evetit_no == null) {
+					window.alert("已無上架中的活動主題可新增廣告");
+					return;					
+				}
 				if(Date.parse(ad_startdate) < CurrentDate) {
 					window.alert("開始日期不得早於今天");
 					return;					

@@ -49,11 +49,11 @@ public class EventScheduleServlet extends HttpServlet {
 				System.out.println("EventScheduleServlet is working! : " + new java.util.Date());
 			}			 
 		};		
-//		Calendar now = Calendar.getInstance();
-//		Calendar midnight = new GregorianCalendar(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH)+1, 0, 0, 0);
-//		long waitTime = midnight.getTimeInMillis() - now.getTimeInMillis();
-//		timer.schedule(task, waitTime, 1000*60*60*24);
-		timer.schedule(task, 1000*60, 1000*60*60);
+		Calendar now = Calendar.getInstance();
+		Calendar midnight = new GregorianCalendar(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH)+1, 0, 0, 0);
+		long waitTime = midnight.getTimeInMillis() - now.getTimeInMillis();
+		timer.schedule(task, waitTime, 1000*60*60*24);
+//		timer.schedule(task, 1000*60, 1000*60*60);
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

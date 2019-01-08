@@ -7,6 +7,7 @@ $("#evetit_startdate").datetimepicker({
 	timepicker: false,
     changeMonth: true,
     changeYear: true,	
+    scrollInput: false,
 	onShow: function(){
 		this.setOptions({maxDate: $("#evetit_enddate").val() ? $("#evetit_enddate").val() : false})}
 });
@@ -17,6 +18,7 @@ $("#evetit_enddate").datetimepicker({
 	timepicker: false,
     changeMonth: true,
     changeYear: true,
+    scrollInput: false,
 	onShow:function(){
 		this.setOptions({minDate:$("#evetit_startdate").val() ? $("#evetit_startdate").val() : false})}
 });
@@ -27,6 +29,7 @@ $("#evetit_enddate").datetimepicker({
 	timepicker: false,
     changeMonth: true,
     changeYear: true,
+    scrollInput: false,
 	onShow:function(){
 		this.setOptions({maxDate:$("#offdate").val() ? $("#offdate").val() : false})},
  });
@@ -37,6 +40,7 @@ $("#evetit_enddate").datetimepicker({
 	timepicker: false,
     changeMonth: true,
     changeYear: true,
+    scrollInput: false,
 	onShow:function(){
 		this.setOptions({minDate:$("#launchdate").val() ? $("#launchdate").val() : false})},
  });

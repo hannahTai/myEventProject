@@ -135,11 +135,11 @@
 	                </div>             
 	                <div class="col-xs-12 col-sm-3">
 	                    <div class="form-group">
-	                         <label>儲存狀態</label>	                                                 
-	                         <select class="form-control" name="evetit_status">
-	                         	<option value="temporary" ${(eventTitleVO.evetit_status == 'temporary') ? 'selected' : '' }>暫存</option>
-	                         	<option value="confirmed" ${(eventTitleVO.evetit_status == 'confirmed') ? 'selected' : '' }>確定</option>
-	                         	<option value="cancel" ${(eventTitleVO.evetit_status == 'cancel') ? 'selected' : '' }>取消</option>
+	                         <label>儲存狀態<i class="glyphicon glyphicon-question-sign text-info" title="確定狀態的活動主題才會顯示在前台" id="whyCantChangeState"></i></label>	                                                 
+	                         <select class="form-control" name="evetit_status" id="evetit_status">
+	                         	<option value="temporary" ${(eventTitleVO.evetit_status == 'temporary') ? 'selected' : '' } id="evetit_status_temporary">暫存</option>
+	                         	<option value="confirmed" ${(eventTitleVO.evetit_status == 'confirmed') ? 'selected' : '' } id="evetit_status_confirmed">確定</option>
+<%-- 	                         	<option value="cancel" ${(eventTitleVO.evetit_status == 'cancel') ? 'selected' : '' }>取消</option> --%>
 	                         </select>                					
 	                    </div>
 	                </div>
@@ -244,7 +244,21 @@
         		$(this).prepend("<i class='glyphicon glyphicon-triangle-left'></i>");
         	}        	
         });
-               
+        
+
+        
+       	var today = new Date();
+       	var launchdate = new Date($("#launchdate").val()); 
+       	var offdate = new Date($("#offdate").val()); 
+       	   	
+       	//已上架過
+        if(launchdate.getTime() < today.getTime()) {
+       		$("#whyCantChangeState").attr("title", "已經上架過的活動主題，不能更改回暫存");
+			$("#evetit_status_temporary").remove();  
+			$("#evetit_status").attr("readonly", true);
+			$("#launchdate").attr("readonly", true);
+		}
+      
     });
     </script>
 </body>
