@@ -1,12 +1,22 @@
 package com.event.model;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.event_title.model.EventTitleService;
 import com.event_title.model.EventTitleVO;
+import com.seating_area.model.SeatingAreaDAO;
+import com.seating_area.model.SeatingAreaService;
+import com.seating_area.model.SeatingAreaVO;
+import com.ticket.model.TicketVO;
 import com.ticket_type.model.TicketTypeVO;
+import com.ticketorder.model.TicketOrderVO;
 
 public class EventService {
 
@@ -95,9 +105,40 @@ public class EventService {
 		return eventDao.getTicketTypesByEvent(eve_no);
 	}
 	
+	public Set<SeatingAreaVO> getSeatingAreasByEvent(String eve_no) {
+		return eventDao.getSeatingAreasByEvent(eve_no);
+	}
 	
 	public EventVO copyEvent_withTicketTypeAndSeatingArea(String eve_no, String eve_no_forCopy) {		
 		return eventDao.copyEvent_withTicketTypeAndSeatingArea(eve_no, eve_no_forCopy);
 	}
+	
+	
+	public Set<TicketOrderVO> getTicketOrdersByEvent(String eve_no) {				
+		Set<SeatingAreaVO> SeatingAreaVoSet = getSeatingAreasByEvent(eve_no);
+		Set<TicketOrderVO> ticketOrderVO_ByEvent = new LinkedHashSet<>();
+		SeatingAreaService seatingAreaService = new SeatingAreaService();
+		for(SeatingAreaVO aSeatingAreaVO : SeatingAreaVoSet) {
+			Set<TicketOrderVO> ticketOrderVOset = seatingAreaService.getTicketOrders_BySeatingArea(aSeatingAreaVO.getTicarea_no());
+			for(TicketOrderVO aTicketOrderVO : ticketOrderVOset) {
+				ticketOrderVO_ByEvent.add(aTicketOrderVO);
+			}
+		}
+		return ticketOrderVO_ByEvent;
+	}
+	
+	public Set<TicketVO> getTicketsByEvent(String eve_no) {				
+		Set<SeatingAreaVO> SeatingAreaVoSet = getSeatingAreasByEvent(eve_no);
+		Set<TicketVO> ticketVO_ByEvent = new LinkedHashSet<>();
+		SeatingAreaService seatingAreaService = new SeatingAreaService();
+		for(SeatingAreaVO aSeatingAreaVO : SeatingAreaVoSet) {
+			Set<TicketVO> ticketVOset = seatingAreaService.getTickets_BySeatingArea(aSeatingAreaVO.getTicarea_no());
+			for(TicketVO aTicketVO : ticketVOset) {
+				ticketVO_ByEvent.add(aTicketVO);
+			}
+		}
+		return ticketVO_ByEvent;
+	}
+	
 	
 }

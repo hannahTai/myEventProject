@@ -49,6 +49,10 @@
 		    height: auto;
 		    width: 100%
 		}
+		#loadMore:hover {
+            background-color: #3399ff;
+			border-color: white;
+        }
 </style>
 </head>
 
@@ -60,7 +64,7 @@
         <div class="row flex-row">
             <c:forEach var="eventTitleVO" items="${listEventTitle_ByCompositeQuery}">
                 <div class="col-xs-12 col-sm-4">
-                    <div class="thumbnail">
+                    <div class="thumbnail loadMoreDivs" style="display:none;">
                         <a href="<%= request.getContextPath()%>/frontend/event_title/listOneEventTitle.jsp?evetit_no=${eventTitleVO.evetit_no}" target="_blank">
                             <img src="<%= request.getContextPath()%>/event_title/EventTitleGifReader?scaleSize=425&evetit_no=${eventTitleVO.evetit_no}" alt="">
                         </a>                       
@@ -79,7 +83,13 @@
         </div>
     </div>
     
+    <div class="container">   
+    	<div style="text-align:center;">
+    	<a href="#" class="btn btn-lg btn-primary" id="loadMore" style="float:center;">點我看更多</a>
+    	</div>
+    </div>
     
+      
     
     <!-- Basic -->
     <script src="https://code.jquery.com/jquery.js"></script>

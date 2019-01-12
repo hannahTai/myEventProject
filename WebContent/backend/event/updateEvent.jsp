@@ -63,7 +63,7 @@
 
 
 
-		<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+		<jsp:include page="/backend/navbar_back-end.jsp" flush="true" />
 		
 
 
@@ -207,10 +207,10 @@
 	                <div class="col-xs-12 col-sm-3">
 	                     <div class="form-group">
 	                         <label>狀態</label>                             
-	                         <select class="form-control" name="eve_status">
-	                         	<option value="temp" ${(eventVO.eve_status == 'temp') ? 'selected' : '' }>暫存</option>
-	                         	<option value="normal" ${(eventVO.eve_status == 'normal') ? 'selected' : '' }>正常</option>
-	                         	<option value="cancel" ${(eventVO.eve_status == 'cancel') ? 'selected' : '' }>取消</option>
+	                         <select class="form-control" name="eve_status" id="eve_status">
+	                         	<option value="temp" ${(eventVO.eve_status == 'temp') ? 'selected' : '' } id="eve_status_temp">暫存</option>
+	                         	<option value="normal" ${(eventVO.eve_status == 'normal') ? 'selected' : '' } id="eve_status_normal">正常</option>
+	                         	<option value="cancel" ${(eventVO.eve_status == 'cancel') ? 'selected' : '' } id="eve_status_cancel">取消</option>
 	                         </select>     
 	                     </div>
 	                </div>
@@ -264,7 +264,7 @@
 						                            <i class="glyphicon glyphicon-ok updateTicketType" style="display:none;">儲存&nbsp;</i>
 						                            <i class="glyphicon glyphicon-trash deleteTicketType">刪除&nbsp;</i>
 						                            <i class="glyphicon glyphicon-file copyTicketType">複製&nbsp;</i>
-						                            <i class="glyphicon glyphicon-th-list" data-toggle="collapse" aria-expanded="false" href="#${ticketTypeVO.tictype_no}">收合</i>
+						                            <i class="glyphicon glyphicon-th-list myTicketTypeCollapse" data-toggle="collapse" aria-expanded="false" href="#${ticketTypeVO.tictype_no}">收合</i>
 						                        </div>
 						                    </div> 
 						                </div>
@@ -308,8 +308,8 @@
 	  			<span class="form-group">
 	  				<input type="hidden" name="requestURL" value="<%=request.getServletPath()%>">
 					<button type="submit" class="btn btn-success" name="action" value="updateEvent" style="margin-top:15px;">儲存</button>
-					<a class="btn btn-danger" href="<%=request.getContextPath()%>/event/EventServlet.do?action=deleteEvent&evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}&requestURL=/backend/event_title/listAllEventTitleRelatives.jsp" style="margin-top:15px;">刪除</a>
-					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp" style="margin-top:15px;">回活動總覽</a>
+<%-- 					<a class="btn btn-danger" href="<%=request.getContextPath()%>/event/EventServlet.do?action=deleteEvent&evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}&requestURL=/backend/event_title/listAllEventTitleRelatives.jsp" style="margin-top:15px;">刪除</a> --%>
+					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}" style="margin-top:15px;">回活動總覽</a>
 				</span>			
 			</form>
         </div>
@@ -411,11 +411,65 @@
         		$(this).prepend("<i class='glyphicon glyphicon-triangle-left'></i>");
         	}        	
         });
+     
         
         
         
         
+     	// -----something you can't edit during sometime---------------------------------------------
+        var eve_status = $("#eve_status").val();
+        var eve_onsaledate = new Date($("#eve_onsaledate").val());
+        var eve_offsaledate = new Date($("#eve_offsaledate").val());
         
+     	// 暫存的活動
+        if(eve_status == "temp"){
+        	$("#eve_status_cancel").remove();
+        	console.log("in the temp");
+        }
+     	
+     	// 正常的活動
+        if(eve_status == "normal"){
+        	var now = new Date();
+        	
+        	//尚未開賣
+        	if(now < eve_onsaledate){
+        		$("#eve_status_cancel").remove();
+        	}
+        	
+        	//點我購票
+        	else if(eve_onsaledate < now && now < eve_offsaledate){
+        		$("#eve_status_temp").remove();
+        		$("#copyEventForm").add("#addTicketType").add(".addSeatingArea").hide();      //場次套用+複製票種+複製票區
+        		$(".glyphicon-pencil").add(".glyphicon-trash").add(".glyphicon-file").hide(); //票種票區:::編輯+刪除+複製
+        		$("input[type=color]").prop("disabled", true);								  //票種票區:::顏色
+        		$("#eve_onsaledate").attr("readonly", true);								  //售票開始日期時間
+        		$("#fullrefundenddate").attr("readonly", false);							  //可全額退款到期日期時間
+        	}
+        	
+        	//結束售票
+        	else if(eve_offsaledate < now){
+        		$("#eve_status_temp").remove();
+        		$("#copyEventForm").add("#addTicketType").add(".addSeatingArea").hide();      //場次套用+複製票種+複製票區
+        		$(".glyphicon-pencil").add(".glyphicon-trash").add(".glyphicon-file").hide(); //票種票區:::編輯+刪除+複製
+        		$("input[type=color]").prop("disabled", true);								  //票種票區:::顏色
+        		$("#eve_onsaledate").attr("readonly", true);								  //售票開始日期時間
+        	}
+        }
+     	
+     	// 取消的活動
+        if(eve_status == "cancel"){
+        	$("#eve_status_temp").remove();
+        	$("#copyEventForm").add("#addTicketType").add(".addSeatingArea").hide();      //場次套用+複製票種+複製票區
+        	$(".glyphicon-pencil").add(".glyphicon-trash").add(".glyphicon-file").hide(); //票種票區:::編輯+刪除+複製
+    		$("input[type=color]").prop("disabled", true);								  //票種票區:::顏色
+    		$("#eve_onsaledate").attr("readonly", true);								  //售票開始日期時間
+    		console.log("in the cancel area");
+        }
+     
+
+        
+
+     	
 		// -----datetimepicker---------------------------------------------
         $.datetimepicker.setLocale('zh');
 

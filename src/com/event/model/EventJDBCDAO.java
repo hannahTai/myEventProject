@@ -16,10 +16,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.seating_area.model.SeatingAreaDAO;
 import com.seating_area.model.SeatingAreaJDBCDAO;
 import com.seating_area.model.SeatingAreaVO;
 import com.ticket_type.model.TicketTypeJDBCDAO;
 import com.ticket_type.model.TicketTypeVO;
+import com.ticketorder.model.TicketOrderVO;
 
 public class EventJDBCDAO implements EventDAO_interface{
 
@@ -966,7 +968,6 @@ public class EventJDBCDAO implements EventDAO_interface{
 		
 		// 複製場次票種票區					
 //		dao.copyEvent_withTicketTypeAndSeatingArea("EV00014", "EV00001");
-		
 		
 		
 	}

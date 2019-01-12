@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +24,11 @@ import javax.servlet.http.Part;
 
 import com.event.model.EventService;
 import com.event.model.EventVO;
+import com.event_title.model.EventTitleService;
+import com.member.model.MemberService;
+import com.ticket.model.TicketVO;
 import com.ticket_type.model.TicketTypeVO;
+import com.ticketorder.model.TicketOrderVO;
 
 @WebServlet("/event/EventServlet.do")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 5 * 5 * 1024 * 1024)
@@ -406,22 +411,10 @@ public class EventServlet extends HttpServlet {
 				/****************************** 1.接收請求參數 **************************************************/
 				String eve_no = request.getParameter("eve_no"); //本人
 				String eve_no_forCopy = request.getParameter("eve_no_forCopy"); //要套用的複製
-				System.out.println(eve_no);
-				System.out.println(eve_no_forCopy);
 			
 				/****************************** 2.開始複製資料 **************************************************/
 				EventService eventService = new EventService();
 				EventVO eventVO = eventService.copyEvent_withTicketTypeAndSeatingArea(eve_no, eve_no_forCopy);
-				System.out.println(eventVO.getEve_no());
-				System.out.println(eventVO.getEvetit_no());
-				System.out.println(eventVO.getVenue_no());
-				System.out.println(eventVO.getEve_sessionname());
-//				System.out.println(eventVO);
-//				System.out.println(eventVO);
-//				System.out.println(eventVO);
-//				System.out.println(eventVO);
-//				System.out.println(eventVO);
-//				System.out.println(eventVO);
 
 				/****************************** 3.複製完成,準備轉交 **************************************************/
 				request.setAttribute("eventVO", eventVO);
@@ -435,7 +428,123 @@ public class EventServlet extends HttpServlet {
 				failureView.forward(request, response);
 			}
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
+		
+		// 請求來源 : back-end -> changeNotice.jsp
+		else if ("getTicketOrders_byEvent".equals(action)) {
+
+			String requestURL = request.getParameter("requestURL");
+
+			Map<String, String> eventErrorMsgs = new LinkedHashMap<String, String>();
+			request.setAttribute("eventErrorMsgs", eventErrorMsgs);
+
+			try {
+				/****************************** 1.接收請求參數 **************************************************/
+				String eve_no = request.getParameter("eve_no");
+				String evetit_no = request.getParameter("evetit_no");
+			
+				/****************************** 2.開始查詢資料 **************************************************/
+				EventService eventService = new EventService();
+				EventTitleService eventTitleService = new EventTitleService();
+				Set<TicketVO> ticketVOset = null;
+				if("allEvents".equals(eve_no)) {
+					ticketVOset = eventTitleService.getTicketsByEventTitle(evetit_no);
+				} else {
+					ticketVOset = eventService.getTicketsByEvent(eve_no);
+				}
+				
+				/****************************** 3.查詢完成,準備轉交 **************************************************/
+				request.setAttribute("ticketVOset", ticketVOset);
+				RequestDispatcher successView = request.getRequestDispatcher(requestURL);
+				successView.forward(request, response);
+
+				/****************************** 其他可能的錯誤處理 **************************************************/
+			} catch (Exception e) {
+				eventErrorMsgs.put("Exception", "無法查詢資料 : " + e.getMessage());
+				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
+				failureView.forward(request, response);
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+		
+		// 請求來源 : back-end -> changeNotice.jsp
+		else if ("changeNoticeSendNotices".equals(action)) {
+
+			String requestURL = request.getParameter("requestURL");
+
+			Map<String, String> eventErrorMsgs = new LinkedHashMap<String, String>();
+			request.setAttribute("eventErrorMsgs", eventErrorMsgs);
+
+			try {
+				/****************************** 1.接收請求參數 **************************************************/
+				String phoneMessageText = request.getParameter("phoneMessageText");
+				String subject = request.getParameter("subject");
+				String messageText = request.getParameter("messageText");
+				String eve_no = request.getParameter("eve_no");
+				String evetit_no = request.getParameter("evetit_no");
+				
+				/****************************** 2.開始查詢資料 **************************************************/
+				EventService eventService = new EventService();
+				EventTitleService eventTitleService = new EventTitleService();
+				Set<TicketVO> ticketVOset = null;
+				
+				if("allEvents".equals(eve_no)) {
+					ticketVOset = eventTitleService.getTicketsByEventTitle(evetit_no);
+				} else {
+					ticketVOset = eventService.getTicketsByEvent(eve_no);
+				}
+				
+				/****************************** 3.發送通知 **************************************************/
+				NoticeChangeMailService noticeChangeMailService = new NoticeChangeMailService();
+				NoticeChangeMessageSend noticeChangeMessageSend = new NoticeChangeMessageSend();
+				MemberService memberService = new MemberService();
+				
+				Set<String> emailAddressSet = new HashSet<>();
+				Set<String> phoneNumberSet = new HashSet<>();
+				
+				for(TicketVO aTicketVO : ticketVOset) {
+					String emailAddress = memberService.getOneMember(aTicketVO.getMember_no()).getEmail();
+					emailAddressSet.add(emailAddress);
+					String phoneNumber = memberService.getOneMember(aTicketVO.getMember_no()).getPhone().replace("-", "");
+					phoneNumberSet.add(phoneNumber);			
+				}
+				for(String emailAddress : emailAddressSet ) {
+					noticeChangeMailService.sendMail(emailAddress, subject, messageText);
+				}
+				
+				noticeChangeMessageSend.sendMessage(phoneNumberSet.toArray(new String[phoneNumberSet.size()]), phoneMessageText);
+				
+				/****************************** 4.發送完成,準備轉交 **************************************************/
+				request.setAttribute("ticketVOset", ticketVOset);
+				request.setAttribute("changeNoticeSuccess", "changeNoticeSuccess");
+				RequestDispatcher successView = request.getRequestDispatcher(requestURL);
+				successView.forward(request, response);
+
+				/****************************** 其他可能的錯誤處理 **************************************************/
+			} catch (Exception e) {
+				eventErrorMsgs.put("Exception", "無法發送資料 : " + e.getMessage());
+				RequestDispatcher failureView = request.getRequestDispatcher(requestURL);
+				failureView.forward(request, response);
+			}
+		}
 
 
 		

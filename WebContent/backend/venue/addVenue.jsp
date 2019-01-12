@@ -35,7 +35,7 @@
 
 
 
-	<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+	<jsp:include page="/backend/navbar_back-end.jsp" flush="true" />
 
 
 
@@ -126,7 +126,7 @@
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>	
 	<!-- ckEditor JS -->
-    <script src="<%=request.getContextPath()%>/vendor/ckeditor_full/ckeditor.js"></script>
+    <script src="<%=request.getContextPath()%>/vendor/ckeditor_easyImage_final/ckeditor.js"></script>
     <script src="<%=request.getContextPath()%>/backend/venue/js/venueCKEditor.js"></script>
     
     <script>

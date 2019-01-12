@@ -1,13 +1,18 @@
 package com.event_title.model;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.advertisement.model.AdvertisementService;
 import com.advertisement.model.AdvertisementVO;
+import com.event.model.EventService;
 import com.event.model.EventVO;
+import com.seating_area.model.SeatingAreaService;
+import com.seating_area.model.SeatingAreaVO;
+import com.ticket.model.TicketVO;
 
 public class EventTitleService {
 
@@ -114,6 +119,27 @@ public class EventTitleService {
 		List<EventTitleVO> eventTitleList = eventTitleDao.getNotInTheAdvertisement();
 		System.out.println(eventTitleList);
 		return eventTitleList;
+	}
+	
+	public Set<TicketVO> getTicketsByEventTitle(String evetit_no) {		
+		
+		Set<EventVO> eventVOset = getEventsByEventTitle(evetit_no);
+		
+		Set<TicketVO> ticketVO_ByEvent = new LinkedHashSet<>();
+		
+		EventService eventService = new EventService();
+		SeatingAreaService seatingAreaService = new SeatingAreaService();
+		
+		for(EventVO eventVO : eventVOset) {
+			Set<SeatingAreaVO> SeatingAreaVoSet = eventService.getSeatingAreasByEvent(eventVO.getEve_no());
+			for(SeatingAreaVO aSeatingAreaVO : SeatingAreaVoSet) {
+				Set<TicketVO> ticketVOset = seatingAreaService.getTickets_BySeatingArea(aSeatingAreaVO.getTicarea_no());
+				for(TicketVO aTicketVO : ticketVOset) {
+					ticketVO_ByEvent.add(aTicketVO);
+				}
+			}
+		}
+		return ticketVO_ByEvent;
 	}
 	
 

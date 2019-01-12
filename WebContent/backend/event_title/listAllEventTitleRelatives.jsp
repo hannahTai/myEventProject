@@ -35,7 +35,7 @@
 
 
 
-	<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+	<jsp:include page="/backend/navbar_back-end.jsp" flush="true" />
 
 
 
@@ -104,7 +104,7 @@
 									<td>${eventTitleVO.promotionranking}</td>
 									<td>
 										<div>
-											<a href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventTitleVO.evetit_no}" class="btn btn-default btn-sm">查看</a>
+											<a href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventTitleVO.evetit_no}" class="btn btn-default btn-sm scrollToBottomStatus">查看</a>
 <%-- 											<form method="post" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do" class="actionForm">								 --%>
 <%-- 											    <input type="hidden" name="evetit_no"         value="${eventTitleVO.evetit_no}"> --%>
 <%-- 											    <input type="hidden" name="requestURL"	      value="<%=request.getServletPath()%>"> --%>
@@ -168,7 +168,7 @@
 				</div>			
 				<div class="panel-collapse collapse in" id="toggleEvent" style="margin:15px;">
 					<c:if test="${not empty param.evetit_no}">
-						<a href="<%=request.getContextPath()%>/event/EventServlet.do?action=addEvent&evetit_no=${param.evetit_no}" class="btn btn-primary" style="margin-bottom:10px;">新增活動場次</a>	
+						<a href="<%=request.getContextPath()%>/event/EventServlet.do?action=addEvent&evetit_no=${param.evetit_no}" class="btn btn-primary scrollToBottomStatus" style="margin-bottom:10px;">新增活動場次</a>	
 					</c:if>
 					<c:if test="${not empty listEvents_ByEventTitle}">		
 						<table id="eventListTable" class="display" style="width: 100%">
@@ -206,23 +206,43 @@
 												    <input type="hidden" name="requestURL"	   value="<%=request.getServletPath()%>">
 												    <input type="hidden" name="return_eve_no"  value="${param.eve_no}">
 												    <input type="hidden" name="action"	       value="getOneEvent_For_Display">
-												    <input type="submit" value="瀏覽" class="btn btn-info btn-sm"> 							
+												    <input type="submit" value="瀏覽" class="btn btn-info btn-sm scrollToBottomStatus"> 							
 												</form>
 												<form method="post" action="<%=request.getContextPath()%>/event/EventServlet.do" class="actionForm" target="_blank">								
 												    <input type="hidden" name="eve_no"            value="${eventVO.eve_no}">
 												    <input type="hidden" name="requestURL"	      value="<%=request.getServletPath()%>">
 												    <input type="hidden" name="return_eve_no"  	  value="${param.eve_no}">
 												    <input type="hidden" name="action"	          value="getOneEvent_For_Update">
-												    <input type="submit" value="修改" class="btn btn-warning btn-sm"> 							
-												</form>		
-												<form method="post" action="<%=request.getContextPath()%>/event/EventServlet.do" class="actionForm">	
-													<input type="hidden" name="eve_no"      value="${eventVO.eve_no}">															 
-												    <input type="hidden" name="evetit_no"   value="${eventVO.evetit_no}">
-												    <input type="hidden" name="requestURL"	value="<%=request.getServletPath()%>">
-												    <input type="hidden" name="eventWhichPage"	value="${param.eventWhichPage}">
-												    <input type="hidden" name="action"	    value="deleteEvent">
-												    <input type="submit" value="刪除" class="btn btn-danger btn-sm" onClick="getEventWhichPage(this)">	
+												    <input type="submit" value="修改" class="btn btn-warning btn-sm scrollToBottomStatus"> 							
 												</form>
+												
+												<fmt:formatDate var="eve_onsaledate" value="${eventVO.eve_onsaledate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+												<jsp:useBean id="today" class="java.util.Date"/>  
+												<fmt:timeZone value="Asia/Taipei">   
+													<fmt:formatDate var="now" value="${today}" pattern="yyyy-MM-dd HH:mm:ss"/>
+												</fmt:timeZone> 
+												<c:if test="${eventVO.eve_status != 'temp'}">
+													<c:if test="${now < eve_onsaledate}">		
+														<form method="post" action="<%=request.getContextPath()%>/event/EventServlet.do" class="actionForm">	
+															<input type="hidden" name="eve_no"      value="${eventVO.eve_no}">															 
+														    <input type="hidden" name="evetit_no"   value="${eventVO.evetit_no}">
+														    <input type="hidden" name="requestURL"	value="<%=request.getServletPath()%>">
+														    <input type="hidden" name="eventWhichPage"	value="${param.eventWhichPage}">
+														    <input type="hidden" name="action"	    value="deleteEvent">
+														    <input type="submit" value="刪除" class="btn btn-danger btn-sm scrollToBottomStatus" onClick="getEventWhichPage(this)">	
+														</form>
+													</c:if>
+												</c:if>
+												<c:if test="${eventVO.eve_status == 'temp'}">
+													<form method="post" action="<%=request.getContextPath()%>/event/EventServlet.do" class="actionForm">	
+														<input type="hidden" name="eve_no"      value="${eventVO.eve_no}">															 
+													    <input type="hidden" name="evetit_no"   value="${eventVO.evetit_no}">
+													    <input type="hidden" name="requestURL"	value="<%=request.getServletPath()%>">
+													    <input type="hidden" name="eventWhichPage"	value="${param.eventWhichPage}">
+													    <input type="hidden" name="action"	    value="deleteEvent">
+													    <input type="submit" value="刪除" class="btn btn-danger btn-sm scrollToBottomStatus" onClick="getEventWhichPage(this)">	
+													</form>
+												</c:if>
 											</div>
 										</th>
 									</tr>
@@ -288,7 +308,27 @@
 				if($("input[name=return_eve_no]").val() != null){
 					eventListTable.page.jumpToData( $("input[name=return_eve_no]").val(), 0 );						
 				}		
-			}				
+			}		
+			
+			
+			
+			//--------------------scrollToBottomStatus----------------------------------------------------------------------------------------------------			
+			$(".scrollToBottomStatus").click(function(e){
+				sessionStorage.setItem("scrollToBottomStatus", "toBottom");
+			});
+						
+			if(sessionStorage.getItem("scrollToBottomStatus") != null){
+				var scrollToBottomStatus = sessionStorage.getItem("scrollToBottomStatus");
+				if(scrollToBottomStatus == "toBottom"){
+		            $('html,body').animate({
+		                scrollTop: $(document).height() - $(window).height() - $(window).scrollTop()
+		            }, 500);
+		            sessionStorage.removeItem("scrollToBottomStatus");
+				}			
+			}
+			
+			
+			
 		});
 		
 		

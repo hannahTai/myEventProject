@@ -1,6 +1,10 @@
 package com.seating_area.model;
 
 import java.util.List;
+import java.util.Set;
+
+import com.ticket.model.TicketVO;
+import com.ticketorder.model.TicketOrderVO;
 
 public class SeatingAreaService {
 
@@ -58,6 +62,14 @@ public class SeatingAreaService {
 
 	public List<SeatingAreaVO> getAll() {
 		return seatingAreaDAO.getAll();
+	}
+	
+	public Set<TicketOrderVO> getTicketOrders_BySeatingArea(String ticarea_no) {
+		return seatingAreaDAO.getTicketOrders_BySeatingArea(ticarea_no);
+	}
+	
+	public Set<TicketVO> getTickets_BySeatingArea(String ticarea_no) {
+		return seatingAreaDAO.getTickets_BySeatingArea(ticarea_no);
 	}
 
 	

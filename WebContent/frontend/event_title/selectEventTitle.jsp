@@ -37,7 +37,7 @@
 
 
 
-	<jsp:include page="/frontend/navbar_front-end.html" flush="true" />
+	<jsp:include page="/frontend/navbar_front-end.jsp" flush="true" />
 
 
 
@@ -94,7 +94,7 @@
 	
 	
 
-	<jsp:include page="/frontend/footer_front-end.html" flush="true" />
+	<jsp:include page="/frontend/footer_front-end.jsp" flush="true" />
 
 
     
@@ -148,6 +148,22 @@
             var searchStatusJSON = JSON.stringify(searchStatus);
             localStorage.setItem("searchStatus", searchStatusJSON);
         });
+        
+           
+        //-------------------------LoadMore-------------------------
+        $(".loadMoreDivs").slice(0, 6).show();
+
+        $("#loadMore").click(function(e) {
+            e.preventDefault();
+            $(".loadMoreDivs:hidden").slice(0, 6).slideDown();
+            if ($(".loadMoreDivs:hidden").length == 0) {
+            
+            }
+            $('html,body').animate({
+                scrollTop: $(this).offset().top
+            }, 1500);
+        });
+        
         
     });    
 	</script>

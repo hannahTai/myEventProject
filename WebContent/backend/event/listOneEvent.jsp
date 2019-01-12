@@ -37,7 +37,7 @@
 
 
 
-		<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+		<jsp:include page="/backend/navbar_back-end.jsp" flush="true" />
 
 
 
@@ -184,7 +184,7 @@
 			    <input type="submit" value="修改" class="btn btn-warning"> 							
 			</form>	
 			<span class="form-group">
-				<a class="btn btn-primary" href="<%=request.getContextPath()%>/event/EventServlet.do?action=addEvent&evetit_no=${eventVO.evetit_no}">繼續新增</a>
+				<a class="btn btn-primary" href="<%=request.getContextPath()%>/event/EventServlet.do?action=addEvent&evetit_no=${eventVO.evetit_no}">新增</a>
 			</span>
 			<span class="form-group">
 				<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventVO.evetit_no}&eve_no=${eventVO.eve_no}">回活動總覽</a>

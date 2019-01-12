@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="">
+ 
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Title Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--da-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label>異動通知對象</label>
+                    <select class="form-control" name="evetit_no_forCopy">
+                        <option value="pleaseChoose">請選擇活動主題</option>
+                        <option value="aaa">aaa</option>
+                        <option value="bbb">bbb</option>
+                        <option value="ccc">ccc</option>
+                        <option value="ddd">ddd</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-10 col-sm-5">
+                <div class="form-group">
+                    <label style="color:white;">theHiddenEvent</label>
+                    <select class="form-control" name="eve_no_forCopy">
+                        <option value="all">全部</option>
+                        <option value="aaa">aaa</option>
+                        <option value="bbb">bbb</option>
+                        <option value="ccc">ccc</option>
+                        <option value="ddd">ddd</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-2 col-sm-1">
+                <span class="form-group">
+							<label style="color:white;">theHiddenEvent</label>
+							<button type="button" class="btn btn-success" style="float:right;">查詢</button>
+						</span>
+            </div>
+        </div>
+        <br>
+        <table class="display" style="width:100%" id="memberAffected">
+            <thead>
+                <tr class="info">
+                    <th>會員編號</th>
+                    <th>會員名字</th>
+                    <th>購買活動主題名稱</th>
+                    <th>購買票價</th>
+                    <th>購買張數</th>
+                    <th>手機號碼</th>
+                    <th>電子信箱</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="vertical-align:middle;">會員編號</td>
+                    <td style="vertical-align:middle;">會員名字</td>
+                    <td style="vertical-align:middle;">購買活動主題名稱</td>
+                    <td style="vertical-align:middle;">購買票價</td>
+                    <td style="vertical-align:middle;">購買張數</td>
+                    <td style="vertical-align:middle;">手機號碼</td>
+                    <td style="vertical-align:middle;">電子信箱</td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <div class="form-group">
+            <label for="evetit_name">主旨</label>
+            <input type="text" name="evetit_name" id="evetit_name" class="form-control" value="">
+        </div>
+        <div class="form-group">
+            <label for="comment">內容</label>
+            <textarea class="form-control" rows="5" id="comment"></textarea>
+        </div>
+        <span class="form-group">
+			<button type="submit" class="btn btn-primary" name="action" value="insertEventTitle" style="margin-top:15px;">送出</button>
+			<a class="btn btn-info" href="" style="margin-top:15px;">回活動管理</a>
+		</span>
+    </div>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script>
+    $(document).ready(function() {
+
+        var memberAffected = $('#memberAffected').DataTable();
+
+    });
+    </script>
+</body>
+
+</html>

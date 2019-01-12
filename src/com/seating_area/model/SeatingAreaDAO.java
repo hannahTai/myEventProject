@@ -6,12 +6,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import com.ticket.model.TicketVO;
+import com.ticketorder.model.TicketOrderVO;
 
 public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 
@@ -44,6 +49,14 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 			"SELECT ticarea_no, eve_no, tictype_no, ticarea_color, ticarea_name, tictotalnumber, ticbookednumber "
 			+ "FROM seating_area ORDER BY ticarea_no";
 	
+	
+	
+	private static final String GET_TicketOrders_BySeatingArea_STMT=
+			"SELECT ticket_order_no,member_no,ticarea_no,total_price,total_amount,ticket_order_time,payment_method,ticket_order_status FROM ticket_order WHERE ticarea_no=? order by ticket_order_no";
+	
+	private static final String GET_Tickets_BySeatingArea_STMT=
+			"SELECT ticket_no,ticarea_no,ticket_order_no,member_no,ticket_status,ticket_create_time,ticket_resale_status,ticket_resale_price,is_from_resale FROM ticket WHERE ticarea_no=? order by ticket_no";
+
 	
 	
 	@Override
@@ -351,5 +364,130 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 				}
 			}
 		}	
+	}
+	
+	
+	
+	@Override
+	public Set<TicketOrderVO> getTicketOrders_BySeatingArea(String ticarea_no) {
+		
+		Set<TicketOrderVO> ticketOrderVOset = new LinkedHashSet<TicketOrderVO>();
+		TicketOrderVO ticketorderVO = null;
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_TicketOrders_BySeatingArea_STMT);
+			pstmt.setString(1, ticarea_no);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				ticketorderVO = new TicketOrderVO();
+				ticketorderVO.setTicket_order_no(rs.getString("ticket_order_no"));
+				ticketorderVO.setMember_no(rs.getString("member_no"));
+				ticketorderVO.setTicarea_no(rs.getString("ticarea_no"));
+				ticketorderVO.setTotal_price(rs.getInt("total_price"));
+				ticketorderVO.setTotal_amount(rs.getInt("total_amount"));
+				ticketorderVO.setTicket_order_time(rs.getTimestamp("ticket_order_time"));
+				ticketorderVO.setPayment_method(rs.getString("payment_method"));
+				ticketorderVO.setTicket_order_status(rs.getString("ticket_order_status"));
+				ticketOrderVOset.add(ticketorderVO);
+			}
+
+			System.out.println("----------getTicketOrders_BySeatingArea finished----------");
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return ticketOrderVOset;
+	}
+	
+	
+	
+	@Override
+	public Set<TicketVO> getTickets_BySeatingArea(String ticarea_no) {
+		
+		Set<TicketVO> ticketOrderVOset = new LinkedHashSet<TicketVO>();
+		TicketVO ticketVO = null;
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_Tickets_BySeatingArea_STMT);
+			pstmt.setString(1, ticarea_no);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				ticketVO = new TicketVO();
+				ticketVO.setTicket_no(rs.getString("ticket_no"));
+				ticketVO.setTicarea_no(rs.getString("ticarea_no"));
+				ticketVO.setTicket_order_no(rs.getString("ticket_order_no"));
+				ticketVO.setMember_no(rs.getString("member_no"));
+				ticketVO.setTicket_status(rs.getString("ticket_status"));
+				ticketVO.setTicket_create_time(rs.getTimestamp("ticket_create_time"));
+				ticketVO.setTicket_resale_status(rs.getString("ticket_resale_status"));
+				ticketVO.setTicket_resale_price(rs.getInt("ticket_resale_price"));
+				ticketVO.setIs_from_resale(rs.getString("is_from_resale"));	
+				ticketOrderVOset.add(ticketVO);
+			}
+
+			System.out.println("----------getTickets_BySeatingArea finished----------");
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return ticketOrderVOset;
 	}
 }

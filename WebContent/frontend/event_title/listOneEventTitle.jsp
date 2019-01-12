@@ -21,6 +21,10 @@
 	pageContext.setAttribute("listEvents_ByEventTitle", set);
 %>
 
+<%		
+	session.getAttribute("member");
+%>
+
 <!DOCTYPE html>
 <html>
 
@@ -48,15 +52,19 @@
 
 
 
-<!-- for test only ::: favorite event member -->
-<input type="hidden" name="member_no" id="member_no" value="M000013">
-<!-- for test only ::: favorite event member -->
 
 
 
-	<jsp:include page="/frontend/navbar_front-end.html" flush="true" />
 
 
+
+	<jsp:include page="/frontend/navbar_front-end.jsp" flush="true" />
+	
+	<form>
+	<input type="hidden" name="evetit_no" id="evetit_no" value="${aEventTitle.evetit_no}">
+	<input type="hidden" name="evetit_no" id="evetit_no" value="${aEventTitle.evetit_no}">
+	<input type="hidden" name="member_no" id="member_no">
+	</form>
 
     <div class="container" style="margin-bottom:30px;">
         <div class="row">
@@ -106,18 +114,9 @@
 									<fmt:formatDate var="eve_onsaledate" value="${eventVO.eve_onsaledate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 									<fmt:formatDate var="eve_offsaledate" value="${eventVO.eve_offsaledate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 									<jsp:useBean id="today" class="java.util.Date"/>  
-									<fmt:timeZone value="Asia/Tokyo">   
+									<fmt:timeZone value="Asia/Taipei">   
 										<fmt:formatDate var="now" value="${today}" pattern="yyyy-MM-dd HH:mm:ss"/>
 									</fmt:timeZone> 
-<%-- 									<c:if test="${now < eve_onsaledate}"> --%>
-<!-- 										<div class="btn btn-info">尚未開賣</div> -->
-<%-- 									</c:if> --%>
-<%-- 									<c:if test="${now > eve_onsaledate && now < eve_offsaledate}"> --%>
-<%-- 										<a href="#" target="_blank" class="btn btn-danger">點我購票</a>${eventVO.eve_no} --%>
-<%-- 									</c:if> --%>
-<%-- 									<c:if test="${now > eve_offsaledate}"> --%>
-<!-- 										<div class="btn btn-default">結束售票</div> -->
-<%-- 									</c:if> --%>
 									<c:if test="${eventVO.eve_status == 'cancel'}">
 										<div class="btn btn-warning">取消售票</div>
 									</c:if>
@@ -126,7 +125,18 @@
 											<div class="btn btn-info">尚未開賣</div>
 										</c:if>
 										<c:if test="${now > eve_onsaledate && now < eve_offsaledate}">
-											<a href="#" target="_blank" class="btn btn-danger">點我購票</a>${eventVO.eve_no}
+										
+											<!-- ---------------START:::接去購票controller, 轉成購票面--------------- -->										
+<%-- 											<a href="#" target="_blank" class="btn btn-danger">點我購票</a>${eventVO.eve_no} --%>
+											
+											<form method="post" action="<%=request.getContextPath()%>/frontend/ticketorder/ticketorder.do" target="_blank">								
+											    <input type="hidden" name="eve_no"         value="${eventVO.eve_no}">
+											    <input type="hidden" name="requestURL"	   value="<%=request.getServletPath()%>">
+											    <input type="hidden" name="action"	       value="select_EVE_NO_toBuyTickets">
+											    <input type="submit" value="點我購票" class="btn btn-danger"> 							
+											</form>
+											<!-- ---------------END:::接去購票controller, 轉成購票面--------------- -->		
+											
 										</c:if>
 										<c:if test="${now > eve_offsaledate}">
 											<div class="btn btn-default">結束售票</div>
@@ -162,7 +172,7 @@
  
     
     
-	<jsp:include page="/frontend/footer_front-end.html" flush="true" />
+	<jsp:include page="/frontend/footer_front-end.jsp" flush="true" />
 
     
     
@@ -173,14 +183,18 @@
     
     $(document).ready(function() {
     	
+    	console.log('${member.memberNo}');
+    	
         $("#flip").click(function() {
             $("#panel").slideToggle("fast");
         });
         
         $("#toggleFavoriteEvent").click(function(){
+        	console.log("in the toggleFavoriteEvent");
         	// checkFavoriteEventData
         	var member_no = $("#member_no").val();
-        	if(member_no.trim().length != 7){
+        	console.log($("#member_no").val());
+        	if(member_no == null || member_no.trim().length != 7){
         		window.alert("請先登入");
         		return;
         	}
@@ -190,7 +204,8 @@
         		return;
         	}
         	// deleteFavoriteEvent
-        	if($("#favoriteEventStatus").val() == "inTheFavoriteEvent"){        		
+        	if($("#favoriteEventStatus").val() == "inTheFavoriteEvent"){
+        		console.log("in the inTheFavoriteEvent");
         		var url = $("#projectName").val();
                 url += '/favorite_event/FavoriteEventServlet.do';
                 var data = '';
@@ -200,6 +215,7 @@
                	data += evetit_no;
                	data += '&';
                 data += 'action=deleteFavoriteEvent';
+                console.log(data);
                 $.ajax({
                     type: 'post',
                     url: url,
@@ -217,6 +233,7 @@
         	}
         	// addFavoriteEvent
         	if($("#favoriteEventStatus").val() == "outTheFavoriteEvent"){
+        		console.log("in the outTheFavoriteEvent");
         		var url = $("#projectName").val();
                 url += '/favorite_event/FavoriteEventServlet.do';
                 var data = '';
@@ -226,6 +243,7 @@
                	data += evetit_no;
                	data += '&';
                 data += 'action=addFavoriteEvent';
+                console.log(data);
                 $.ajax({
                     type: 'post',
                     url: url,
@@ -264,8 +282,10 @@
         
         
         
+        console.log($("#member_no").val());
+        console.log("in the init favorite event state");
      	// the init favorite event state
-     	if($("#member_no").val().trim().length == 7 && $("#evetit_no").val().trim().length == 5){
+     	if($("#member_no").val() != null && $("#member_no").val().trim().length == 7 && $("#evetit_no").val().trim().length == 5){
         	var member_no = $("#member_no").val();
         	var evetit_no = $("#evetit_no").val();
      		var url = $("#projectName").val();
@@ -277,6 +297,7 @@
            	data += evetit_no;
            	data += '&';
             data += 'action=getOneFavoriteEvent_For_Display';
+            console.log(data);
             $.ajax({
                 type: 'post',
                 url: url,

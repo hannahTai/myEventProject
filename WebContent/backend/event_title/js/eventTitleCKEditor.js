@@ -40,7 +40,13 @@ var initInfoEditor = ( function() {
 
 		// Depending on the wysiwygarea plugin availability initialize classic or inline editor.
 		if ( wysiwygareaAvailable ) {
-			CKEDITOR.replace( 'infoEditor' );
+//			CKEDITOR.replace( 'infoEditor' );
+			CKEDITOR.replace( 'infoEditor', {
+				removePlugins: 'image',
+				extraPlugins: 'easyimage',
+				cloudServices_tokenUrl: 'https://36762.cke-cs.com/token/dev/UM6e5GmaKWwu89mPGLfo7csdkFHnd6pThBTSG6KZ3PZIOnotQZZOpXzO92Lu',
+				cloudServices_uploadUrl: 'https://36762.cke-cs.com/easyimage/upload/'
+			} );
 		} else {
 			editorElement.setAttribute( 'contenteditable', 'true' );
 			CKEDITOR.inline( 'infoEditor' );
@@ -88,7 +94,13 @@ var initNoticesEditor = ( function() {
 
 		// Depending on the wysiwygarea plugin availability initialize classic or inline editor.
 		if ( wysiwygareaAvailable ) {
-			CKEDITOR.replace( 'noticesEditor' );
+//			CKEDITOR.replace( 'noticesEditor' );
+			CKEDITOR.replace( 'noticesEditor', {
+				removePlugins: 'image',
+				extraPlugins: 'easyimage',
+				cloudServices_tokenUrl: 'https://36762.cke-cs.com/token/dev/UM6e5GmaKWwu89mPGLfo7csdkFHnd6pThBTSG6KZ3PZIOnotQZZOpXzO92Lu',
+				cloudServices_uploadUrl: 'https://36762.cke-cs.com/easyimage/upload/'
+			} );
 		} else {
 			editorElement.setAttribute( 'contenteditable', 'true' );
 			CKEDITOR.inline( 'noticesEditor' );
@@ -136,7 +148,14 @@ var initEticpurchaserulesEditor = ( function() {
 
 		// Depending on the wysiwygarea plugin availability initialize classic or inline editor.
 		if ( wysiwygareaAvailable ) {
-			CKEDITOR.replace( 'eticpurchaserulesEditor' );
+//			CKEDITOR.replace( 'eticpurchaserulesEditor' );
+			CKEDITOR.replace( 'eticpurchaserulesEditor', {
+				removePlugins: 'image',
+				extraPlugins: 'easyimage',
+				cloudServices_tokenUrl: 'https://36762.cke-cs.com/token/dev/UM6e5GmaKWwu89mPGLfo7csdkFHnd6pThBTSG6KZ3PZIOnotQZZOpXzO92Lu',
+				cloudServices_uploadUrl: 'https://36762.cke-cs.com/easyimage/upload/'
+			} );
+			
 		} else {
 			editorElement.setAttribute( 'contenteditable', 'true' );
 			CKEDITOR.inline( 'eticpurchaserulesEditor' );
@@ -184,7 +203,13 @@ var initEticrulesEditor = ( function() {
 
 		// Depending on the wysiwygarea plugin availability initialize classic or inline editor.
 		if ( wysiwygareaAvailable ) {
-			CKEDITOR.replace( 'eticrulesEditor' );
+//			CKEDITOR.replace( 'eticrulesEditor' );
+			CKEDITOR.replace( 'eticrulesEditor', {
+				removePlugins: 'image',
+				extraPlugins: 'easyimage',
+				cloudServices_tokenUrl: 'https://36762.cke-cs.com/token/dev/UM6e5GmaKWwu89mPGLfo7csdkFHnd6pThBTSG6KZ3PZIOnotQZZOpXzO92Lu',
+				cloudServices_uploadUrl: 'https://36762.cke-cs.com/easyimage/upload/'
+			} );
 		} else {
 			editorElement.setAttribute( 'contenteditable', 'true' );
 			CKEDITOR.inline( 'eticrulesEditor' );
@@ -232,7 +257,13 @@ var initRefundrulesEditor = ( function() {
 
 		// Depending on the wysiwygarea plugin availability initialize classic or inline editor.
 		if ( wysiwygareaAvailable ) {
-			CKEDITOR.replace( 'refundrulesEditor' );
+//			CKEDITOR.replace( 'refundrulesEditor' );
+			CKEDITOR.replace( 'refundrulesEditor', {
+				removePlugins: 'image',
+				extraPlugins: 'easyimage',
+				cloudServices_tokenUrl: 'https://36762.cke-cs.com/token/dev/UM6e5GmaKWwu89mPGLfo7csdkFHnd6pThBTSG6KZ3PZIOnotQZZOpXzO92Lu',
+				cloudServices_uploadUrl: 'https://36762.cke-cs.com/easyimage/upload/'
+			} );
 		} else {
 			editorElement.setAttribute( 'contenteditable', 'true' );
 			CKEDITOR.inline( 'refundrulesEditor' );

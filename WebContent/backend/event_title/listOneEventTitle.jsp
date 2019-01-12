@@ -31,7 +31,7 @@
 
 
 
-		<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+		<jsp:include page="/backend/navbar_back-end.jsp" flush="true" />
 
 
 

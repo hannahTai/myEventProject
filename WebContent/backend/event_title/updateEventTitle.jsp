@@ -31,7 +31,7 @@
 
 
 
-		<jsp:include page="/backend/navbar_back-end.html" flush="true" />
+		<jsp:include page="/backend/navbar_back-end.jsp" flush="true" />
 
 
 
@@ -205,7 +205,7 @@
 	            </div>
 				<span class="form-group">
 					<button type="submit" class="btn btn-success" name="action" value="updateEventTitle" style="margin-top:15px;">儲存</button>
-					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp" style="margin-top:15px;">回活動總覽</a>
+					<a class="btn btn-info" href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventTitleVO.evetit_no}" style="margin-top:15px;">回活動總覽</a>
 				</span>
 			</form>
         </div>
@@ -216,7 +216,7 @@
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- ckEditor JS -->
-    <script src="<%=request.getContextPath()%>/vendor/ckeditor_full/ckeditor.js"></script>
+    <script src="<%=request.getContextPath()%>/vendor/ckeditor_easyImage_final/ckeditor.js"></script>
     <script src="<%=request.getContextPath()%>/backend/event_title/js/eventTitleCKEditor.js"></script>
     <!-- datetimepicker -->
     <script src="<%=request.getContextPath()%>/vendor/datetimepicker/jquery.js"></script>
@@ -250,9 +250,10 @@
        	var today = new Date();
        	var launchdate = new Date($("#launchdate").val()); 
        	var offdate = new Date($("#offdate").val()); 
-       	   	
-       	//已上架過
-        if(launchdate.getTime() < today.getTime()) {
+       	var evetit_status = $("#evetit_status").val();
+       	
+       	//非暫存且已上架過
+        if(evetit_status != 'temporary' && launchdate.getTime() < today.getTime()) {
        		$("#whyCantChangeState").attr("title", "已經上架過的活動主題，不能更改回暫存");
 			$("#evetit_status_temporary").remove();  
 			$("#evetit_status").attr("readonly", true);

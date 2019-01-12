@@ -244,7 +244,7 @@ public class VenueServlet extends HttpServlet {
 				request.getSession().removeAttribute("venue_locationPic_path");
 
 				/****************************** 3.修改完成,準備轉交 ***************************************************/
-				request.setAttribute("venueVO", venueVO);
+//				request.setAttribute("venueVO", venueVO);
 				RequestDispatcher successView = request.getRequestDispatcher("/backend/venue/listOneVenue.jsp");
 				successView.forward(request, response);
 

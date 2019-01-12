@@ -146,10 +146,8 @@ public class TicketTypeServlet extends HttpServlet {
 					list.add(aSeatingAreaVO);
 				}
 				
-				
 				Gson gson = new Gson();				
 				String listStr = gson.toJson(list);
-				System.out.println(listStr);
 				
 				/****************************** 3.修改完成,準備轉交 ***************************************************/
 				out.println(listStr);

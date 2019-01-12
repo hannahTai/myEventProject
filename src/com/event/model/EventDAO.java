@@ -667,7 +667,7 @@ public class EventDAO implements EventDAO_interface{
 			pstmt.setTimestamp(7, eventVO.getEve_offsaledate());			
 			pstmt.setInt(8, eventVO.getTiclimit());			
 			pstmt.setTimestamp(9, eventVO.getFullrefundenddate());
-			pstmt.setString(10, eventVO.getEve_status());
+			pstmt.setString(10, "temp");
 			pstmt.setString(11, eventVO.getEve_no()); 
 			pstmt.executeUpdate();			
 			
