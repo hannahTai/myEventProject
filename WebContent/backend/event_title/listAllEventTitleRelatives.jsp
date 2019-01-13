@@ -6,6 +6,11 @@
 <%@ page import="com.event_title.model.*"%>
 <%@ page import="com.event.model.*"%>
 
+<jsp:useBean id="today" class="java.util.Date"/> 
+<fmt:timeZone value="Asia/Taipei">   
+	<fmt:formatDate var="now" value="${today}" pattern="yyyy-MM-dd HH:mm:ss"/>
+</fmt:timeZone> 
+
 <!DOCTYPE html>
 <html>
 
@@ -94,10 +99,23 @@
 			                        </td>
 									<td>${eventTitleVO.evetit_name}</td>
 									<td>${eventTitleVO.evetit_sessions}</td>
-									<td>
-										${(eventTitleVO.evetit_status == "confirmed") ? '確認' : '' }
-										${(eventTitleVO.evetit_status == "temporary") ? '暫存' : '' }
-<%-- 										${(eventTitleVO.evetit_status == "cancel") ? '取消' : '' } --%>
+									<td>									
+										<c:if test="${eventTitleVO.evetit_status == 'temporary'}">
+											<span class="label label-default">暫存</span>
+										</c:if>										
+										<fmt:formatDate var="launchdate" value="${eventTitleVO.launchdate}" pattern="yyyy-MM-dd"/>
+										<fmt:formatDate var="offdate" value="${eventTitleVO.offdate}" pattern="yyyy-MM-dd"/>
+										<c:if test="${eventTitleVO.evetit_status == 'confirmed'}">
+											<c:if test="${now < launchdate}">
+												<span class="label label-primary">未上架</span>
+											</c:if>
+											<c:if test="${launchdate < now && now < offdate }">
+												<span class="label label-danger">上架中</span>
+											</c:if>
+											<c:if test="${offdate < now}">
+												<span class="label label-info">已下架</span>
+											</c:if>
+										</c:if>
 									</td>
 									<td>${eventTitleVO.launchdate}</td>
 									<td>${eventTitleVO.offdate}</td>
@@ -105,12 +123,6 @@
 									<td>
 										<div>
 											<a href="<%=request.getContextPath()%>/backend/event_title/listAllEventTitleRelatives.jsp?evetit_no=${eventTitleVO.evetit_no}" class="btn btn-default btn-sm scrollToBottomStatus">查看</a>
-<%-- 											<form method="post" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do" class="actionForm">								 --%>
-<%-- 											    <input type="hidden" name="evetit_no"         value="${eventTitleVO.evetit_no}"> --%>
-<%-- 											    <input type="hidden" name="requestURL"	      value="<%=request.getServletPath()%>"> --%>
-<!-- 											    <input type="hidden" name="action"	          value="listEvents_ByEventTitle"> -->
-<!-- 											    <input type="submit" value="查看" class="btn btn-basic btn-sm" onclick="reloadEvent(this)"> 							 -->
-<!-- 											</form> -->
 											<form method="post" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do" class="actionForm" target="_blank">								
 											    <input type="hidden" name="evetit_no"         value="${eventTitleVO.evetit_no}">
 											    <input type="hidden" name="requestURL"	      value="<%=request.getServletPath()%>">
@@ -118,12 +130,6 @@
 											    <input type="hidden" name="action"	          value="getOneEventTitle_For_Display">
 											    <input type="submit" value="瀏覽" class="btn btn-info btn-sm"> 							
 											</form>
-<%-- 											<jsp:useBean id="today" class="java.util.Date"/> --%>
-<%-- 											<fmt:formatDate var="offdate" value="${eventTitleVO.offdate}" pattern="yyyy-MM-dd HH:mm:ss"/> --%>
-<%-- 											<fmt:timeZone value="Asia/Tokyo">    --%>
-<%-- 												<fmt:formatDate var="now" value="${today}" pattern="yyyy-MM-dd HH:mm:ss"/> --%>
-<%-- 											</fmt:timeZone>  --%>
-<%-- 											<c:if test="${now < offdate}"> --%>
 											<form method="post" action="<%=request.getContextPath()%>/event_title/EventTitleServlet.do" class="actionForm" target="_blank">								
 											    <input type="hidden" name="evetit_no"         value="${eventTitleVO.evetit_no}">
 											    <input type="hidden" name="requestURL"	      value="<%=request.getServletPath()%>">
@@ -131,7 +137,6 @@
 											    <input type="hidden" name="action"	          value="getOneEventTitle_For_Update">
 											    <input type="submit" value="修改" class="btn btn-warning btn-sm"> 							
 											</form>	
-<%-- 											</c:if>	 --%>
 										</div>					
 									</td>
 								</tr>
@@ -216,8 +221,7 @@
 												    <input type="submit" value="修改" class="btn btn-warning btn-sm scrollToBottomStatus"> 							
 												</form>
 												
-												<fmt:formatDate var="eve_onsaledate" value="${eventVO.eve_onsaledate}" pattern="yyyy-MM-dd HH:mm:ss"/>
-												<jsp:useBean id="today" class="java.util.Date"/>  
+												<fmt:formatDate var="eve_onsaledate" value="${eventVO.eve_onsaledate}" pattern="yyyy-MM-dd HH:mm:ss"/> 
 												<fmt:timeZone value="Asia/Taipei">   
 													<fmt:formatDate var="now" value="${today}" pattern="yyyy-MM-dd HH:mm:ss"/>
 												</fmt:timeZone> 
