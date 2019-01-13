@@ -109,7 +109,7 @@
 											<c:if test="${now < launchdate}">
 												<span class="label label-primary">未上架</span>
 											</c:if>
-											<c:if test="${launchdate < now && now < offdate }">
+											<c:if test="${launchdate < now && now < offdate}">
 												<span class="label label-danger">上架中</span>
 											</c:if>
 											<c:if test="${offdate < now}">
@@ -199,10 +199,26 @@
 										</td>
 										<td><fmt:formatDate value="${eventVO.eve_onsaledate}" pattern="yyyy-MM-dd HH:mm"/></td>
 										<td><fmt:formatDate value="${eventVO.eve_offsaledate}" pattern="yyyy-MM-dd HH:mm"/></td>
-										<td>
-											${(eventVO.eve_status == "temp") ? '暫存' : '' }
-											${(eventVO.eve_status == "normal") ? '正常' : '' }
-											${(eventVO.eve_status == "cancel") ? '取消' : '' }
+										<td>										
+											<c:if test="${eventVO.eve_status == 'temp'}">
+												<span class="label label-default">暫存</span>
+											</c:if>																					
+											<fmt:formatDate var="eve_onsaledate" value="${eventVO.eve_onsaledate}" pattern="yyyy-MM-dd HH:mm"/>
+											<fmt:formatDate var="eve_offsaledate" value="${eventVO.eve_offsaledate}" pattern="yyyy-MM-dd HH:mm"/>
+											<c:if test="${eventVO.eve_status == 'normal'}">
+												<c:if test="${now < eve_onsaledate}">
+													<span class="label label-primary">尚未販售</span>
+												</c:if>
+												<c:if test="${eve_onsaledate < now && now < eve_offsaledate }">
+													<span class="label label-danger">販售中</span>
+												</c:if>
+												<c:if test="${eve_offsaledate < now}">
+													<span class="label label-info">結束販售</span>
+												</c:if>
+											</c:if>
+											<c:if test="${eventVO.eve_status == 'cancel'}">
+												<span class="label label-warning">取消</span>
+											</c:if>											
 										</td>
 										<th>
 											<div>

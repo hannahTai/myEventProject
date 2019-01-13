@@ -73,11 +73,26 @@
 			</thead>
 			<tbody>
 				<c:forEach var="advertisementVO" items="${advertisementList}">
-					<tr class="${(advertisementVO.ad_no==param.ad_no) ? 'selected':''}">	
+					<tr>	
 						<td>
 							${advertisementVO.ad_no}
 						</td>
 						<td>
+							<jsp:useBean id="today" class="java.util.Date"/> 
+							<fmt:timeZone value="Asia/Taipei">   
+								<fmt:formatDate var="now" value="${today}" pattern="yyyy-MM-dd HH:mm:ss"/>
+							</fmt:timeZone> 
+							<fmt:formatDate var="ad_startdate" value="${advertisementVO.ad_startdate}" pattern="yyyy-MM-dd HH:mm"/>
+							<fmt:formatDate var="ad_enddate" value="${advertisementVO.ad_enddate}" pattern="yyyy-MM-dd HH:mm"/>
+							<c:if test="${now < ad_startdate}">
+								<span class="label label-primary">未開始</span>
+							</c:if>
+							<c:if test="${ad_startdate < now && now < ad_enddate }">
+								<span class="label label-danger">廣告中</span>
+							</c:if>
+							<c:if test="${ad_enddate < now}">
+								<span class="label label-info">已結束</span>
+							</c:if>
 							<jsp:useBean id="eventTitleService2" scope="page" class="com.event_title.model.EventTitleService" />
 							<a href="<%=request.getContextPath()%>/event_title/EventTitleServlet.do?action=getOneEventTitle_For_Display&evetit_no=${advertisementVO.evetit_no}" target="_blank">
 								${eventTitleService2.getOneEventTitle(advertisementVO.evetit_no).evetit_no} : ${eventTitleService2.getOneEventTitle(advertisementVO.evetit_no).evetit_name}
