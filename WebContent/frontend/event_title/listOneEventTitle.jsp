@@ -35,6 +35,8 @@
     <title>${aEventTitle.evetit_name}</title>
     <!-- Basic -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC" rel="stylesheet">
     <style>
         #poster {
     	    width: 100%;
@@ -63,7 +65,7 @@
 	<form>
 	<input type="hidden" name="evetit_no" id="evetit_no" value="${aEventTitle.evetit_no}">
 	<input type="hidden" name="evetit_no" id="evetit_no" value="${aEventTitle.evetit_no}">
-	<input type="hidden" name="member_no" id="member_no">
+	<input type="hidden" name="member_no" id="member_no" value="${member.memberNo}">
 	</form>
 
     <div class="container" style="margin-bottom:30px;">
