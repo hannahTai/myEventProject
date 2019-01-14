@@ -749,6 +749,13 @@ public class EventJDBCDAO implements EventDAO_interface{
 
 	
 	
+	//========== BEAR begin ======================================================================
+	@Override
+	public List<EventVO> findByEveTit_no(String evetit_no) {
+		return null;
+	}
+	//========== BEAR end ======================================================================
+
 	
 	
 	public static void main(String[] args) {

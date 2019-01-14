@@ -8,9 +8,12 @@
 
 <%@ page import="com.favorite_event.model.*"%>
 
+<%@ page import="com.member.model.*"%>
+
 <%
-// 	String member_no = request.getParameter("member_no");
-	String member_no = "M000001";
+	MemberVO memberVO = (MemberVO)session.getAttribute("member");
+	String member_no = memberVO.getMemberNo();
+	
 	FavoriteEventService favoriteEventService = new FavoriteEventService();
 	List<FavoriteEventVO> list = favoriteEventService.findFavoriteEventByMember(member_no);
 	pageContext.setAttribute("listFavoriteEventTitle_ByMember", list); 
@@ -58,7 +61,15 @@
 <body>
 
 
+
+	<jsp:include page="/frontend/navbar_front-end.jsp" flush="true" />
 	
+	
+	
+	<input type="hidden" name="member_no" id="member_no" value="${member.memberNo}">
+
+
+
     <div class="container">
         <div class="row flex-row">
             <c:forEach var="favoriteEventVO" items="${listFavoriteEventTitle_ByMember}">

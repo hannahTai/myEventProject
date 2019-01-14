@@ -25,4 +25,9 @@ public interface EventDAO_interface {
 	
 	public EventVO copyEvent_withTicketTypeAndSeatingArea(String eve_no, String eve_no_forCopy);
 	
+	//========== BEAR begin ======================================================================
+    public List<EventVO> findByEveTit_no(String evetit_no);
+	//========== BEAR end ======================================================================
+
+	
 }

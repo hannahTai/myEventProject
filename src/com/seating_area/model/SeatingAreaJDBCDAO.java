@@ -13,6 +13,7 @@ import java.util.Set;
 import com.ticket.model.TicketVO;
 import com.ticketorder.model.TicketOrderVO;
 
+
 public class SeatingAreaJDBCDAO implements SeatingAreaDAO_interface{
 	
 	private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
@@ -41,14 +42,13 @@ public class SeatingAreaJDBCDAO implements SeatingAreaDAO_interface{
 
 	
 	
-	
 	private static final String GET_TicketOrders_BySeatingArea_STMT=
 			"SELECT ticket_order_no,member_no,ticarea_no,total_price,total_amount,ticket_order_time,payment_method,ticket_order_status FROM ticket_order WHERE ticarea_no=? order by ticket_order_no";
 
 	private static final String GET_Tickets_BySeatingArea_STMT=
 			"SELECT ticket_no,ticarea_no,ticket_order_no,member_no,ticket_status,ticket_create_time,ticket_resale_status,ticket_resale_price,is_from_resale FROM ticket WHERE ticarea_no=? order by ticket_no";
 
-	
+
 	
 	@Override
 	public String insert(SeatingAreaVO seatingareaVO) {
@@ -504,6 +504,25 @@ public class SeatingAreaJDBCDAO implements SeatingAreaDAO_interface{
 	}
     
 	
+	
+	//========== BEAR begin ======================================================================
+	@Override
+	public SeatingAreaVO findByPrimaryKeyWithCon(String ticarea_no, Connection con) {
+		return null;
+	}
+	@Override
+	public void updateSeatingAreaVOBecauseTicketOrderCreated(SeatingAreaVO seatingareaVO, Connection con) {
+		
+	}
+	@Override
+	public void updateSeatingAreaVOBecauseTicketOrderCancelledByServlet(SeatingAreaVO seatingareaVO, Connection con) {
+		
+	}
+	@Override
+	public List<SeatingAreaVO> getAllWithEve_No(String eve_no) {
+		return null;
+	}    
+	//========== BEAR end ======================================================================
 	
 
 	

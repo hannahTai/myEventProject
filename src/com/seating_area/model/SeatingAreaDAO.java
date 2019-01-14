@@ -18,6 +18,7 @@ import javax.sql.DataSource;
 import com.ticket.model.TicketVO;
 import com.ticketorder.model.TicketOrderVO;
 
+
 public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 
 	private static DataSource ds = null;
@@ -57,6 +58,19 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 	private static final String GET_Tickets_BySeatingArea_STMT=
 			"SELECT ticket_no,ticarea_no,ticket_order_no,member_no,ticket_status,ticket_create_time,ticket_resale_status,ticket_resale_price,is_from_resale FROM ticket WHERE ticarea_no=? order by ticket_no";
 
+	
+	//========== BEAR begin ======================================================================
+	private static final String UPDATE_FOR_TICKETORDER_STMT = 
+			"UPDATE seating_area set ticarea_color=?, ticarea_name=?, tictotalnumber=?, ticbookednumber=? "
+			+ "WHERE ticarea_no=?";
+			
+	private static final String GET_ALL_STMT_BYEVENO=
+			"SELECT ticarea_no, eve_no, tictype_no, ticarea_color, ticarea_name, tictotalnumber, ticbookednumber "
+			+ "FROM seating_area WHERE eve_no=?";
+	//========== BEAR end ======================================================================
+
+	
+	
 	
 	
 	@Override
@@ -490,4 +504,225 @@ public class SeatingAreaDAO implements SeatingAreaDAO_interface{
 		}
 		return ticketOrderVOset;
 	}
+	
+	
+	
+	
+	
+	//========== BEAR begin ======================================================================
+	@Override
+	public SeatingAreaVO findByPrimaryKeyWithCon(String ticarea_no, java.sql.Connection con){
+		
+		SeatingAreaVO seatingareaVO = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			pstmt = con.prepareStatement(GET_ONE_STMT);
+
+			pstmt.setString(1, ticarea_no);
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				seatingareaVO = new SeatingAreaVO();
+				seatingareaVO.setTicarea_no(rs.getString("ticarea_no"));
+				seatingareaVO.setEve_no(rs.getString("eve_no"));
+				seatingareaVO.setTictype_no(rs.getString("tictype_no"));
+				seatingareaVO.setTicarea_color(rs.getString("ticarea_color"));
+				seatingareaVO.setTicarea_name(rs.getString("ticarea_name"));
+				seatingareaVO.setTictotalnumber(rs.getInt("tictotalnumber"));
+				seatingareaVO.setTicbookednumber(rs.getInt("ticbookednumber"));
+			}
+			
+			System.out.println("----------findByPrimaryKey finished----------");
+
+		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					// 3?身摰?嗆?exception?潛???catch?憛
+					System.err.print("Transaction is being ");
+					System.err.println("rolled back-??findByPrimaryKeyWithCon at SeatingAreaDAO.java");
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. "
+							+ excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+		}
+		return seatingareaVO;
+	}
+	@Override
+	public void updateSeatingAreaVOBecauseTicketOrderCreated(SeatingAreaVO seatingareaVO, Connection con) {
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement(UPDATE_FOR_TICKETORDER_STMT);
+			
+			System.out.println("seatingareaVO. = "+seatingareaVO.getTicarea_color());
+			System.out.println("seatingareaVO. = "+seatingareaVO.getEve_no());
+			System.out.println("seatingareaVO. = "+seatingareaVO.getTicarea_color());
+			System.out.println("seatingareaVO. = "+seatingareaVO.getTicarea_color());
+			System.out.println("seatingareaVO. = "+seatingareaVO.getTicarea_color());
+			System.out.println("seatingareaVO. = "+seatingareaVO.getTicarea_color());
+			
+			
+			pstmt.setString(1, seatingareaVO.getTicarea_color());
+			pstmt.setString(2, seatingareaVO.getTicarea_name());
+			pstmt.setInt(3, seatingareaVO.getTictotalnumber());
+			pstmt.setInt(4, seatingareaVO.getTicbookednumber());
+			pstmt.setString(5, seatingareaVO.getTicarea_no());
+
+			pstmt.executeUpdate();
+			
+			System.out.println("----------Updated----------");
+			
+			//make sure tictotalnumber >= ticbookednumber
+			if(seatingareaVO.getTictotalnumber() < seatingareaVO.getTicbookednumber()) {
+				System.out.println("seatingareaVO values = "+seatingareaVO.getTictotalnumber()+"---"+seatingareaVO.getTicbookednumber());
+				throw new SQLException("TicketsNotEnough");
+			}
+
+		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					// 3?身摰?嗆?exception?潛???catch?憛
+					System.err.print("Transaction is being ");
+					System.err.println("rolled back-??SeatingArea updateSeatingAreaVOBecauseTicketOrderCreated");
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. "
+							+ excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void updateSeatingAreaVOBecauseTicketOrderCancelledByServlet(SeatingAreaVO seatingareaVO, Connection con) {
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement(UPDATE_FOR_TICKETORDER_STMT);
+			
+			pstmt.setString(1, seatingareaVO.getTicarea_color());
+			pstmt.setString(2, seatingareaVO.getTicarea_name());
+			pstmt.setInt(3, seatingareaVO.getTictotalnumber());
+			pstmt.setInt(4, seatingareaVO.getTicbookednumber());
+			pstmt.setString(5, seatingareaVO.getTicarea_no());
+
+			pstmt.executeUpdate();
+			
+			System.out.println("----------Updated----------");
+
+		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					// 3?身摰?嗆?exception?潛???catch?憛
+					System.err.print("Transaction is being ");
+					System.err.println("rolled back-??SeatingArea updateSeatingAreaVOBecauseTicketOrderCancelledByServlet");
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. "
+							+ excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+		}
+	}
+	@Override
+	public List<SeatingAreaVO> getAllWithEve_No(String eve_no) {
+		List<SeatingAreaVO> list = new ArrayList<SeatingAreaVO>();
+		SeatingAreaVO seatingareaVO = null;
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_ALL_STMT_BYEVENO);
+			pstmt.setString(1, eve_no);
+			
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				seatingareaVO = new SeatingAreaVO();
+				seatingareaVO.setTicarea_no(rs.getString("ticarea_no"));
+				seatingareaVO.setEve_no(rs.getString("eve_no"));
+				seatingareaVO.setTictype_no(rs.getString("tictype_no"));
+				seatingareaVO.setTicarea_color(rs.getString("ticarea_color"));
+				seatingareaVO.setTicarea_name(rs.getString("ticarea_name"));
+				seatingareaVO.setTictotalnumber(rs.getInt("tictotalnumber"));
+				seatingareaVO.setTicbookednumber(rs.getInt("ticbookednumber"));
+				list.add(seatingareaVO);
+			}
+
+			System.out.println("----------getAll finished----------");
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return list;
+	}
+	//========== BEAR end ======================================================================
+
 }

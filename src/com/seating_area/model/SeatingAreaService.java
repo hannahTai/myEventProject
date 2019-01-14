@@ -71,6 +71,13 @@ public class SeatingAreaService {
 	public Set<TicketVO> getTickets_BySeatingArea(String ticarea_no) {
 		return seatingAreaDAO.getTickets_BySeatingArea(ticarea_no);
 	}
+	
+	
+	//========== BEAR begin ======================================================================
+	public List<SeatingAreaVO> getAllSeatingAreaByEveNo(String eve_no) {
+		return seatingAreaDAO.getAllWithEve_No(eve_no);
+	}
+	//========== BEAR end ======================================================================
 
 	
 	

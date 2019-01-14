@@ -54,19 +54,13 @@
 
 
 
-
-
-
-
-
-
 	<jsp:include page="/frontend/navbar_front-end.jsp" flush="true" />
 	
-	<form>
-	<input type="hidden" name="evetit_no" id="evetit_no" value="${aEventTitle.evetit_no}">
-	<input type="hidden" name="evetit_no" id="evetit_no" value="${aEventTitle.evetit_no}">
+	
+	
 	<input type="hidden" name="member_no" id="member_no" value="${member.memberNo}">
-	</form>
+
+
 
     <div class="container" style="margin-bottom:30px;">
         <div class="row">

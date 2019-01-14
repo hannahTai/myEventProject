@@ -140,5 +140,10 @@ public class EventService {
 		return ticketVO_ByEvent;
 	}
 	
-	
+	//========== BEAR begin ======================================================================
+	public List<EventVO> findByEveTit_no(String evetit_no) {
+		return eventDao.findByEveTit_no(evetit_no);
+	}
+	//========== BEAR end ======================================================================
+
 }

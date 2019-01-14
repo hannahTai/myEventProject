@@ -63,9 +63,11 @@ public class EventTitleGifReader extends HttpServlet {
 				EventTitleService eventTitleService = new EventTitleService();
 				byte[] srcImageData = eventTitleService.getOneEventTitle(evetit_no).getEvetit_poster();
 
-				byte[] scaledImageDate = ImageUtil.shrink(srcImageData, scaleSize);
-				response.setContentLength(scaledImageDate.length);
-				out.write(scaledImageDate);
+//				byte[] scaledImageDate = ImageUtil.shrink(srcImageData, scaleSize);
+//				response.setContentLength(scaledImageDate.length);
+//				out.write(scaledImageDate);
+				
+				out.write(srcImageData);
 			} else {
 				InputStream in = getServletContext().getResourceAsStream("/NoData/imageComingSoon.jpg");
 				byte[] bytes = new byte[in.available()];
